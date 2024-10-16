@@ -11,16 +11,16 @@ export default function LandingPage() {
       <aside className="hidden md:block w-1/4 bg-white shadow-lg p-6">
         <ul className="space-y-6">
           <li className="text-blue-600 font-bold text-lg">
-            <a href="#">Hospitals</a>
+            <a href="/hospital">Hospitals</a>
           </li>
           <li className="text-blue-600 font-bold text-lg">
-            <a href="#">Pharmacy</a>
+            <a href="/pharmacy">Pharmacy</a>
           </li>
           <li className="text-blue-600 font-bold text-lg">
-            <a href="#">Laboratory</a>
+            <a href="/laboratory">Laboratory</a>
           </li>
           <li className="text-blue-600 font-bold text-lg">
-            <a href="#">Doctors</a>
+            <a href="/doctors">Doctors</a>
           </li>
         </ul>
       </aside>

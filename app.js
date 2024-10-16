@@ -40,18 +40,19 @@ app.use(express.static('public'));
 
 app.use('/uploads',express.static(path.join(__dirname, '/client/dist')));
 app.use(morgan('dev'))
+app.use("/api/users", router)
 
 
 
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//       cb(null, 'uploads/'); 
-//     },
-//     filename: (req, file, cb) => {
-//       cb(null, `${Date.now()}-${file.originalname}`);
-//     },
-//   });
-//   const upload = multer({ storage });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/'); 
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    },
+  });
+  const upload = multer({ storage });
 
 
   
@@ -62,7 +63,7 @@ cloudinary.config({
   });
   
 
-app.use("/api/users", router)
+
 
   // Database connection
 const startServer = async () => {
@@ -75,7 +76,7 @@ const startServer = async () => {
     }
   
     const port = process.env.PORT || 6000;
-    server.listen(port, () => { // Use `server.listen` to include Socket.IO
+    server.listen(port, () => { 
       console.log(`Your app is listening on port ${port}`.bgGreen.black);
     });
   };

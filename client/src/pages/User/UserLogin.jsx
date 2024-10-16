@@ -43,9 +43,9 @@ const UserLogin = () => {
         const { token } = response.data;
         localStorage.setItem("token", token);
         toast.success("Login successful!");
-        navigate("/profile");
+        navigate("/userlandingprofile");
       }
-    } catch (error) {
+    } catch (err) {
       setError(
         err.response?.data?.message || "An error occurred during registration"
       );

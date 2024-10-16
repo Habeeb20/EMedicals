@@ -63,7 +63,9 @@ export const signup = async (req, res) => {
     const profilePicture = result.secure_url;
 
     const user = new User({
-        email, phone, password: hashedPassword, profilePicture
+        email, phone, password: hashedPassword, profilePicture, uniqueNumber,
+        verificationToken,
+        verificationTokenExpiresAt,
     })
 
     await user.save();

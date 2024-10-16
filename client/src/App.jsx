@@ -9,6 +9,7 @@ import UserLogin from './pages/User/UserLogin'
 import UserVerifyEmail from './pages/User/UserVerifyEmail'
 import UserForgotPassword from './pages/User/UserForgotPassword'
 import UserResetPassword from './pages/User/UserResetPassword'
+import UserLandingProfile from './pages/User/UserLandingProfile'
 const App = () => {
   return (
    <Router>
@@ -20,6 +21,7 @@ const App = () => {
     <Route path="/userverifyEmail" element={<UserVerifyEmail  />} />
     <Route path="/userforgotpassword" element={<UserForgotPassword  />} />
     <Route path="/userresetpassword" element={<UserResetPassword  />} />
+    <Route path="/userlandingprofile" element={<UserLandingProfile  />} />
 
 
       <Route path="/doctors/signup" element={<Signup />} />
