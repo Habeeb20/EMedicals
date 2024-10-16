@@ -1,8 +1,11 @@
 import React from 'react';
 import { FaHospital, FaPrescriptionBottle, FaVials, FaBookDead, FaUserMd } from 'react-icons/fa'; 
 import im from '../assets/EMedicals/young-woman-doctor-white-coat-with-stethoscope-pointing-with-index-finger-side-with-serious-face-standing-orange-wall-removebg-preview 1.png'
+import Navbar from '../components/Navbar';
 export default function LandingPage() {
   return (
+   <div>
+    <Navbar />
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="hidden md:block w-1/4 bg-white shadow-lg p-6">
@@ -41,7 +44,7 @@ export default function LandingPage() {
           <img 
             src={im}
             alt="Doctor" 
-            className="hidden md:block rounded-lg shadow-md" 
+            className="hidden md:block rounded-lg " 
           />
         </div>
 
@@ -101,5 +104,6 @@ export default function LandingPage() {
         </div>
       </main>
     </div>
+   </div>
   );
 }
