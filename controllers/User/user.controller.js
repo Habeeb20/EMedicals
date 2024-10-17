@@ -15,7 +15,7 @@ cloudinary.config({
 
 
 const transporter = nodemailer.createTransport(({
-    services:'gmail',
+    service:'gmail',
     auth: {
         user:"babatundeademola112@gmail.com",
         pass:"pknseuxqxzkoqdjg"
@@ -52,6 +52,15 @@ export const signup = async (req, res) => {
             console.log('user exist')
             return res.status(400).json({ message: 'User already exists' });
         }
+
+        if(phone.length > 11){
+          return res.status(400).json({message: "phone number should not exceed 11 characters"})
+        }
+        if(phone.length < 11){
+          return res.status(400).json({message: "phone number shouldnt be less than 11 characters"})
+        }
+
+        
        
     const hashedPassword = await bcryptjs.hash(password, 10);
     const verificationToken = Math.floor(100000 + Math.random() * 900000).toString(); // OTP generation

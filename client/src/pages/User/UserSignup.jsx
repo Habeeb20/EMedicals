@@ -27,9 +27,9 @@ const UserSignup = () => {
   };
 
   const handleFileChange = (e) => {
-    if (e.target.files.length > 0) {
+
       setFormData({ ...formData, profilePicture: e.target.files[0] });
-    }
+ 
   };
 
   const handleSubmit = async (e) => {
@@ -41,12 +41,13 @@ const UserSignup = () => {
         form.append(key, formData[key]);
       });
   
-      const response = await axios.post('http://localhost:6000/api/users/signup', form, {
+      const response = await axios.post(`${import.meta.env.VITE_API}/signup`, form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+   
   
       if (response.data) {
-        navigate('/verify-email');
+        navigate('/userverifyemail');
         toast.success('Successfully registered');
       }
     } catch (err) {
@@ -173,8 +174,15 @@ const UserSignup = () => {
                 )}
               </motion.button>
             </div>
+            <p className="mt-4 text-center text-gray-500 text-sm">
+              Already have an account?{" "}
+              <a href="/userlogin" className="text-blue-500 font-semibold">
+                login.
+              </a>
+            </p>
           </form>
         </div>
+     
       </div>
     </div>
   );

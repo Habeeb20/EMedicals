@@ -11,6 +11,8 @@ import cloudinary from "cloudinary";
 import multer from "multer";
 import { ExpressPeerServer } from "peer";
 import router from "./routes/User/user.route.js";
+import doctorRouter from "./routes/Doctors/doctor.route.js";
+import patientRouter from "./routes/Doctors/patient.route.js";
 
 dotenv.config()
 
@@ -24,6 +26,8 @@ const peerServer = ExpressPeerServer(server, {
 
 
 app.use('/peerjs', peerServer);
+// app.use(cors()); 
+
 
 
 app.use(cors({
@@ -40,7 +44,20 @@ app.use(express.static('public'));
 
 app.use('/uploads',express.static(path.join(__dirname, '/client/dist')));
 app.use(morgan('dev'))
-app.use("/api/users", router)
+
+
+
+
+//user
+app.use('/api/users', router);
+
+
+
+
+//doctor
+
+app.use("/api/doctors", doctorRouter )
+app.use("/api/patients", patientRouter)
 
 
 
@@ -75,7 +92,7 @@ const startServer = async () => {
       process.exit(1);
     }
   
-    const port = process.env.PORT || 6000;
+    const port = process.env.PORT || 8000;
     server.listen(port, () => { 
       console.log(`Your app is listening on port ${port}`.bgGreen.black);
     });
