@@ -13,6 +13,7 @@ import { ExpressPeerServer } from "peer";
 import router from "./routes/User/user.route.js";
 import doctorRouter from "./routes/Doctors/doctor.route.js";
 import patientRouter from "./routes/Doctors/patient.route.js";
+import mortuaryrouter from "./routes/Mortuary/mortuary.route.js";
 
 dotenv.config()
 
@@ -59,6 +60,10 @@ app.use('/api/users', router);
 app.use("/api/doctors", doctorRouter )
 app.use("/api/patients", patientRouter)
 
+
+//mortuary
+
+app.use("/api/mortuary", mortuaryrouter)
 
 
 const storage = multer.diskStorage({

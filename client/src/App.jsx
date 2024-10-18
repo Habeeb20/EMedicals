@@ -16,6 +16,8 @@ import DoctorSignup from "./pages/Doctor/DoctorSignup";
 import AfterDeathService from "./pages/Cemetary/AfterDeath";
 
 import CemeteryPage from "./pages/Cemetary/CemeteryPage";
+import MortuarySignup from "./pages/mortuary/MortuarySignup";
+import AmortuaryDetail from "./pages/mortuary/AmortuaryDetail";
 
 const App = () => {
   return (
@@ -38,6 +40,12 @@ const App = () => {
         //cemetary
         <Route path="/afterdeathsearviceuser" element={<AfterDeathService />} />
         <Route path="/cemeterypage" element={<CemeteryPage />} />
+
+
+        //mortuary
+        <Route path="/mortuarysignup" element={<MortuarySignup />} />
+        <Route path="/mortuarydetails/:id" element={<AmortuaryDetail />} />
+
       </Routes>
       <Toaster />
     </Router>
