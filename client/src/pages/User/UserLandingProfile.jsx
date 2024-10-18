@@ -164,7 +164,7 @@ import axios from 'axios';
 import { FaHospital, FaPrescriptionBottle, FaVials, FaBookDead, FaUserMd } from 'react-icons/fa'; 
 import im from '../../assets/EMedicals/young-woman-doctor-white-coat-with-stethoscope-pointing-with-index-finger-side-with-serious-face-standing-orange-wall-removebg-preview 1.png'
 import Navbar from '../../components/Navbar';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import HideGmailPart from '../HideGmailPart';
 
 export default function UserLandingProfile() {
@@ -271,14 +271,19 @@ export default function UserLandingProfile() {
 
           {/* Grid Boxes */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  
+            <Link to='/hospitaluser'>
             <div className="bg-blue-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
-              <FaHospital className="text-4xl text-blue-500" />
+            <FaHospital className="text-4xl text-blue-500" />
               <div>
                 <h3 className="text-xl font-bold">Hospitals</h3>
                 <p className="text-gray-500">Find healthcare centers</p>
               </div>
             </div>
-            
+
+            </Link>
+             
+            <Link to='/pharmacyuser'>
             <div className="bg-purple-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
               <FaPrescriptionBottle className="text-4xl text-purple-500" />
               <div>
@@ -287,6 +292,10 @@ export default function UserLandingProfile() {
               </div>
             </div>
 
+            </Link>
+
+            <Link to='/laboratoryuser'>
+              
             <div className="bg-teal-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
               <FaVials className="text-4xl text-teal-500" />
               <div>
@@ -294,14 +303,19 @@ export default function UserLandingProfile() {
                 <p className="text-gray-500">Find test centers</p>
               </div>
             </div>
+            </Link>
+          
 
-            <div className="bg-gray-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+
+          <Link to='/afterdeathsearviceuser'>
+          <div className="bg-gray-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
               <FaBookDead className="text-4xl text-gray-500" />
               <div>
                 <h3 className="text-xl font-bold">Death Services</h3>
                 <p className="text-gray-500">Funeral services</p>
               </div>
             </div>
+          </Link>
 
             <div className="bg-pink-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
               <FaUserMd className="text-4xl text-pink-500" />
@@ -316,3 +330,38 @@ export default function UserLandingProfile() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

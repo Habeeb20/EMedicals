@@ -6,7 +6,7 @@ import { verifyToken } from "../../middleware/verifyToken.js"
 const doctorRouter = express.Router()
 
 
-doctorRouter.post('/doctorsignup', upload, register)
+doctorRouter.post('/doctorsignup',  register)
 doctorRouter.post('/doctorlogin', login)
 doctorRouter.get('/doctorprofile', verifyToken, getprofile)
 doctorRouter.post('/doctorlogout', logout)

@@ -15,16 +15,17 @@ const storage = multer.diskStorage({
 // Initialize upload
 const upload = multer({
     storage,
-    limits: { fileSize: 1024 * 1024 * 2 }, // Limit files to 2 MB
+    limits: { fileSize: 1024 * 1024 * 5 }, // Increase the limit to 5 MB if needed
     fileFilter: (req, file, cb) => {
-        // Accept only images
-        const filetypes = /jpeg|jpg|png|gif/;
+        // Accept only images and documents
+        const filetypes = /jpeg|jpg|png|gif|pdf|doc|docx|txt/; // Add document file types
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);
+        
         if (mimetype && extname) {
             return cb(null, true);
         } else {
-            cb('Error: Images Only!');
+            cb('Error: Images and Documents Only!');
         }
     },
 }).single('profilePicture'); // Name of the file input

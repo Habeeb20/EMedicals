@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import cloudinary from 'cloudinary'
 import nodemailer from "nodemailer"
-
+import crypto from "crypto"
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -35,39 +35,92 @@ const sendOTPEmail = async(email, otp) => {
   await transporter.sendMail(mailOptions);
 }
 
-export const register = async ()=> {
-    try {
-        const { fullName, dateOfBirth, email, password, phoneNumber, specialization, licenseNumber, qualifications, yearsOfExperience, state, LGA } = req.body;
+export const register = async (req, res) => {
+  try {
+    const {
+      fullName,
+      dateOfBirth,
+      email,
+      password,
+      phoneNumber,
+      specialization,
+      licenseNumber,
+      qualifications,
+      yearsOfExperience,
+      state,
+      LGA,
+    } = req.body;
 
-        if( !fullName || !dateOfBirth ||  !email || !password || !phoneNumber || !specialization|| !licenseNumber || !qualifications || !medicalCertificate || !yearsOfExperience || !state || !LGA ){
-            console.log('error')
-            return res.status(400).json({message: "All fields are required"})
-        }
-    
-        let doctor = await Doctor.findOne({ email });
-        if (doctor) return res.status(400).json({ msg: 'Doctor already exists' });
+  
+    const requiredFields = {
+      fullName,
+      dateOfBirth,
+      email,
+      password,
+      phoneNumber,
+      specialization,
+      licenseNumber,
+      qualifications,
+      yearsOfExperience,
+      state,
+      LGA,
+    };
 
+    let missingFields = [];
 
-        const verificationToken = Math.floor(100000 + Math.random() * 900000).toString(); // OTP generation
-        const uniqueNumber = `RL-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-        const verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-        
-        const result = await cloudinary.v2.uploader.upload(req.file.path);
-        const profilePicture = result.secure_url;
-        const medicalCertificate = result.secure_url;
-    
-        doctor = new Doctor(...req.body,profilePicture, medicalCertificate, uniqueNumber,
-            verificationToken,
-            verificationTokenExpiresAt, );
-        await doctor.save();
-
-        await sendOTPEmail(doctor.email, verificationToken)
-        res.status(201).json({ message: 'Doctor registered successfully', doctor:{...doctor.doc, password: undefined} });
-      } catch (err) {
-        console.log(err)
-        res.status(500).json({ msg: 'Server error' });
+    for (const [field, value] of Object.entries(requiredFields)) {
+      if (!value) {
+        missingFields.push(field);
       }
-}
+    }
+
+    if (missingFields.length > 0) {
+      console.log(missingFields)
+      return res.status(400).json({
+    
+        message: `The following fields are missing: ${missingFields.join(', ')}`,
+      
+      });
+    }
+
+    // Check if doctor with email already exists
+    let doctor = await Doctor.findOne({ email });
+    if (doctor) return res.status(400).json({ msg: 'Doctor already exists' });
+
+    // Generate verification token and unique number
+    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString(); // OTP generation
+    const uniqueNumber = `RL-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    const verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+    // Upload profile picture and medical certificate using Cloudinary
+    const result = await cloudinary.v2.uploader.upload(req.file.path);
+    const profilePicture = result.secure_url;
+    const medicalCertificate = result.secure_url;
+
+    // Create new doctor
+    doctor = new Doctor({
+      ...req.body,
+      profilePicture,
+      medicalCertificate,
+      uniqueNumber,
+      verificationToken,
+      verificationTokenExpiresAt,
+    });
+
+    await doctor.save();
+
+    // Send OTP email to the doctor for verification
+    await sendOTPEmail(doctor.email, verificationToken);
+
+    res.status(201).json({
+      message: 'Doctor registered successfully',
+      doctor: { ...doctor._doc, password: undefined }, // Exclude password from response
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
 
 
 
@@ -103,7 +156,7 @@ export const verifyEmail = async (req, res) => {
   };
 
 
-export const login = async () => {
+export const login = async (req, res) => {
     const { email, password } = req.body;
     try {
       const doctor = await Doctor.findOne({ email });
@@ -130,7 +183,7 @@ export const logout = async (req, res) => {
 
 
 
-export const getprofile  = async () => {
+export const getprofile  = async (req, res) => {
     try {
         const doctor = await Doctor.findById(req.params.id)
         .populate('patients')
