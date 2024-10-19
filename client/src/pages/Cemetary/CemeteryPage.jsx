@@ -165,7 +165,7 @@ const CemeteryPage = () => {
               <FaMapMarkerAlt className="text-gray-500" />
               <input
                 type="text"
-                placeholder="Enter location"
+                placeholder="Enter your location to see distance"
                 className="bg-transparent outline-none ml-2 w-full"
                 value={userLocation}
                 onChange={(e) => setUserLocation(e.target.value)}
