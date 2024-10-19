@@ -300,51 +300,6 @@ ired
 
 
 
-  //get other users profile
-  // export const getOtherUserProfile = async (req, res) => {
-  //   try {
-   
-  //     const { userId } = req.params;
-  //     const user = await Leader.findById(userId).select('-password');
-  
-  //     if (!user) {
-  //       console.log("user not found")
-  //       return res.status(404).json({ message: 'User not found' });
-  //     }
-  //     res.status(200).json({
-  //       success: true,
-  //       user: {
-  //         _id: user._id,
-  //         title: user.title,
-  //         firstname: user.firstname,
-  //         lastname: user.lastname,
-  //         ministryname: user.ministryname,
-  //         religion: user.religion,
-  //         email: user.email,
-  //         bio: user.bio,
-  //         address: user.address,
-  //         state: user.state,
-  //         country: user.country,
-  //         yearsInProfession: user.yearsInProfession,
-  //         localGovtArea: user.localGovtArea,
-  //         profilePicture: user.profilePicture,
-  //         lastLogin: user.lastLogin,
-  //         uniqueNumber: user.uniqueNumber,
-  //         accountName: user.accountName,
-  //         accountNumber: user.accountNumber,
-  //         bankName: user.bankName,
-  //         refereeemail: user.refereeemail,
-  //         refereename: user.refereename,
-  //         refereephone: user.refereephone
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ message: 'Something went wrong' });
-  //   }
-  // };
-  
-
 
 
 

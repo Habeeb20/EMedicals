@@ -18,6 +18,7 @@ import AfterDeathService from "./pages/Cemetary/AfterDeath";
 import CemeteryPage from "./pages/Cemetary/CemeteryPage";
 import MortuarySignup from "./pages/mortuary/MortuarySignup";
 import AmortuaryDetail from "./pages/mortuary/AmortuaryDetail";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
@@ -33,18 +34,35 @@ const App = () => {
         <Route path="/userforgotpassword" element={<UserForgotPassword />} />
         <Route path="/userresetpassword" element={<UserResetPassword />} />
         <Route path="/userlandingprofile" element={<UserLandingProfile />} />
+
+
+
+
+          //protected Routes
+        <Route path="/cemeterypage" element={<PrivateRoute><CemeteryPage /></PrivateRoute> } />
+        <Route path="/mortuarydetail/:id" element={<PrivateRoute><AmortuaryDetail /></PrivateRoute>} />
+
+
+
+
+
+
+
+
         //doctor
         <Route path="/doctorsignup" element={<DoctorSignup />} />
 
 
         //cemetary
         <Route path="/afterdeathsearviceuser" element={<AfterDeathService />} />
-        <Route path="/cemeterypage" element={<CemeteryPage />} />
+
 
 
         //mortuary
         <Route path="/mortuarysignup" element={<MortuarySignup />} />
-        <Route path="/mortuarydetails/:id" element={<AmortuaryDetail />} />
+      
+
+
 
       </Routes>
       <Toaster />

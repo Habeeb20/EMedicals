@@ -208,7 +208,7 @@ const MortuarySignup = () => {
 
     useEffect(() => {
         setStates(Object.keys(nigeriaStatesAndLGAs));
-        setBanks(['Access Bank', 'GTBank', 'First Bank', 'Zenith Bank', 'UBA', 'wema Bank', 'fidelity-bank', "jaiz bank"]);
+        setBanks(['Access Bank', 'GTBank', 'First Bank', 'Zenith Bank', 'UBA', 'wema Bank', 'fidelity-bank', "jaiz bank", "opay", "moniepoint", "palmpay"]);
     }, []);
 
     useEffect(() => {

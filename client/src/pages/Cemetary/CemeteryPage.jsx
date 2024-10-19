@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaPhoneAlt, FaWhatsapp, FaEnvelope, FaShareAlt, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaSearch,
+  FaPhoneAlt,
+  FaWhatsapp,
+  FaEnvelope,
+  FaShareAlt,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import SearchPage from "./SearchPage";
 import Navbar from "../../components/Navbar";
 
@@ -8,7 +15,7 @@ import Navbar from "../../components/Navbar";
 const statesAndLgas = {
   Lagos: ["Ikeja", "Surulere", "Alimosho", "Eti-Osa", "Agege"],
   Oyo: ["Ibadan North", "Ibadan South-East", "Ogbomosho", "Saki", "Egbeda"],
-  "Rivers": ["Port Harcourt", "Obio/Akpor", "Eleme", "Ikwerre", "Opobo"],
+  Rivers: ["Port Harcourt", "Obio/Akpor", "Eleme", "Ikwerre", "Opobo"],
   // Add all other states and their LGAs here
 };
 
@@ -22,12 +29,16 @@ const CemeteryPage = () => {
 
   const handleClick = async (id) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_m}/mortuarydetails/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log("ID being passed:", id);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_m}/mortuarydetails/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       console.log(data);
     } catch (error) {
@@ -38,7 +49,9 @@ const CemeteryPage = () => {
   useEffect(() => {
     const fetchMortuaries = async () => {
       try {
-        const response = await fetch(import.meta.env.VITE_API_m + "/getallmortuary");
+        const response = await fetch(
+          import.meta.env.VITE_API_m + "/getallmortuary"
+        );
         const data = await response.json();
         setMortuaries(data);
         setFilteredMortuaries(data); // Initially show all mortuaries
@@ -53,9 +66,14 @@ const CemeteryPage = () => {
   // Handle search filtering based on state, LGA, and category
   const handleSearch = () => {
     const filtered = mortuaries.filter((mortuary) => {
-      const matchesState = stateFilter === "" || mortuary.state.toLowerCase().includes(stateFilter.toLowerCase());
-      const matchesLga = lgaFilter === "" || mortuary.localGovtArea.toLowerCase().includes(lgaFilter.toLowerCase());
-      const matchesCategory = category === "all" || mortuary.category === category;
+      const matchesState =
+        stateFilter === "" ||
+        mortuary.state.toLowerCase().includes(stateFilter.toLowerCase());
+      const matchesLga =
+        lgaFilter === "" ||
+        mortuary.localGovtArea.toLowerCase().includes(lgaFilter.toLowerCase());
+      const matchesCategory =
+        category === "all" || mortuary.category === category;
 
       return matchesState && matchesLga && matchesCategory;
     });
@@ -65,13 +83,14 @@ const CemeteryPage = () => {
   // Handle share functionality
   const handleShare = (mortuary) => {
     if (navigator.share) {
-      navigator.share({
-        title: mortuary.name,
-        text: `Check out this mortuary: ${mortuary.name}`,
-        url: window.location.href,
-      })
-        .then(() => console.log('Successfully shared'))
-        .catch((error) => console.error('Error sharing:', error));
+      navigator
+        .share({
+          title: mortuary.name,
+          text: `Check out this mortuary: ${mortuary.name}`,
+          url: window.location.href,
+        })
+        .then(() => console.log("Successfully shared"))
+        .catch((error) => console.error("Error sharing:", error));
     } else {
       alert("Sharing not supported on this device.");
     }
@@ -88,7 +107,7 @@ const CemeteryPage = () => {
         <header className="bg-white shadow-md mb-4 p-4 rounded-lg">
           <div className="flex flex-wrap gap-4 justify-center md:justify-start">
             {/* State Filter */}
-            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/4">
+            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5">
               <FaSearch className="text-gray-500" />
               <select
                 className="bg-transparent outline-none ml-2 w-full"
@@ -108,7 +127,7 @@ const CemeteryPage = () => {
             </div>
 
             {/* LGA Filter */}
-            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/4">
+            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5">
               <FaSearch className="text-gray-500" />
               <select
                 className="bg-transparent outline-none ml-2 w-full"
@@ -126,7 +145,7 @@ const CemeteryPage = () => {
             </div>
 
             {/* Category Filter */}
-            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/4">
+            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5">
               <FaSearch className="text-gray-500" />
               <select
                 className="bg-transparent outline-none ml-2 w-full"
@@ -142,7 +161,7 @@ const CemeteryPage = () => {
             </div>
 
             {/* Location Input */}
-            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/4">
+            <div className="flex items-center bg-gray-100 p-2 rounded-lg w-full md:w-1/5">
               <FaMapMarkerAlt className="text-gray-500" />
               <input
                 type="text"
@@ -156,7 +175,7 @@ const CemeteryPage = () => {
             {/* Search Button */}
             <button
               onClick={handleSearch}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors md:w-18"
             >
               Search
             </button>
@@ -167,7 +186,10 @@ const CemeteryPage = () => {
         <div>
           {filteredMortuaries.length > 0 ? (
             filteredMortuaries.map((mortuary, index) => (
-              <div key={index} className="p-4 bg-white shadow-md rounded-lg my-4">
+              <div
+                key={index}
+                className="p-4 bg-white shadow-md rounded-lg my-4"
+              >
                 <SearchPage
                   image={mortuary.profilePicture}
                   name={mortuary.name}
@@ -183,15 +205,24 @@ const CemeteryPage = () => {
 
                 {/* Phone Call and WhatsApp Icons */}
                 <div className="flex items-center mt-4">
-                  <a href={`tel:${mortuary.phonenum}`} className="text-blue-600 mr-4">
+                  <a
+                    href={`tel:${mortuary.phonenum}`}
+                    className="text-blue-600 mr-4"
+                  >
                     <FaPhoneAlt size={20} />
                   </a>
-                  <a href={`https://wa.me/${mortuary.phonenum}`} className="text-green-500 mr-4">
+                  <a
+                    href={`https://wa.me/${mortuary.phonenum}`}
+                    className="text-green-500 mr-4"
+                  >
                     <FaWhatsapp size={20} />
                   </a>
 
                   {/* Email Icon */}
-                  <a href={`mailto:${mortuary.email}`} className="text-red-600 mr-4">
+                  <a
+                    href={`mailto:${mortuary.email}`}
+                    className="text-red-600 mr-4"
+                  >
                     <FaEnvelope size={20} />
                   </a>
                 </div>
@@ -206,8 +237,12 @@ const CemeteryPage = () => {
                     <FaShareAlt className="mr-2" />
                     Share
                   </button>
+                  {mortuary._id &&   <Link  to={`/mortuarydetail/${mortuary._id}`}>
+                  <button onClick={handleClick}     className="bg-blue-600 text-white px-4 py-2 rounded-lg">
+                  View Profile
+                  </button>
+                  </Link>}
 
-                  {/* Google Maps Button (visible only if user input location) */}
                   {userLocation && (
                     <a
                       href={`https://www.google.com/maps/dir/${encodeURIComponent(
@@ -224,7 +259,9 @@ const CemeteryPage = () => {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">No mortuaries found matching your search criteria.</p>
+            <p className="text-center text-gray-500">
+              No mortuaries found matching your search criteria.
+            </p>
           )}
         </div>
       </div>
@@ -233,3 +270,18 @@ const CemeteryPage = () => {
 };
 
 export default CemeteryPage;
+
+
+
+//button
+
+// {mortuary._id && (
+//   <Link to={`/mortuarydetail/${mortuary._id}`}>
+//     <button
+//       onClick={() => handleClick(mortuary._id)} // Pass the ID correctly here
+//       className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+//     >
+//       View Profile
+//     </button>
+//   </Link>
+// )}

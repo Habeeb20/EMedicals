@@ -42,6 +42,7 @@ const UserLogin = () => {
       if (response.status === 200) {
         const { token } = response.data;
         localStorage.setItem("token", token);
+        localStorage.setItem("email", formData.email);
         toast.success("Login successful!");
         navigate("/userlandingprofile");
       }
