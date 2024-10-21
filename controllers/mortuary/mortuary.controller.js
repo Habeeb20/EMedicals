@@ -233,7 +233,6 @@ ired
   }
 
 
-  //delete user account
 
 
   export const deleteUserAccount = async(req, res) => {
@@ -260,7 +259,6 @@ ired
 
 
 
-  //countleaders
 
   export const getleaderscounts = async (req, res) => {
     try {

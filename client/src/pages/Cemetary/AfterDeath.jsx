@@ -56,18 +56,30 @@ const AfterDeathService = () => {
 
         {/* Options Section */}
         <div className="flex justify-between items-center mt-6">
-          <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+        <Link to='/getallcemetery'>
+        <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
             <FaChurch className="text-blue-500 text-2xl" />
             <p className="text-sm mt-2">Cemetery</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+
+        </Link>
+
+         <Link>
+         <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
             <FaMortarPestle className="text-green-500 text-2xl" />
             <p className="text-sm mt-2">Mortuary</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+
+         </Link>
+
+         <Link>
+         <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
             <FaMortarPestle className="text-red-500 text-2xl" />
             <p className="text-sm mt-2">Undertakers</p>
           </div>
+         </Link>
+        
+        
         </div>
 
     

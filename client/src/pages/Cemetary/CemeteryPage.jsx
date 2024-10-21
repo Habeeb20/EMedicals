@@ -16,7 +16,7 @@ const statesAndLgas = {
   Lagos: ["Ikeja", "Surulere", "Alimosho", "Eti-Osa", "Agege"],
   Oyo: ["Ibadan North", "Ibadan South-East", "Ogbomosho", "Saki", "Egbeda"],
   Rivers: ["Port Harcourt", "Obio/Akpor", "Eleme", "Ikwerre", "Opobo"],
-  // Add all other states and their LGAs here
+  
 };
 
 const CemeteryPage = () => {

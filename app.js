@@ -16,6 +16,7 @@ import patientRouter from "./routes/Doctors/patient.route.js";
 import mortuaryrouter from "./routes/Mortuary/mortuary.route.js";
 import mortuaryCommentRouter from "./routes/Mortuary/mortuaryComment.route.js";
 import messageRouter from "./routes/Mortuary/message.route.js";
+import cemeteryRouter from "./routes/cemetery/cemetery.route.js";
 
 dotenv.config()
 
@@ -68,6 +69,11 @@ app.use("/api/patients", patientRouter)
 app.use("/api/mortuary", mortuaryrouter)
 app.use("/api/mortuary", mortuaryCommentRouter)
 app.use("/api/mortuary", messageRouter)
+
+
+
+//cemetery
+app.use("/api/cemetery", cemeteryRouter)
 
 
 const storage = multer.diskStorage({

@@ -19,6 +19,12 @@ import CemeteryPage from "./pages/Cemetary/CemeteryPage";
 import MortuarySignup from "./pages/mortuary/MortuarySignup";
 import AmortuaryDetail from "./pages/mortuary/AmortuaryDetail";
 import PrivateRoute from "./components/PrivateRoute";
+import CemeterySignUp from "./pages/Cemetary/CemeterySgnup";
+import CemeteryLogin from "./pages/Cemetary/CemeteryLogin";
+import CemeteryDashboard from "./pages/Cemetary/CemeteryDashboard";
+import AllCemeteries from "./pages/Cemetary/AllCemeteries";
+import Acemetery from "./pages/Cemetary/Acemetery";
+import GetAllCemetery from "./pages/Cemetary/GetAllCemetery";
 
 const App = () => {
   return (
@@ -43,6 +49,12 @@ const App = () => {
         <Route path="/mortuarydetail/:id" element={<PrivateRoute><AmortuaryDetail /></PrivateRoute>} />
 
 
+        <Route path="/cemeterydashboard" element={<PrivateRoute><CemeteryDashboard /></PrivateRoute>} />
+        <Route path="/cemeteries" element={<PrivateRoute><AllCemeteries /></PrivateRoute>} />
+        <Route path="/cemeterydetail/:id" element={<PrivateRoute><Acemetery /></PrivateRoute>} />
+        <Route path="/getallcemetery" element={<PrivateRoute><GetAllCemetery /></PrivateRoute> } />
+
+
 
 
 
@@ -55,6 +67,9 @@ const App = () => {
 
         //cemetary
         <Route path="/afterdeathsearviceuser" element={<AfterDeathService />} />
+        <Route path="/cemeterysignup" element={<CemeterySignUp />} />
+        <Route path="/cemeterylogin" element={<CemeteryLogin />} />
+        <Route path="/cemeterydashboard" element={<CemeteryDashboard />} />
 
 
 
