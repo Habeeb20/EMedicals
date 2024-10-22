@@ -85,7 +85,7 @@ const GetAllCemetery = () => {
               <p><strong>Opening Time:</strong> {cemetery.openingTime}</p>
               <p><strong>Closing Time:</strong> {cemetery.closingTime}</p>
 
-              <Link to={`/cemeterydetail/${cemetery.uniquenumber}`}>
+              <Link to={`/cemeterydetail/${cemetery._id}`}>
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-lg mt-2">
                   View Profile
                 </button>

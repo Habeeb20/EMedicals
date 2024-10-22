@@ -17,6 +17,7 @@ import mortuaryrouter from "./routes/Mortuary/mortuary.route.js";
 import mortuaryCommentRouter from "./routes/Mortuary/mortuaryComment.route.js";
 import messageRouter from "./routes/Mortuary/message.route.js";
 import cemeteryRouter from "./routes/cemetery/cemetery.route.js";
+import cemeteryCommentRouter from "./routes/cemetery/comment.js";
 
 dotenv.config()
 
@@ -74,6 +75,7 @@ app.use("/api/mortuary", messageRouter)
 
 //cemetery
 app.use("/api/cemetery", cemeteryRouter)
+app.use("/api/cemetery", cemeteryCommentRouter)
 
 
 const storage = multer.diskStorage({

@@ -3,6 +3,7 @@ import cloudinary from 'cloudinary';
 import jwt from "jsonwebtoken"
 import bcrypt from 'bcryptjs';
 import pkg from 'uuid';
+import mongoose from 'mongoose';
 const { v4: uuidv4 } = pkg;
 
 
