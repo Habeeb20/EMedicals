@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MessageModal from "./MessageModal";
 import Navbar from "../../components/Navbar";
 import { FaShareAlt } from "react-icons/fa";
+
 const AmortuaryDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -66,18 +67,26 @@ const AmortuaryDetail = () => {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     const userName = localStorage.getItem("email");
-    if (!newComment || !userName) return;
-
+    const token = localStorage.getItem("token"); 
+  
+    if (!newComment || !userName || !token) return;  
+  
     setLoading(true);
-
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_m}/mortuarydetails/${id}/comments`,
         {
-          mortuaryId: id,
-          userName,
-          commentText: newComment,
-        }
+          mortuaryId: id,         
+          userName,                   
+          commentText: newComment ,
+        
+        },
+        // {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`, // Send token in Authorization header
+        //   },
+        // }
       );
       setComments([...comments, response.data]);
       setNewComment("");
@@ -89,7 +98,7 @@ const AmortuaryDetail = () => {
       setLoading(false);
     }
   };
-
+  
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
