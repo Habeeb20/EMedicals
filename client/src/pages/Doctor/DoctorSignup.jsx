@@ -1,313 +1,176 @@
+
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import toast from 'react-hot-toast';
-import im from "../../assets/EMedicals/floatingLogo.png"
-const specializations = [
-  'General Practitioner',
-  'Pediatrician',
-  'Surgeon',
-  'Cardiologist',
-  'Dermatologist',
-  'Gynecologist',
-  'Psychiatrist',
-  'Ophthalmologist',
-  'Orthopedic',
-  'ENT Specialist',
-  "nurosurgeon",
-  "family doctor"
+import {toast} from "react-hot-toast"
+import { useNavigate } from 'react-router-dom';
+const statesWithLGAs = {
+  Abia: ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato', 'Obi Ngwa', 'Ohafia', 'Osisioma', 'Ugwunagbo', 'Ukwa East', 'Ukwa West', 'Umuahia North', 'Umuahia South', 'Umu Nneochi'],
+  Adamawa: ['Demsa', 'Fufore', 'Ganye', 'Girei', 'Gombi', 'Guyuk', 'Hong', 'Jada', 'Lamurde', 'Madagali', 'Maiha', 'Mayo-Belwa', 'Michika', 'Mubi North', 'Mubi South', 'Numan', 'Shelleng', 'Song', 'Toungo', 'Yola North', 'Yola South'],
+  AkwaIbom: ['Abak', 'Eastern Obolo', 'Eket', 'Esit Eket', 'Essien Udim', 'Etim Ekpo', 'Etinan', 'Ibeno', 'Ibesikpo Asutan', 'Ibiono Ibom', 'Ika', 'Ikono', 'Ikot Abasi', 'Ikot Ekpene', 'Ini', 'Itu', 'Mbo', 'Mkpat Enin', 'Nsit Atai', 'Nsit Ibom', 'Nsit Ubium', 'Obot Akara', 'Okobo', 'Onna', 'Oron', 'Oruk Anam', 'Udung Uko', 'Ukanafun', 'Uruan', 'Urue-Offong/Oruko', 'Uyo'],
+  Anambra: ['Aguata', 'Anambra East', 'Anambra West', 'Anaocha', 'Awka North', 'Awka South', 'Ayamelum', 'Dunukofia', 'Ekwusigo', 'Idemili North', 'Idemili South', 'Ihiala', 'Njikoka', 'Nnewi North', 'Nnewi South', 'Ogbaru', 'Onitsha North', 'Onitsha South', 'Orumba North', 'Orumba South', 'Oyi'],
+  Bauchi: ['Alkaleri', 'Bauchi', 'Bogoro', 'Damban', 'Darazo', 'Dass', 'Gamawa', 'Ganjuwa', 'Giade', 'Itas/Gadau', 'Jama\'are', 'Katagum', 'Kirfi', 'Misau', 'Ningi', 'Shira', 'Tafawa Balewa', 'Toro', 'Warji', 'Zaki'],
+  Bayelsa: ['Brass', 'Ekeremor', 'Kolokuma/Opokuma', 'Nembe', 'Ogbia', 'Sagbama', 'Southern Ijaw', 'Yenagoa'],
+  Benue: ['Ado', 'Agatu', 'Apa', 'Buruku', 'Gboko', 'Guma', 'Gwer East', 'Gwer West', 'Katsina-Ala', 'Konshisha', 'Kwande', 'Logo', 'Makurdi', 'Obi', 'Ogbadibo', 'Ohimini', 'Oju', 'Okpokwu', 'Oturkpo', 'Tarka', 'Ukum', 'Ushongo', 'Vandeikya'],
+  Borno: ['Abadam', 'Askira/Uba', 'Bama', 'Bayo', 'Biu', 'Chibok', 'Damboa', 'Dikwa', 'Gubio', 'Guzamala', 'Gwoza', 'Hawul', 'Jere', 'Kaga', 'Kala/Balge', 'Konduga', 'Kukawa', 'Kwaya Kusar', 'Mafa', 'Magumeri', 'Maiduguri', 'Marte', 'Mobbar', 'Monguno', 'Ngala', 'Nganzai', 'Shani'],
+  CrossRiver: ['Abi', 'Akamkpa', 'Akpabuyo', 'Bakassi', 'Bekwarra', 'Biase', 'Boki', 'Calabar Municipal', 'Calabar South', 'Etung', 'Ikom', 'Obanliku', 'Obubra', 'Obudu', 'Odukpani', 'Ogoja', 'Yakurr', 'Yala'],
+  Delta: ['Aniocha North', 'Aniocha South', 'Bomadi', 'Burutu', 'Ethiope East', 'Ethiope West', 'Ika North East', 'Ika South', 'Isoko North', 'Isoko South', 'Ndokwa East', 'Ndokwa West', 'Okpe', 'Oshimili North', 'Oshimili South', 'Patani', 'Sapele', 'Udu', 'Ughelli North', 'Ughelli South', 'Ukwuani', 'Uvwie', 'Warri North', 'Warri South', 'Warri South West'],
+  Ebonyi: ['Abakaliki', 'Afikpo North', 'Afikpo South', 'Ebonyi', 'Ezza North', 'Ezza South', 'Ikwo', 'Ishielu', 'Ivo', 'Izzi', 'Ohaozara', 'Ohaukwu', 'Onicha'],
+  Edo: ['Akoko-Edo', 'Egor', 'Esan Central', 'Esan North-East', 'Esan South-East', 'Esan West', 'Etsako Central', 'Etsako East', 'Etsako West', 'Igueben', 'Ikpoba-Okha', 'Oredo', 'Orhionmwon', 'Ovia North-East', 'Ovia South-West', 'Owan East', 'Owan West', 'Uhunmwonde'],
+  Ekiti: ['Ado Ekiti', 'Efon', 'Ekiti East', 'Ekiti South-West', 'Ekiti West', 'Emure', 'Gbonyin', 'Ido/Osi', 'Ijero', 'Ikere', 'Ikole', 'Ilejemeje', 'Irepodun/Ifelodun', 'Ise/Orun', 'Moba', 'Oye'],
+  Enugu: ['Aninri', 'Awgu', 'Enugu East', 'Enugu North', 'Enugu South', 'Ezeagu', 'Igbo Etiti', 'Igbo Eze North', 'Igbo Eze South', 'Isi Uzo', 'Nkanu East', 'Nkanu West', 'Nsukka', 'Oji River', 'Udenu', 'Udi', 'Uzo Uwani'],
+  Gombe: ['Akko', 'Balanga', 'Billiri', 'Dukku', 'Funakaye', 'Gombe', 'Kaltungo', 'Kwami', 'Nafada', 'Shongom', 'Yamaltu/Deba'],
+  Imo: ['Aboh Mbaise', 'Ahiazu Mbaise', 'Ehime Mbano', 'Ezinihitte', 'Ideato North', 'Ideato South', 'Ihitte/Uboma', 'Ikeduru', 'Isiala Mbano', 'Isu', 'Mbaitoli', 'Ngor Okpala', 'Njaba', 'Nkwerre', 'Nwangele', 'Obowo', 'Oguta', 'Ohaji/Egbema', 'Okigwe', 'Orlu', 'Orsu', 'Oru East', 'Oru West', 'Owerri Municipal', 'Owerri North', 'Owerri West'],
+  Jigawa: ['Auyo', 'Babura', 'Biriniwa', 'Birnin Kudu', 'Buji', 'Dutse', 'Gagarawa', 'Garki', 'Gumel', 'Guri', 'Gwaram', 'Gwiwa', 'Hadejia', 'Jahun', 'Kafin Hausa', 'Kaugama', 'Kazaure', 'Kiri Kasama', 'Kiyawa', 'Maigatari', 'Malam Madori', 'Miga', 'Ringim', 'Roni', 'Sule Tankarkar', 'Taura', 'Yankwashi'],
+  Kaduna: ['Birnin Gwari', 'Chikun', 'Giwa', 'Igabi', 'Ikara', 'Jaba', 'Jema\'a', 'Kachia', 'Kaduna North', 'Kaduna South', 'Kagarko', 'Kajuru', 'Kaura', 'Kauru', 'Kubau', 'Kudan', 'Lere', 'Makarfi', 'Sabon Gari', 'Sanga', 'Soba', 'Zangon Kataf', 'Zaria'],
+  Kano: ['Ajingi', 'Albasu', 'Bagwai', 'Bebeji', 'Bichi', 'Bunkure', 'Dala', 'Dambatta', 'Dawakin Kudu', 'Dawakin Tofa', 'Doguwa', 'Fagge', 'Gabasawa', 'Garko', 'Garun Mallam', 'Gaya', 'Gezawa', 'Gwale', 'Gwarzo', 'Kabo', 'Kano Municipal', 'Karaye', 'Kibiya', 'Kiru', 'Kumbotso', 'Kunchi', 'Kura', 'Madobi', 'Makoda', 'Minjibir', 'Nasarawa', 'Rano', 'Rimin Gado', 'Rogo', 'Shanono', 'Sumaila', 'Takai', 'Tarauni', 'Tofa', 'Tsanyawa', 'Tudun Wada', 'Ungogo', 'Warawa', 'Wudil'],
+  Katsina: ['Bakori', 'Batagarawa', 'Batsari', 'Baure', 'Bindawa', 'Charanchi', 'Dandume', 'Danja', 'Dan Musa', 'Daura', 'Dutsi', 'Dutsin Ma', 'Faskari', 'Funtua', 'Ingawa', 'Jibia', 'Kafur', 'Kaita', 'Kankara', 'Kankia', 'Katsina', 'Kurfi', 'Kusada', 'Mai\'Adua', 'Malumfashi', 'Mani', 'Mashi', 'Matazu', 'Musawa', 'Rimi', 'Sabuwa', 'Safana', 'Sandamu', 'Zango'],
+  Kebbi: ['Aleiro', 'Arewa Dandi', 'Argungu', 'Augie', 'Bagudo', 'Birnin Kebbi', 'Bunza', 'Dandi', 'Fakai', 'Gwandu', 'Jega', 'Kalgo', 'Koko/Besse', 'Maiyama', 'Ngaski', 'Sakaba', 'Shanga', 'Suru', 'Wasagu/Danko', 'Yauri', 'Zuru'],
+  Kogi: ['Adavi', 'Ajaokuta', 'Ankpa', 'Bassa', 'Dekina', 'Ibaji', 'Idah', 'Igalamela Odolu', 'Ijumu', 'Kabba/Bunu', 'Kogi', 'Lokoja', 'Mopa Muro', 'Ofu', 'Ogori/Magongo', 'Okehi', 'Okene', 'Olamaboro', 'Omala', 'Yagba East', 'Yagba West'],
+  Kwara: ['Asa', 'Baruten', 'Edu', 'Ekiti', 'Ifelodun', 'Ilorin East', 'Ilorin South', 'Ilorin West', 'Irepodun', 'Isin', 'Kaiama', 'Moro', 'Offa', 'Oke Ero', 'Oyun', 'Pategi'],
+  Lagos: ['Agege', 'Ajeromi-Ifelodun', 'Alimosho', 'Amuwo-Odofin', 'Apapa', 'Badagry', 'Epe', 'Eti Osa', 'Ibeju-Lekki', 'Ifako-Ijaiye', 'Ikeja', 'Ikorodu', 'Kosofe', 'Lagos Island', 'Lagos Mainland', 'Mushin', 'Ojo', 'Oshodi-Isolo', 'Shomolu', 'Surulere'],
+  Nasarawa: ['Akwanga', 'Awe', 'Doma', 'Karu', 'Keana', 'Keffi', 'Kokona', 'Lafia', 'Nasarawa', 'Nasarawa Egon', 'Obi', 'Toto', 'Wamba'],
+  Niger: ['Agaie', 'Agwara', 'Bida', 'Borgu', 'Bosso', 'Chanchaga', 'Edati', 'Gbako', 'Gurara', 'Katcha', 'Kontagora', 'Lapai', 'Lavun', 'Magama', 'Mariga', 'Mashegu', 'Mokwa', 'Moya', 'Paikoro', 'Rafi', 'Rijau', 'Shiroro', 'Suleja', 'Tafa', 'Wushishi'],
+  Ogun: ['Abeokuta North', 'Abeokuta South', 'Ado-Odo/Ota', 'Egbado North', 'Egbado South', 'Ewekoro', 'Ifo', 'Ijebu East', 'Ijebu North', 'Ijebu North East', 'Ijebu Ode', 'Ikenne', 'Imeko Afon', 'Ipokia', 'Obafemi Owode', 'Odeda', 'Odogbolu', 'Ogun Waterside', 'Remo North', 'Shagamu'],
+  Ondo: ['Akoko North-East', 'Akoko North-West', 'Akoko South-East', 'Akoko South-West', 'Akure North', 'Akure South', 'Ese Odo', 'Idanre', 'Ifedore', 'Ilaje', 'Ile Oluji/Okeigbo', 'Irele', 'Odigbo', 'Okitipupa', 'Ondo East', 'Ondo West', 'Ose', 'Owo'],
+  Osun: ['Atakunmosa East', 'Atakunmosa West', 'Aiyedaade', 'Aiyedire', 'Boluwaduro', 'Boripe', 'Ede North', 'Ede South', 'Egbedore', 'Ejigbo', 'Ife Central', 'Ife East', 'Ife North', 'Ife South', 'Ifedayo', 'Ifelodun', 'Ila', 'Ilesa East', 'Ilesa West', 'Irepodun', 'Irewole', 'Isokan', 'Iwo', 'Obokun', 'Odo Otin', 'Ola Oluwa', 'Olorunda', 'Oriade', 'Orolu', 'Osogbo'],
+  Oyo: ['Afijio', 'Akinyele', 'Atiba', 'Atisbo', 'Egbeda', 'Ibadan North', 'Ibadan North-East', 'Ibadan North-West', 'Ibadan South-East', 'Ibadan South-West', 'Ibarapa Central', 'Ibarapa East', 'Ibarapa North', 'Ido', 'Irepo', 'Iseyin', 'Itesiwaju', 'Iwajowa', 'Kajola', 'Lagelu', 'Ogbomosho North', 'Ogbomosho South', 'Ogo Oluwa', 'Olorunsogo', 'Oluyole', 'Ona Ara', 'Orelope', 'Ori Ire', 'Oyo East', 'Oyo West', 'Saki East', 'Saki West', 'Surulere'],
+  Plateau: ['Bokkos', 'Barkin Ladi', 'Bassa', 'Jos East', 'Jos North', 'Jos South', 'Kanam', 'Kanke', 'Langtang North', 'Langtang South', 'Mangu', 'Mikang', 'Pankshin', 'Qua\'an Pan', 'Riyom', 'Shendam', 'Wase'],
+  Rivers: ['Abua/Odual', 'Ahoada East', 'Ahoada West', 'Akuku-Toru', 'Andoni', 'Asari-Toru', 'Bonny', 'Degema', 'Eleme', 'Emuoha', 'Etche', 'Gokana', 'Ikwerre', 'Khana', 'Obio/Akpor', 'Ogba/Egbema/Ndoni', 'Ogu/Bolo', 'Okrika', 'Omuma', 'Opobo/Nkoro', 'Oyigbo', 'Port Harcourt', 'Tai'],
+  Sokoto: ['Binji', 'Bodinga', 'Dange Shuni', 'Gada', 'Goronyo', 'Gudu', 'Gwadabawa', 'Illela', 'Kebbe', 'Kware', 'Rabah', 'Sabon Birni', 'Shagari', 'Silame', 'Sokoto North', 'Sokoto South', 'Tambuwal', 'Tangaza', 'Tureta', 'Wamako', 'Wurno', 'Yabo'],
+  Taraba: ['Ardo Kola', 'Bali', 'Donga', 'Gashaka', 'Gassol', 'Ibi', 'Jalingo', 'Karim Lamido', 'Kurmi', 'Lau', 'Sardauna', 'Takum', 'Ussa', 'Wukari', 'Yorro', 'Zing'],
+  Yobe: ['Bade', 'Bursari', 'Damaturu', 'Fika', 'Fune', 'Geidam', 'Gujba', 'Gulani', 'Jakusko', 'Karasuwa', 'Machina', 'Nangere', 'Nguru', 'Potiskum', 'Tarmuwa', 'Yunusari', 'Yusufari'],
+  Zamfara: ['Anka', 'Bakura', 'Birnin Magaji/Kiyaw', 'Bukkuyum', 'Bungudu', 'Chafe', 'Gummi', 'Gusau', 'Kaura Namoda', 'Maradun', 'Maru', 'Shinkafi', 'Talata Mafara', 'Zurmi']
+};
 
+const medicalSpecializations = [
+"cardiology",
+"dermatology",
+"endocrinology",
+"gastroenterology",
+"hematology",
+"immunology",
+"neurology",
+"oncology",
+"orthopedics",
+"pediatrics",
+"psychiatrist",
+"radiology",
+"surgery",
+"urology",
+"obstetrics-gynecology",
+"ophthalmology",
+"otolaryngology",
+"pathology",
+"pulmonology",
+"rheumatology",
+"nephrology",
+"family doctor",
 ];
 
-const states = [
-  { name: 'Abia', lgas: ['Aba North', 'Aba South', 'Umuahia North', 'Umuahia South'] },
-  { name: 'Adamawa', lgas: ['Yola North', 'Yola South', 'Ganye', 'Mubi North'] },
-  { name: 'Akwa Ibom', lgas: ['Uyo', 'Ikot Ekpene', 'Abak', 'Eket'] },
-  { name: 'Anambra', lgas: ['Awka North', 'Awka South', 'Onitsha North', 'Onitsha South'] },
-
-  { name: 'Zamfara', lgas: ['Anka', 'Bakura', 'Birnin Magaji', 'Bukkuyum'] },
-];
-
-const DoctorSignup = () => {
+const DoctorRegister = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    fullName: '',
-    dateOfBirth: '',
-    gender: '',
-    phoneNumber: '',
+    fullname: '',
     email: '',
+    phoneNumber: '',
     password: '',
+    gender: '',
     state: '',
     LGA: '',
-    address: '',
-    specialization: '',
-    licenseNumber: '',
-    qualifications: '',
-    medicalCertificate: null,
-    medicalSchool: '',
-    yearsOfExperience: '',
+    officeAddress: '',
     currentWorkplace: '',
+    specialization: '',
+    dateOfBirth: '',
     profilePicture: null,
-    uniqueNumber: '',
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+
+  const [availableLGAs, setAvailableLGAs] = useState([]); // To store LGAs based on selected state
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // If the state changes, update the LGA options
+    if (name === 'state') {
+      setAvailableLGAs(statesWithLGAs[value] || []);
+      setFormData({ ...formData, state: value, LGA: '' }); // Reset LGA when state changes
+    }
   };
 
-  const handleStateChange = (e) => {
-    const selectedState = e.target.value;
-    setFormData((prevData) => ({
-      ...prevData,
-      state: selectedState,
-      LGA: '', // Reset LGA when state changes
-    }));
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, profilePicture: e.target.files[0] });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
+
+    const formDataObj = new FormData();
+    for (let key in formData) {
+      formDataObj.append(key, formData[key]);
+    }
+
     try {
-      const formDataToSend = new FormData();
-      for (let key in formData) {
-        formDataToSend.append(key, formData[key]);
-      }
-      const res = await axios.post(`${import.meta.env.VITE_API_D}/doctorsignup`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      await axios.post(`${import.meta.env.VITE_API_D}/doctorsignup`, formDataObj, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      if (res.data) {
-        navigate('/doctorverifyemail');
-        toast.success('Successfully registered');
-        console.log('Form submitted:', res.data);
-      }
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      const errorMessage = err.response?.data?.message || 'A network error occurred';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
+      toast.success('Doctor registered successfully!');
+      navigate("/doctorlogin")
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to register doctor');
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-5">
-      <div className="flex justify-center mb-0">
-          <img src={im} alt="logo" className="rounded-full" />
-        </div>
-      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
-        <h2 className="text-2xl font-bold text-center mb-6">Doctor Signup</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-            placeholder="Full Name"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Date of Birth */}
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Gender */}
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-          {/* Phone Number */}
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            required
-            placeholder="Phone Number"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Email */}
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            placeholder="Email"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Password */}
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            placeholder="Password"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* State */}
-          <select
-            name="state"
-            value={formData.state}
-            onChange={handleStateChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select State</option>
-            {states.map((state) => (
-              <option key={state.name} value={state.name}>
-                {state.name}
-              </option>
-            ))}
-          </select>
-          {/* Local Government Area (LGA) */}
-          <select
-            name="LGA"
-            value={formData.LGA}
-            onChange={handleChange}
-            required={!!formData.state}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select LGA</option>
-            {formData.state &&
-              states
-                .find((state) => state.name === formData.state)
-                .lgas.map((lga) => (
-                  <option key={lga} value={lga}>
-                    {lga}
-                  </option>
-                ))}
-          </select>
-          {/* Address */}
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Address"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Specialization */}
-          <select
-            name="specialization"
-            value={formData.specialization}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Specialization</option>
-            {specializations.map((spec) => (
-              <option key={spec} value={spec}>
-                {spec}
-              </option>
-            ))}
-          </select>
-          {/* License Number */}
-          <input
-            type="text"
-            name="licenseNumber"
-            value={formData.licenseNumber}
-            onChange={handleChange}
-            required
-            placeholder="License Number"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Qualifications */}
-          <input
-            type="text"
-            name="qualifications"
-            value={formData.qualifications}
-            onChange={handleChange}
-            required
-            placeholder="Qualifications"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Medical Certificate */}
-          <label>medical Certificate</label>
-          <input
-            type="file"
-            name="medicalCertificate"
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Medical School */}
-          <input
-            type="text"
-            name="medicalSchool"
-            value={formData.medicalSchool}
-            onChange={handleChange}
-            required
-            placeholder="Medical School"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Years of Experience */}
-          <input
-            type="number"
-            name="yearsOfExperience"
-            value={formData.yearsOfExperience}
-            onChange={handleChange}
-            required
-            placeholder="Years of Experience"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Current Workplace */}
-          <input
-            type="text"
-            name="currentWorkplace"
-            value={formData.currentWorkplace}
-            onChange={handleChange}
-            required
-            placeholder="Current Workplace"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {/* Profile Picture */}
-          <label>profile picture</label>
-          <input
-            type="file"
-            name="profilePicture"
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        
-     
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            {isLoading ? 'Submitting...' : 'Sign Up'}
-          </button>
-        </form>
-      </div>
+    <div className="w-full max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold text-blue-600 mb-4">Register as Doctor</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input type="text" name="fullname" onChange={handleChange} placeholder="Full Name" className="input border border-blue-300 rounded-md p-2 w-full" />
+        <input type="email" name="email" onChange={handleChange} placeholder="Email" className="input border border-blue-300 rounded-md p-2 w-full" />
+        <input type="text" name="phoneNumber" onChange={handleChange} placeholder="Phone Number" className="input border border-blue-300 rounded-md p-2 w-full" />
+
+        <select name="gender" onChange={handleChange} className="input border border-blue-300 rounded-md p-2 w-full">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <select name="state" onChange={handleChange} className="input border border-blue-300 rounded-md p-2 w-full">
+          <option value="">Select State</option>
+          {Object.keys(statesWithLGAs).map((state) => (
+            <option key={state} value={state}>{state}</option>
+          ))}
+        </select>
+
+        <select name="LGA" onChange={handleChange} className="input border border-blue-300 rounded-md p-2 w-full" disabled={!formData.state}>
+          <option value="">Select LGA</option>
+          {availableLGAs.map((lga) => (
+            <option key={lga} value={lga}>{lga}</option>
+          ))}
+        </select>
+
+        <input type="text" name="officeAddress" onChange={handleChange} placeholder="Office Address" className="input border border-blue-300 rounded-md p-2 w-full" />
+        <input type="text" name="currentWorkplace" onChange={handleChange} placeholder="Current Workplace" className="input border border-blue-300 rounded-md p-2 w-full" />
+
+        <select name="specialization" onChange={handleChange} className="input border border-blue-300 rounded-md p-2 w-full">
+          <option value="">Select Specialization</option>
+          {medicalSpecializations.map((specialization) => (
+            <option key={specialization} value={specialization}>{specialization}</option>
+          ))}
+        </select>
+
+        <input type="date" name="dateOfBirth" onChange={handleChange} className="input border border-blue-300 rounded-md p-2 w-full" />
+        <input type="file" name="profilePicture" onChange={handleFileChange} className="input border border-blue-300 rounded-md p-2 w-full" />
+        <input type="password" name="password" onChange={handleChange} placeholder="Password" className="input border border-blue-300 rounded-md p-2 w-full" />
+
+        <button type="submit" className="btn-primary bg-blue-600 text-white p-2 rounded-md w-full transition duration-300 ease-in-out hover:bg-blue-700">
+          {loading ? 'Submitting...' : 'Register'}
+        </button>
+      </form>
     </div>
   );
 };
 
-export default DoctorSignup;
+export default DoctorRegister;

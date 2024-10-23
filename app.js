@@ -18,6 +18,7 @@ import mortuaryCommentRouter from "./routes/Mortuary/mortuaryComment.route.js";
 import messageRouter from "./routes/Mortuary/message.route.js";
 import cemeteryRouter from "./routes/cemetery/cemetery.route.js";
 import cemeteryCommentRouter from "./routes/cemetery/comment.js";
+import appointmentrouter from "./routes/Doctors/appointment.js";
 
 dotenv.config()
 
@@ -63,6 +64,7 @@ app.use('/api/users', router);
 
 app.use("/api/doctors", doctorRouter )
 app.use("/api/patients", patientRouter)
+app.use("/api/doctors", appointmentrouter)
 
 
 //mortuary

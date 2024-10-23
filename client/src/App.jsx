@@ -25,6 +25,12 @@ import CemeteryDashboard from "./pages/Cemetary/CemeteryDashboard";
 import AllCemeteries from "./pages/Cemetary/AllCemeteries";
 import Acemetery from "./pages/Cemetary/Acemetery";
 import GetAllCemetery from "./pages/Cemetary/GetAllCemetery";
+import LoginDoctor from "./pages/Doctor/LoginDoctor";
+import ProfileDoctor from "./pages/Doctor/ProfileDoctor";
+import Doctors from "./pages/Doctor/patients/Doctors";
+import PatientSignup from "./pages/Doctor/patients/PatientSignup";
+import ProfilePatient from "./pages/Doctor/patients/ProfilePatient";
+import PatientLogin from "./pages/Doctor/patients/PatientLogin";
 
 const App = () => {
   return (
@@ -63,6 +69,15 @@ const App = () => {
 
         //doctor
         <Route path="/doctorsignup" element={<DoctorSignup />} />
+        <Route path="/doctorlogin" element={<LoginDoctor />} />
+        <Route path="/doctorprofile" element={<ProfileDoctor />} />
+        <Route path="/doctors" element={<Doctors />} />
+
+
+        //patient
+        <Route path="/patientsignup" element={<PatientSignup />} />
+        <Route path="/patientlogin" element={<PatientLogin />} />
+        <Route path="/patientprofile" element={<ProfilePatient />} />
 
 
         //cemetary
