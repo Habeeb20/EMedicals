@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import Navbar from '../../components/Navbar';
 const ProfileDoctor = () => {
   const [doctor, setDoctor] = useState({});
   const [error, setError] = useState('');
@@ -51,7 +51,9 @@ const ProfileDoctor = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+   <>
+   <Navbar />
+     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold text-navy-800 mb-4">Doctor Profile</h2>
       <div className="flex flex-col items-center">
         <img
@@ -87,6 +89,7 @@ const ProfileDoctor = () => {
         </ul>
       )}
     </div>
+   </>
   );
 };
 

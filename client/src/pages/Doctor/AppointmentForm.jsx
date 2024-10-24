@@ -1,54 +1,143 @@
-// frontend/src/components/AppointmentForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Navbar from '../../components/Navbar';
+import { useParams } from 'react-router-dom';  // Import useParams to get doctorId from URL
 
-const AppointmentForm = ({ doctorId }) => {
+const AppointmentForm = () => {
+  const { doctorId } = useParams();  // Retrieve doctorId from URL parameters
+  const [patientId, setPatientId] = useState('');
   const [sickness, setSickness] = useState('');
   const [started, setStarted] = useState('');
   const [drugsTaken, setDrugsTaken] = useState('');
+  const [preferredDate, setPreferredDate] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token){
+      throw new Error("token not found")
+    }
+    if (token) {
+      setPatientId(token);  // Set the patient ID using token (or modify as needed)
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+    setLoading(true);
+
+    const appointmentData = {
+      doctorId,   
+      patientId,
+      sickness,
+      started,
+      drugsTaken,
+      preferredDate,
+    };
+
     try {
-      await axios.post('/api/appointments/book', {
-        doctorId,
-        sickness,
-        started,
-        drugsTaken,
-      }, {
-        headers: { 'x-auth-token': token }
+      const token = localStorage.getItem("token");
+      console.log("Doctor ID being sent: ", doctorId);  
+
+      await axios.post(`${import.meta.env.VITE_API_A}/bookappointment/${doctorId}`, appointmentData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'  
+        },
       });
-      alert('Appointment booked successfully!');
+      setLoading(false);
+      toast.success('Appointment booked successfully!');
     } catch (error) {
-      alert('Error booking appointment.');
+      console.error(error);
+      setLoading(false);
+      toast.error('Failed to book appointment. Please try again.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Book Appointment</h2>
-      <textarea
-        placeholder="Describe your sickness"
-        className="w-full p-2 mb-4 border"
-        value={sickness}
-        onChange={(e) => setSickness(e.target.value)}
-      ></textarea>
-      <input
-        type="date"
-        placeholder="When did it start?"
-        className="w-full p-2 mb-4 border"
-        value={started}
-        onChange={(e) => setStarted(e.target.value)}
-      />
-      <textarea
-        placeholder="Drugs taken"
-        className="w-full p-2 mb-4 border"
-        value={drugsTaken}
-        onChange={(e) => setDrugsTaken(e.target.value)}
-      ></textarea>
-      <button className="w-full bg-blue-500 text-white p-2" type="submit">Submit</button>
-    </form>
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <h2 className="text-2xl font-bold text-center mb-6">Book an Appointment</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+          
+            <div>
+              <label htmlFor="sickness" className="block text-sm font-medium text-gray-700">
+                Sickness
+              </label>
+              <input
+                type="text"
+                id="sickness"
+                value={sickness}
+                onChange={(e) => setSickness(e.target.value)}
+                required
+                className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="started" className="block text-sm font-medium text-gray-700">
+                Started Date
+              </label>
+              <input
+                type="date"
+                id="started"
+                value={started}
+                onChange={(e) => setStarted(e.target.value)}
+                required
+                className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              />
+            </div>
+
+            {/* Drugs Taken Input */}
+            <div>
+              <label htmlFor="drugsTaken" className="block text-sm font-medium text-gray-700">
+                Drugs Taken
+              </label>
+              <input
+                type="text"
+                id="drugsTaken"
+                value={drugsTaken}
+                onChange={(e) => setDrugsTaken(e.target.value)}
+                required
+                className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              />
+            </div>
+
+            {/* Preferred Date Input */}
+            <div>
+              <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700">
+                Preferred Appointment Date
+              </label>
+              <input
+                type="date"
+                id="preferredDate"
+                value={preferredDate}
+                onChange={(e) => setPreferredDate(e.target.value)}
+                required
+                className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div className="text-center mt-6">
+              <button
+                type="submit"
+                className={`w-full px-4 py-2 rounded-md text-white ${loading ? 'bg-gray-500' : 'bg-indigo-600 hover:bg-indigo-700'} focus:outline-none`}
+                disabled={loading}
+              >
+                {loading ? 'Booking...' : 'Book Appointment'}
+              </button>
+            </div>
+          </form>
+          <ToastContainer />
+        </div>
+      </div>
+    </>
   );
 };
 

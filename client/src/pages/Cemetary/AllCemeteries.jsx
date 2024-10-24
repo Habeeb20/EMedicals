@@ -261,7 +261,7 @@ const AllCemeteries = () => {
   const [casketSearch, setCasketSearch] = useState(false);
   const [filteredResults, setFilteredResults] = useState([]);
 
-  // Function to fetch all cemeteries
+ 
   useEffect(() => {
     const fetchCemetery = async () => {
       try {

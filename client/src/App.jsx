@@ -31,6 +31,7 @@ import Doctors from "./pages/Doctor/patients/Doctors";
 import PatientSignup from "./pages/Doctor/patients/PatientSignup";
 import ProfilePatient from "./pages/Doctor/patients/ProfilePatient";
 import PatientLogin from "./pages/Doctor/patients/PatientLogin";
+import AppointmentForm from "./pages/Doctor/AppointmentForm";
 
 const App = () => {
   return (
@@ -59,6 +60,12 @@ const App = () => {
         <Route path="/cemeteries" element={<PrivateRoute><AllCemeteries /></PrivateRoute>} />
         <Route path="/cemeterydetail/:id" element={<PrivateRoute><Acemetery /></PrivateRoute>} />
         <Route path="/getallcemetery" element={<PrivateRoute><GetAllCemetery /></PrivateRoute> } />
+
+
+
+
+        <Route path="/doctor/:doctorId/book-appointment" element={<AppointmentForm />} />
+
 
 
 

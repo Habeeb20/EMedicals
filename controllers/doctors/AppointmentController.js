@@ -1,20 +1,30 @@
 import Appointment from '../../models/Doctors/AppointmentDoctors.model.js';
 import Doctor from '../../models/Doctors/doctor.model.js';
 import Patient from '../../models/Doctors/patient.model.js';
-
+import mongoose from 'mongoose';
 // Book Appointment
 export const bookAppointment = async (req, res) => {
-  const { doctorId, sickness, started, drugsTaken } = req.body;
+  const {  sickness, started, drugsTaken } = req.body;
+  const doctorId = req.params.doctorId || req.body.doctorId;
 
   try {
+ 
+ 
     const doctor = await Doctor.findById(doctorId);
-    if (!doctor) return res.status(404).json({ msg: 'Doctor not found' });
+    if (!doctor){
+       console.log("doctor not found")
+       return res.status(404).json({ msg: 'Doctor not found' });
+    }
+    console.log(doctor)
+  
+    
+
 
     const patient = await Patient.findById(req.user.id);
     if (!patient) return res.status(404).json({ msg: 'Patient not found' });
 
     const newAppointment = new Appointment({
-      doctor: doctorId,
+      doctor: doctor,
       patient: req.user.id,
       sickness,
       started,
@@ -24,6 +34,7 @@ export const bookAppointment = async (req, res) => {
     await newAppointment.save();
     res.status(201).json(newAppointment);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Failed to book appointment' });
   }
 };

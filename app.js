@@ -64,7 +64,7 @@ app.use('/api/users', router);
 
 app.use("/api/doctors", doctorRouter )
 app.use("/api/patients", patientRouter)
-app.use("/api/doctors", appointmentrouter)
+app.use("/api/appointment", appointmentrouter)
 
 
 //mortuary

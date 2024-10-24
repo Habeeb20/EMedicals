@@ -74,20 +74,22 @@ const ProfilePatient = () => {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
     setCurrentPage(1);
+  
     try {
+     
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_D
-        }/doctorgetall?specialization=${searchQuery}`
+        `${import.meta.env.VITE_API_D}/doctorgetall?specialization=${query}`
       );
+      
       setFilteredDoctors(response.data);
     } catch (error) {
       console.error(error);
     }
   };
-
+  
   // Pagination
   const indexOfLastDoctor = currentPage * doctorsPerPage;
   const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
@@ -210,7 +212,7 @@ const ProfilePatient = () => {
                 className="flex-grow px-4 py-2 border-0 focus:outline-none"
                 placeholder="Search Specialist by name or title"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+  onChange={handleSearch}
               />
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg"
@@ -255,9 +257,19 @@ const ProfilePatient = () => {
                   <button className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg">
                     Chat
                   </button>
+
+       
+                 
+                  {doctor && <Link to={`/doctor/${doctor._id}/book-appointment`}>
                   <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
                     Book
                   </button>
+
+                  </Link>
+                  }
+                  
+                
+                
                 </div>
               </div>
             ))}

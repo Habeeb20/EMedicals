@@ -7,7 +7,7 @@ const appointmentrouter = express.Router();
 
 
 // Patient books an appointment with a doctor
-appointmentrouter .post('/bookappointment', verifyToken, bookAppointment);
+appointmentrouter .post('/bookappointment/:doctorid', verifyToken, bookAppointment);
 
 // Doctor retrieves all appointments for themselves
 appointmentrouter .get('/doctor/:doctorId', verifyToken, getAppointmentsForDoctor);

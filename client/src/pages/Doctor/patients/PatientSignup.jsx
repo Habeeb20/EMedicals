@@ -253,6 +253,12 @@ const PatientSignup = () => {
               {isLoading ? <AiOutlineLoading3Quarters className="animate-spin" /> : 'Register'}
             </motion.button>
           </div>
+          <p className="mt-4 text-center text-gray-500 text-sm">
+                Already have a patient account?{" "}
+                <a href="/patientlogin" className="text-blue-500 font-semibold">
+                  Login.
+                </a>
+              </p>
         </form>
       </div>
     </div>

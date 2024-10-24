@@ -168,18 +168,18 @@ const PatientLogin = () => {
                   )}
                 </motion.button>
               </div>
-              <p className="mt-4 text-center text-gray-500 text-sm">
+              {/* <p className="mt-4 text-center text-gray-500 text-sm">
                 <a
                   href="/userforgotpassword"
                   className="text-blue-500 font-semibold"
                 >
                   forgot password
                 </a>
-              </p>
+              </p> */}
   
               <p className="mt-4 text-center text-gray-500 text-sm">
                 Dont have a patient account?{" "}
-                <a href="/usersignup" className="text-blue-500 font-semibold">
+                <a href="/patientsignup" className="text-blue-500 font-semibold">
                   sign up.
                 </a>
               </p>
