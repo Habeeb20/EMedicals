@@ -39,15 +39,26 @@ export const bookAppointment = async (req, res) => {
   }
 };
 
+
 // Doctor View Appointments
 export const getAppointmentsForDoctor = async (req, res) => {
+  const doctorId = req.params.doctorId || req.body.doctorId;;
+
+
+  if (!doctorId || doctorId === 'undefined') {
+    console.log("doctor id not found")
+    return res.status(400).json({ error: 'Doctor ID is required' });
+  }
+
   try {
-    const appointments = await Appointment.find({ doctor: req.user.id }).populate('patient');
+    const appointments = await Appointment.find({ doctorId }).populate('patient');
     res.json(appointments);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to fetch appointments' });
   }
 };
+
 
 // Confirm Appointment (Doctor)
 export const confirmAppointment = async (req, res) => {

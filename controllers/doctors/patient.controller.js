@@ -91,6 +91,18 @@ export const updatePatientProfile = async (req, res) => {
   }
 };
 
+//get all patients
+
+export const getAllPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find()
+    return res.json(patients)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({msg:'server error'})
+  }
+}
+
 
 
 

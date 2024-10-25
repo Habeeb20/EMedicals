@@ -1,93 +1,256 @@
-import React, { useEffect, useState } from 'react';
+
+import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-const ProfileDoctor = () => {
+const ProfileDoctor = ({doctorId: propDoctorId}) => {
+  const { doctorId: paramDoctorId } = useParams()
+  const doctorId = propDoctorId || paramDoctorId;
+  const [patients, setPatients] = useState([]);
   const [doctor, setDoctor] = useState({});
   const [error, setError] = useState('');
+ 
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      console.log(token)
+      if(!token){
+        throw new Error("token not found")
+      }
+ 
+      setLoading(true);
+
+      const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
+        headers: {
+          Authorization:`Bearer ${token}`
+        },
+        withCredentials: true
+      });
+      console.log(response.data);
+      setDoctor(response.data.doctor);
+      toast.success("successfully fetched")
+    } catch (error) {
+      console.error(error)
+      setError(error)
+    }
+    finally{
+      setLoading(false)
+    }
+  }
+   fetchProfile()
+  }, [navigate]);
+
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem('token');
-        console.log(token);
+        
         if (!token) {
-          throw new Error("Token is not found");
+          throw new Error('Token not found');
         }
 
-        setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
+     
+        const response = await axios.get(`${import.meta.env.VITE_API_A}/doctor`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           withCredentials: true,
         });
-        console.log(response.data);
 
-        setDoctor(response.data.doctor);
-        setAppointments(response.data.doctor.appointments || []);
-      } catch (err) {
-        console.error(err);
-        if (err.response?.status === 401) {
-          setError('Unauthorized access, please login again');
-          localStorage.removeItem('token');
-          navigate('/doctorlogin');
+       
+        if (response.data && response.data.appointments) {
+          setAppointments(response.data.appointments);
+          toast.success('Appointments fetched successfully!');
         } else {
-          console.log(err);
-          setError('Failed to fetch profile');
+          throw new Error('No appointments found');
         }
+      } catch (error) {
+        console.error(error);
+        setError('Failed to fetch appointments');
+        toast.error('Error fetching appointments');
       } finally {
-        setLoading(false);
+        setLoading(false); // End loading
       }
     };
 
-    fetchProfile();
-  }, [navigate]);
+    
+    if (doctorId) {
+      fetchAppointments();
+    }
+  }, [doctorId]); 
+  useEffect(() => {
+    const fetchAllPatient = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if(!token){
+          throw new Error("token not found")
+        }
+        
+        const response = await axios.get(`${import.meta.env.VITE_API_P}/getallpatient`)
+        if(!response){
+          console.log("details not found")
+          toast.error("patient not not found")
+        }
+        console.log(response)
+        setPatients(response.data)
+      } catch (error) {
+        console.log(error)
+        toast.error(error)
+      }
+    }
+    fetchAllPatient ()
+  }, [])
 
-  if (loading) return <p className="text-center text-indigo-900">Loading profile...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
+
    <>
-   <Navbar />
-     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold text-navy-800 mb-4">Doctor Profile</h2>
-      <div className="flex flex-col items-center">
-        <img
-          src={doctor.profilePicture}
-          alt={`${doctor.fullname}'s profile`}
-          className="w-32 h-32 rounded-full border-4 border-navy-700 shadow-lg mb-4"
-        />
-      </div>
-      <div className="space-y-2 text-navy-700">
-        <p><strong>Name:</strong> {doctor.fullname}</p>
-        <p><strong>Email:</strong> {doctor.email}</p>
-        <p><strong>LGA:</strong> {doctor.LGA}</p>
-        <p><strong>State:</strong> {doctor.state}</p>
-        <p><strong>Specialization:</strong> {doctor.specialization}</p>
-        <p><strong>Office Address:</strong> {doctor.officeAddress}</p>
-        <p><strong>Gender:</strong> {doctor.gender}</p>
-        <p><strong>Current Workplace:</strong> {doctor.currentWorkplace}</p>
+    <Navbar />
+    <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
+      {/* Sidebar */}
+      <div className="w-full lg:w-64 bg-white shadow-lg flex flex-col p-4">
+      
+        <div className=" mb-4 flex justify-between items-center w-16 h-16 rounded-full object-cover">
+          <img src={doctor.profilePicture} alt="Logo" className="h-12 w-auto" />
+         
+        </div>
+        <nav className="flex flex-col space-y-4">
+          <a href="/doctordashboard" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Overview</span>
+          </a>
+          
+          <a href="/doctorappointment" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Appointments</span>
+          </a>
+          <a href="/doctorprofile" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Patients</span>
+          </a>
+          <a href="#" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Chats</span>
+            <span className="bg-red-500 text-white text-xs rounded-full px-2">10</span>
+          </a>
+          {doctor && (
+            <>
+            <img
+                  src={doctor.profilePicture}
+                  alt="Profile Picture"
+                  className="w-16 h-16 rounded-full object-cover mx-auto mb-7"
+                />
+                <p className="font-semibold">Your name: {doctor.fullname}</p>
+                <p className="font-semibold">Your Email: {doctor.email}</p>
+                <p className="font-semibold">
+                  Your Phone number: {doctor.phoneNumber}
+                </p>
+
+            </>
+         
+          )}
+      
+          <a href="#" className="text-red-500 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Logout</span>
+          </a>
+        </nav>
+        <div className="mt-auto hidden lg:block">
+          <p className="text-xs text-gray-500">Address:</p>
+          <p className="text-sm text-gray-700">{doctor.state}</p>
+          <p className="text-sm text-gray-700">{doctor.officeAddress}</p>
+        </div>
       </div>
 
-      {/* Appointments Section */}
-      <h3 className="text-2xl font-semibold text-navy-800 mt-6 mb-2">Appointments</h3>
-      {appointments.length === 0 ? (
-        <p className="text-gray-500">No appointments booked yet.</p>
-      ) : (
-        <ul className="mt-2">
-          {appointments.map((appt) => (
-            <li key={appt._id} className="border border-navy-300 bg-navy-50 p-4 rounded-lg mb-2 shadow-md">
-              <p><strong>Patient:</strong> {appt.patientId?.fullname}</p>
-              <p><strong>Sickness:</strong> {appt.sickness}</p>
-              <p><strong>Appointment Date:</strong> {new Date(appt.appointmentDate).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Main Content */}
+      <div className="flex-1 p-4 lg:p-6">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4 lg:mb-6">
+          <div className="text-2xl font-semibold">Patients</div>
+          <div className="flex space-x-2 mt-4 lg:mt-0 items-center w-full lg:w-auto">
+            <input
+              type="text"
+              placeholder="Search pathology results"
+              className="border border-gray-300 rounded-lg px-4 py-2 w-full lg:w-auto"
+            />
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-full lg:w-auto">
+              Search
+            </button>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mb-4 lg:mb-6">
+          <div className="bg-white shadow-md rounded-lg p-4 flex-1 text-center">
+            <h3 className="text-xl text-blue-700">202</h3>
+            <p className="text-sm text-gray-500">Total Patient</p>
+          </div>
+          <div className="bg-white shadow-md rounded-lg p-4 flex-1 text-center">
+            <h3 className="text-xl text-green-500">202</h3>
+            <p className="text-sm text-gray-500">In Patient</p>
+          </div>
+          <div className="bg-white shadow-md rounded-lg p-4 flex-1 text-center">
+            <h3 className="text-xl text-red-500">202</h3>
+            <p className="text-sm text-gray-500">Out Patient</p>
+          </div>
+        </div>
+
+        {/* Patient Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+       {patients.length > 0 ? (
+        patients.map((patient) => (
+          <div key={patient._id} className="bg-white shadow-md rounded-lg p-4">
+          <div className="flex justify-between items-center">
+
+          <img
+                  src={patient.profilePicture}
+                  alt="profilepicture"
+                  className="w-12 h-12 rounded-full"
+                />
+                <div className="text-sm text-gray-500">{patient.age} years old</div>
+              </div>
+              <h3 className="text-lg font-semibold mt-2">{patient.fullname}</h3>
+              <p className="text-sm text-gray-500">{patient.email}</p>
+              <p className="text-sm text-gray-500"> {patient.phoneNumber}</p>
+              <p className="text-sm text-gray-500"> {patient.state}</p>
+              <p className="text-sm text-gray-500"> {patient.homeAddress}</p>
+              <p className="text-sm text-gray-500"> {patient.allergics}</p>
+              <button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+                View
+              </button>
+            </div>
+        ))
+       ): (
+        <p>No patients found.</p>
+       
+
+
+              
+       )}
+          
+      
+        </div>
+
+        {/* Pagination */}
+        <div className="mt-4 lg:mt-6 flex justify-center lg:justify-end space-x-2">
+          <button className="px-4 py-2 bg-gray-300 rounded-lg">1</button>
+          <button className="px-4 py-2 bg-gray-200 rounded-lg">2</button>
+          <button className="px-4 py-2 bg-gray-200 rounded-lg">3</button>
+        </div>
+      </div>
+      <ToastContainer />
     </div>
    </>
   );

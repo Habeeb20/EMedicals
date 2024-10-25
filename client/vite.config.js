@@ -12,4 +12,17 @@ export default defineConfig({
       },
     },
   },
+  theme: {
+    extend: {
+      colors: {
+        primary: '#4D49FF',
+        secondary: '#FF3366',
+        bgGray: '#F5F7FB',
+        dark: '#1F1F1F',
+        lightText: '#6B6B6B',
+        whiteText: '#FFFFFF',
+        borderGray: '#E5E5E5'
+      },
+    },
+  },
 })

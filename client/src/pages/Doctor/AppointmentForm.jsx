@@ -3,10 +3,10 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../../components/Navbar';
-import { useParams } from 'react-router-dom';  // Import useParams to get doctorId from URL
+import { useParams } from 'react-router-dom';  
 
 const AppointmentForm = () => {
-  const { doctorId } = useParams();  // Retrieve doctorId from URL parameters
+  const { doctorId } = useParams(); 
   const [patientId, setPatientId] = useState('');
   const [sickness, setSickness] = useState('');
   const [started, setStarted] = useState('');
@@ -20,7 +20,7 @@ const AppointmentForm = () => {
       throw new Error("token not found")
     }
     if (token) {
-      setPatientId(token);  // Set the patient ID using token (or modify as needed)
+      setPatientId(token);  
     }
   }, []);
 
