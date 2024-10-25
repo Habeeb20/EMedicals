@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./pages/Hospital/Doctors/signup";
 import LandingHome from "./pages/LandingHome";
 import Navbar from "./components/Navbar";
@@ -35,7 +35,18 @@ import AppointmentForm from "./pages/Doctor/AppointmentForm";
 import { DoctorAppointment } from "./components/Doctor/DoctorAppointment";
 import {DoctorDashboard} from "./components/Doctor/DoctorDashboard";
 
+
+import { useAuth } from "./components/Doctor/context/AuthProvider";
+import Left from "./components/Doctor/homeChat/Leftpart"
+import Right from "./components/Doctor/homeChat/Rightpart/Right";
+import ChatLogin from "./components/Doctor/chat/ChatLogin";
+import ChatSignup from "./components/Doctor/chat/ChatSignup"
+import Logout from "./components/Doctor/homeChat/Logout";
+import ChatWindow from "./components/Doctor/chat/ChatWindow";
+
 const App = () => {
+ const [authUser, setAuthUser] = useAuth()
+ console.log(authUser)
   return (
     <Router>
       {/* <Navbar /> */}
@@ -69,8 +80,7 @@ const App = () => {
         <Route path="/doctor/:doctorId/book-appointment" element={<AppointmentForm />} />
         <Route path="/doctorappointment" element={<DoctorAppointment />} />
 
-
-
+    
 
 
 
@@ -84,6 +94,18 @@ const App = () => {
         <Route path="/doctorprofile" element={<ProfileDoctor />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctordashboard" element={<DoctorDashboard />} />
+
+
+
+        //chat
+        <Route path="/chatwindow" element={authUser ? <ChatWindow /> : <Navigate to={"/chatlogin"} /> } />
+
+        <Route path="/chatlogin" element={authUser ? <Navigate to={"/chatWidow"} /> : <ChatLogin /> } />
+        
+
+        <Route path="/chatsignup" element={authUser ? <Navigate to={"/chatWidow"} /> : <ChatSignup /> } />
+
+
 
 
         //patient

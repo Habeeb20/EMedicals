@@ -15,7 +15,10 @@ const doctorSchema = new mongoose.Schema({
   specialization: { type: String, required: true },
   dateOfBirth: { type: Date, required: true },
   uniqueNumber: { type: String, unique: true },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  userType: { type: String, default: 'Doctor' }, 
+  online: { type: Boolean, default: false },      
+  lastActive: { type: Date },     
 });
 
 export default mongoose.model('Doctor', doctorSchema);

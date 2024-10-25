@@ -136,7 +136,7 @@ const ProfilePatient = () => {
               <i className="fas fa-vials"></i>
               <span>Pathology Results</span>
             </a>
-            <a href="#" className="flex items-center space-x-2">
+            <a href="/chatlogin" className="flex items-center space-x-2">
               <i className="fas fa-comments"></i>
               <span>Chats</span>
             </a>

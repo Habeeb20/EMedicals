@@ -1,5 +1,11 @@
 import React from "react";
-import { FaMortarPestle, FaChurch, FaBell, FaCog, FaSearch } from "react-icons/fa"; // Added FaSearch
+import {
+  FaMortarPestle,
+  FaChurch,
+  FaBell,
+  FaCog,
+  FaSearch,
+} from "react-icons/fa"; // Added FaSearch
 import Navbar from "../../components/Navbar";
 import im from "../../assets/EMedicals/Frame 1261152793.png";
 import { Link } from "react-router-dom";
@@ -29,10 +35,10 @@ const AfterDeathService = () => {
           <img
             src={im}
             alt="Casket"
-            className="w-full h-60 object-cover rounded-lg"
+            className="w-full h-60 object-fill rounded-lg"
           />
           <div className="absolute bottom-8 left-4 text-white font-bold text-2xl">
-            We Offer After Death Service
+            {/* We Offer After Death Service */}
           </div>
         </div>
 
@@ -42,7 +48,9 @@ const AfterDeathService = () => {
             <div className="flex items-center space-x-2">
               <FaBell className="text-blue-500" />
               <div>
-                <h2 className="font-bold text-lg">Get the After death Service</h2>
+                <h2 className="font-bold text-lg">
+                  Get the After death Service
+                </h2>
                 <p className="text-sm">Time to take your pill, Adewale.</p>
               </div>
             </div>
@@ -56,44 +64,35 @@ const AfterDeathService = () => {
 
         {/* Options Section */}
         <div className="flex justify-between items-center mt-6">
-        <Link to='/getallcemetery'>
-        <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
-            <FaChurch className="text-blue-500 text-2xl" />
-            <p className="text-sm mt-2">Cemetery</p>
-          </div>
+          <Link to="/getallcemetery">
+            <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+              <FaChurch className="text-blue-500 text-2xl" />
+              <p className="text-sm mt-2">Cemetery</p>
+            </div>
+          </Link>
 
-        </Link>
+          <Link>
+            <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+              <FaMortarPestle className="text-green-500 text-2xl" />
+              <p className="text-sm mt-2">Mortuary</p>
+            </div>
+          </Link>
 
-         <Link>
-         <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
-            <FaMortarPestle className="text-green-500 text-2xl" />
-            <p className="text-sm mt-2">Mortuary</p>
-          </div>
-
-         </Link>
-
-         <Link>
-         <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
-            <FaMortarPestle className="text-red-500 text-2xl" />
-            <p className="text-sm mt-2">Undertakers</p>
-          </div>
-         </Link>
-        
-        
+          <Link>
+            <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
+              <FaMortarPestle className="text-red-500 text-2xl" />
+              <p className="text-sm mt-2">Undertakers</p>
+            </div>
+          </Link>
         </div>
 
-    
         <div className="mt-6">
-        <Link to="/cemeterypage">
-          <button className="bg-green-500 w-full text-white font-bold p-3 rounded-lg">
-            Get Started
-          </button>
+          <Link to="/cemeterypage">
+            <button className="bg-green-500 w-full text-white font-bold p-3 rounded-lg">
+              Get Started
+            </button>
           </Link>
-        </div> 
-
-    
-        
-     
+        </div>
       </div>
     </>
   );

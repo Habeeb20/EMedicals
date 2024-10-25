@@ -125,7 +125,7 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
     <Navbar />
     <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <div className="w-full lg:w-64 bg-white shadow-lg flex flex-col p-4">
+      <aside  className="hidden md:block w-1/4 bg-white shadow-lg p-6">
       
         <div className=" mb-4 flex justify-between items-center w-16 h-16 rounded-full object-cover">
           <img src={doctor.profilePicture} alt="Logo" className="h-12 w-auto" />
@@ -172,7 +172,7 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
           <p className="text-sm text-gray-700">{doctor.state}</p>
           <p className="text-sm text-gray-700">{doctor.officeAddress}</p>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
       <div className="flex-1 p-4 lg:p-6">
