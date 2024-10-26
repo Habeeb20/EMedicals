@@ -1,40 +1,64 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useAuth } from "./AuthProvider";
-import io from "socket.io-client";
-const socketContext = createContext();
+import React, { useContext, useEffect, useState, useRef } from "react";
+import { createContext } from "react";
+import { useAuthContext } from "./AuthContext.jsx";
 
-// it is a hook.
+import { io } from "socket.io-client";
+// import Peer from "simple-peer";
+
+export const SocketContext = createContext();
+
 export const useSocketContext = () => {
-  return useContext(socketContext);
+  return useContext(SocketContext);
 };
 
-export const SocketProvider = ({ children }) => {
+export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [authUser] = useAuth();
+  const { authUser } = useAuthContext();
+ 
+
+  
 
   useEffect(() => {
     if (authUser) {
-      const socket = io("http://localhost:8000", {
+      const newSocket = io("http://localhost:8000", {
+     
         query: {
-          userId: authUser.user._id,
+          userId: authUser._id,
         },
       });
-      setSocket(socket);
-      socket.on("getOnlineUsers", (users) => {
+
+      setSocket(newSocket);
+
+     
+
+      newSocket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
-      return () => socket.close();
-    } else {
-      if (socket) {
-        socket.close();
-        setSocket(null);
-      }
+
+      return () => newSocket.close();
+    } else if (socket) {
+      socket.close();
+      setSocket(null);
     }
-  }, [authUser]);
+  }, [authUser]); 
+
+ 
+   
+
+ 
+
   return (
-    <socketContext.Provider value={{ socket, onlineUsers }}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        onlineUsers,
+       
+      }}
+    >
       {children}
-    </socketContext.Provider>
+    </SocketContext.Provider>
   );
 };
+
+export default SocketContext;

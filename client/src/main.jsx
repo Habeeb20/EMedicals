@@ -2,14 +2,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { AuthProvider } from "./components/Doctor/context/AuthProvider.jsx";
-import { SocketProvider } from "./components/Doctor/context/SocketContext.jsx";
+import { AuthContextProvider } from "./components/Doctor/context/AuthContext.jsx";
+import { SocketContextProvider } from "./components/Doctor/context/SocketContext.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <SocketProvider>
+    <AuthContextProvider>
+      <SocketContextProvider>
         <App />
-      </SocketProvider>
-    </AuthProvider>
+      </SocketContextProvider>
+    </AuthContextProvider>
   </StrictMode>
 );

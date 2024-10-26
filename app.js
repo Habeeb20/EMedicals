@@ -19,7 +19,10 @@ import messageRouter from "./routes/Mortuary/message.route.js";
 import cemeteryRouter from "./routes/cemetery/cemetery.route.js";
 import cemeteryCommentRouter from "./routes/cemetery/comment.js";
 import appointmentrouter from "./routes/Doctors/appointment.js";
-import doctorchatrouter from "./routes/Doctors/chat.js";
+
+import authchatrouter from "./routes/Doctors/chat/authRoute.js";
+import messagechatrouter from "./routes/Doctors/chat/messageRoute.js";
+import userchatrouter from "./routes/Doctors/chat/userChatRoute.js";
 
 dotenv.config()
 
@@ -32,14 +35,11 @@ const peerServer = ExpressPeerServer(server, {
 });
 
 
-app.use('/peerjs', peerServer);
-// app.use(cors()); 
-
 
 
 app.use(cors({
     origin:["http://localhost:5173", "http://localhost:5174",  "http://localhost:3000",  "http://localhost:3001"],
-    methods:["GET", "POST", "DELETE", "PUT"],
+    methods:["GET", "POST", "DELETE", "PUT", "PATCH"],
     allowedHeaders:['Content-Type',  'Authorization'],
     credentials: true,
 }))
@@ -69,7 +69,9 @@ app.use("/api/appointment", appointmentrouter)
 
 
 //doctorchat
-app.use("/api/doctorchat", doctorchatrouter)
+app.use("/api/doctorchat/auth", authchatrouter )
+app.use("/api/doctorchat/messages", messagechatrouter )
+app.use("/api/doctorchat/users", userchatrouter )
 
 
 //mortuary

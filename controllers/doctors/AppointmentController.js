@@ -81,7 +81,7 @@ export const getPatientDashboard = async (req, res) => {
     try {
       const patientId = req.user.id;  
   
-      const appointments = await Appointment.find({ patientId }).populate('doctorId', 'fullname email');
+      const appointments = await Appointment.find({ patientId }).populate('doctorId', 'fullname, email');
       res.json(appointments);
     } catch (error) {
       res.status(500).json({ message: 'Server error' });

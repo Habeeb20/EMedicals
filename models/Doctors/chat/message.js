@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const messageSchema = new mongoose.Schema(
   {
@@ -16,10 +16,11 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    read:{type:Boolean, default:false},
   },
   { timestamps: true }
-);
+)
 
-const Message = mongoose.model("message", messageSchema);
+const Message = mongoose.model("Message", messageSchema)
 
-export default Message;
+export default Message

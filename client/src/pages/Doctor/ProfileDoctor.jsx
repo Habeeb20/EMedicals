@@ -142,7 +142,7 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
           <a href="/doctorprofile" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Patients</span>
           </a>
-          <a href="#" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/chatlogin" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Chats</span>
             <span className="bg-red-500 text-white text-xs rounded-full px-2">10</span>
           </a>

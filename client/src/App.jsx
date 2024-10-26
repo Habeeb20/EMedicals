@@ -1,5 +1,10 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Signup from "./pages/Hospital/Doctors/signup";
 import LandingHome from "./pages/LandingHome";
 import Navbar from "./components/Navbar";
@@ -33,20 +38,36 @@ import ProfilePatient from "./pages/Doctor/patients/ProfilePatient";
 import PatientLogin from "./pages/Doctor/patients/PatientLogin";
 import AppointmentForm from "./pages/Doctor/AppointmentForm";
 import { DoctorAppointment } from "./components/Doctor/DoctorAppointment";
-import {DoctorDashboard} from "./components/Doctor/DoctorDashboard";
-
-
-import { useAuth } from "./components/Doctor/context/AuthProvider";
-import Left from "./components/Doctor/homeChat/Leftpart"
-import Right from "./components/Doctor/homeChat/Rightpart/Right";
-import ChatLogin from "./components/Doctor/chat/ChatLogin";
-import ChatSignup from "./components/Doctor/chat/ChatSignup"
-import Logout from "./components/Doctor/homeChat/Logout";
-import ChatWindow from "./components/Doctor/chat/ChatWindow";
-
+import { DoctorDashboard } from "./components/Doctor/DoctorDashboard";
+import io from "socket.io-client"
+import ChatLogin from "./pages/Doctor/chat/ChatLogin";
+import ChatSignup from "./pages/Doctor/chat/ChatSignup";
+import { useAuthContext } from "./components/Doctor/context/AuthContext";
+import ChatWindow from "./pages/Doctor/chat/ChatWindow";
+// const socket = io("http://localhost:8000");
 const App = () => {
- const [authUser, setAuthUser] = useAuth()
- console.log(authUser)
+  const { authUser } = useAuthContext();
+  console.log(authUser);
+
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     console.log("Connected to socket.io server");
+  //   });
+
+  //   socket.on("notification", (data) => {
+  //     alert(data.message); // Show notification (simple alert for now)
+  //   });
+
+  //   socket.on("meeting_notification", (meetingDetails) => {
+  //     alert("you have a new meeting scheduled: ${meetingDetails}");
+  //   });
+
+  //   return () => {
+  //     socket.off("connect");
+  //     socket.off("notification");
+  //   };
+  // }, []);
+
   return (
     <Router>
       {/* <Navbar /> */}
@@ -60,74 +81,90 @@ const App = () => {
         <Route path="/userforgotpassword" element={<UserForgotPassword />} />
         <Route path="/userresetpassword" element={<UserResetPassword />} />
         <Route path="/userlandingprofile" element={<UserLandingProfile />} />
-
-
-
-
-          //protected Routes
-        <Route path="/cemeterypage" element={<PrivateRoute><CemeteryPage /></PrivateRoute> } />
-        <Route path="/mortuarydetail/:id" element={<PrivateRoute><AmortuaryDetail /></PrivateRoute>} />
-
-
-        <Route path="/cemeterydashboard" element={<PrivateRoute><CemeteryDashboard /></PrivateRoute>} />
-        <Route path="/cemeteries" element={<PrivateRoute><AllCemeteries /></PrivateRoute>} />
-        <Route path="/cemeterydetail/:id" element={<PrivateRoute><Acemetery /></PrivateRoute>} />
-        <Route path="/getallcemetery" element={<PrivateRoute><GetAllCemetery /></PrivateRoute> } />
-
-
-
-
-        <Route path="/doctor/:doctorId/book-appointment" element={<AppointmentForm />} />
+        //protected Routes
+        <Route
+          path="/cemeterypage"
+          element={
+            <PrivateRoute>
+              <CemeteryPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mortuarydetail/:id"
+          element={
+            <PrivateRoute>
+              <AmortuaryDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cemeterydashboard"
+          element={
+            <PrivateRoute>
+              <CemeteryDashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cemeteries"
+          element={
+            <PrivateRoute>
+              <AllCemeteries />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cemeterydetail/:id"
+          element={
+            <PrivateRoute>
+              <Acemetery />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/getallcemetery"
+          element={
+            <PrivateRoute>
+              <GetAllCemetery />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/doctor/:doctorId/book-appointment"
+          element={<AppointmentForm />}
+        />
         <Route path="/doctorappointment" element={<DoctorAppointment />} />
-
-    
-
-
-
-
-
-
-
         //doctor
         <Route path="/doctorsignup" element={<DoctorSignup />} />
         <Route path="/doctorlogin" element={<LoginDoctor />} />
         <Route path="/doctorprofile" element={<ProfileDoctor />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctordashboard" element={<DoctorDashboard />} />
-
-
-
         //chat
-        <Route path="/chatwindow" element={authUser ? <ChatWindow /> : <Navigate to={"/chatlogin"} /> } />
-
-        <Route path="/chatlogin" element={authUser ? <Navigate to={"/chatWidow"} /> : <ChatLogin /> } />
-        
-
-        <Route path="/chatsignup" element={authUser ? <Navigate to={"/chatWidow"} /> : <ChatSignup /> } />
-
-
-
-
+        <Route
+          path="/chatwindow"
+          element={authUser ? <ChatWindow /> : <Navigate to={"/chatlogin"} />}
+        />
+        <Route
+          path="/chatlogin"
+          element={authUser ? <Navigate to={"/chatwindow"} /> : <ChatLogin />}
+        />
+        <Route
+          path="/chatsignup"
+          element={authUser ? <Navigate to={"/chatwindow"} /> : <ChatSignup />}
+        />
         //patient
         <Route path="/patientsignup" element={<PatientSignup />} />
         <Route path="/patientlogin" element={<PatientLogin />} />
         <Route path="/patientprofile" element={<ProfilePatient />} />
-
-
         //cemetary
         <Route path="/afterdeathsearviceuser" element={<AfterDeathService />} />
         <Route path="/cemeterysignup" element={<CemeterySignUp />} />
         <Route path="/cemeterylogin" element={<CemeteryLogin />} />
         <Route path="/cemeterydashboard" element={<CemeteryDashboard />} />
-
-     
-
         //mortuary
         <Route path="/mortuarysignup" element={<MortuarySignup />} />
-      
-
-
-
       </Routes>
       <Toaster />
     </Router>

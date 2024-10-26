@@ -203,7 +203,7 @@ const Doctors = () => {
 
                 {/* Additional Links */}
                 <div className="mt-4">
-                  <Link to="/patientsignup" className="text-navyblue underline">
+                  <Link to="/patientlogin" className="text-navyblue underline">
                     View More
                   </Link>
                   {userLocation && (

@@ -15,4 +15,6 @@ appointmentrouter.get("/doctor", verifyToken, getAppointmentsForDoctor);
 // Doctor confirms an appointment
 appointmentrouter.put('/confirm/:appointmentId', verifyToken, confirmAppointment);
 
+appointmentrouter.get("/patientappointments", verifyToken, getPatientDashboard)
+
 export default appointmentrouter 
