@@ -1,5 +1,4 @@
-
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -78,7 +77,7 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
         setError('Failed to fetch appointments');
         toast.error('Error fetching appointments');
       } finally {
-        setLoading(false); // End loading
+        setLoading(false); 
       }
     };
 
@@ -227,9 +226,13 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
               <p className="text-sm text-gray-500"> {patient.state}</p>
               <p className="text-sm text-gray-500"> {patient.homeAddress}</p>
               <p className="text-sm text-gray-500"> {patient.allergics}</p>
+              <Link to={`/patientmore/${patient._id}`}>
               <button className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
                 View
               </button>
+
+              </Link>
+            
             </div>
         ))
        ): (

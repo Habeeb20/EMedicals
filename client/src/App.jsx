@@ -44,6 +44,8 @@ import ChatLogin from "./pages/Doctor/chat/ChatLogin";
 import ChatSignup from "./pages/Doctor/chat/ChatSignup";
 import { useAuthContext } from "./components/Doctor/context/AuthContext";
 import ChatWindow from "./pages/Doctor/chat/ChatWindow";
+import PatientMoreDetails from "./pages/Doctor/patients/PatientMoreDetails";
+import GetAppointmentsPatients from "./pages/Doctor/patients/GetAppointmentsPatients";
 // const socket = io("http://localhost:8000");
 const App = () => {
   const { authUser } = useAuthContext();
@@ -134,6 +136,10 @@ const App = () => {
           path="/doctor/:doctorId/book-appointment"
           element={<AppointmentForm />}
         />
+
+        <Route path="/getpatientappointments" element={<PrivateRoute><GetAppointmentsPatients /></PrivateRoute>} />
+
+
         <Route path="/doctorappointment" element={<DoctorAppointment />} />
         //doctor
         <Route path="/doctorsignup" element={<DoctorSignup />} />
@@ -158,6 +164,10 @@ const App = () => {
         <Route path="/patientsignup" element={<PatientSignup />} />
         <Route path="/patientlogin" element={<PatientLogin />} />
         <Route path="/patientprofile" element={<ProfilePatient />} />
+        <Route path="/patientmore/:id" element={<PatientMoreDetails />} />
+        
+
+
         //cemetary
         <Route path="/afterdeathsearviceuser" element={<AfterDeathService />} />
         <Route path="/cemeterysignup" element={<CemeterySignUp />} />

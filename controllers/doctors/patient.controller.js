@@ -3,7 +3,7 @@ import Appointment from "../../models/Doctors/AppointmentDoctors.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import cloudinary from "cloudinary"
-
+import mongoose from "mongoose";
 
 
 
@@ -111,6 +111,7 @@ export const getPatientProfile = async (req, res) => {
     if (!patient) return res.status(404).json({ msg: 'Patient not found' });
 
     res.json(patient);
+
   } catch (error) {
     res.status(500).json({ error: 'Failed to get profile' });
   }
@@ -138,6 +139,48 @@ export const getAllPatients = async (req, res) => {
     res.status(500).json({msg:'server error'})
   }
 }
+
+export const getOtherPatientProfile = async (req, res) => {
+  console.log('Request parameters:', req.params); 
+  try {
+    const { id } = req.params;
+    console.log(req.params)
+
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("id not found")
+      return res.status(400).json({ success: false, message: 'Invalid user ID' });
+    }
+
+    const user = await Patient.findById(id).select('-password');
+
+    if (!user) {
+      console.log("User not found");
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        _id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        homeAddress: user.homeAddress,
+        state: user.state,
+        LGA: user.LGA,
+        profilePicture: user.profilePicture,
+        allergics: user.allergics,
+      
+      }
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Something went wrong' });
+  }
+};
+
+
 
 
 

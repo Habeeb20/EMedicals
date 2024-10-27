@@ -1,5 +1,5 @@
 import express from 'express'
-import { bookAppointment, getAppointmentsForDoctor, confirmAppointment, getPatientDashboard } from '../../controllers/doctors/AppointmentController.js';
+import { bookAppointment, getAppointmentsForDoctor, confirmAppointment, getAppointmentForPatient } from '../../controllers/doctors/AppointmentController.js';
 import { verifyToken } from '../../middleware/verifyToken.js';
 const appointmentrouter = express.Router();
 
@@ -15,6 +15,6 @@ appointmentrouter.get("/doctor", verifyToken, getAppointmentsForDoctor);
 // Doctor confirms an appointment
 appointmentrouter.put('/confirm/:appointmentId', verifyToken, confirmAppointment);
 
-appointmentrouter.get("/patientappointments", verifyToken, getPatientDashboard)
+appointmentrouter.get("/patientappointments", verifyToken, getAppointmentForPatient)
 
 export default appointmentrouter 

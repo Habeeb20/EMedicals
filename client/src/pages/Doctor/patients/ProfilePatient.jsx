@@ -116,12 +116,12 @@ const ProfilePatient = () => {
           <nav className="flex-1 space-y-4">
             <a
               href="#"
-              className="flex items-center space-x-2 text-purple-600 font-semibold"
+              className="flex items-center space-x-2 text-gray-600 font-semibold"
             >
               <i className="fas fa-chart-pie"></i>
               <span>Overview</span>
             </a>
-            <a href="#" className="flex items-center space-x-2">
+            <a href="getpatientappointments" className="flex items-center space-x-2">
               <i className="fas fa-calendar"></i>
               <span>Appointments</span>
             </a>
@@ -130,7 +130,7 @@ const ProfilePatient = () => {
               className="flex items-center space-x-2 text-purple-600 font-semibold"
             >
               <i className="fas fa-user-md"></i>
-              <span>Specialist</span>
+              <span>Specialists</span>
             </a>
             <a href="#" className="flex items-center space-x-2">
               <i className="fas fa-vials"></i>

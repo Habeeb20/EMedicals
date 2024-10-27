@@ -24,14 +24,16 @@ export const bookAppointment = async (req, res) => {
     if (!patient) return res.status(404).json({ msg: 'Patient not found' });
 
     const newAppointment = new Appointment({
-      doctor: doctor,
-      patient: req.user.id,
+      patientId:new mongoose.Types.ObjectId(req.user.id), 
+      doctorId: new mongoose.Types.ObjectId(doctorId),
       sickness,
       started,
       drugsTaken
     });
 
     await newAppointment.save();
+    console.log("New appointment created:", newAppointment);
+
     res.status(201).json(newAppointment);
   } catch (error) {
     console.log(error)
@@ -77,13 +79,33 @@ export const confirmAppointment = async (req, res) => {
     res.status(500).json({ error: 'Failed to confirm appointment' });
   }
 }
-export const getPatientDashboard = async (req, res) => {
-    try {
-      const patientId = req.user.id;  
-  
-      const appointments = await Appointment.find({ patientId }).populate('doctorId', 'fullname, email');
-      res.json(appointments);
-    } catch (error) {
-      res.status(500).json({ message: 'Server error' });
+
+
+
+export const getAppointmentForPatient = async (req, res) => {
+  try {
+    const patientId = req.user.id;
+
+    if (!mongoose.Types.ObjectId.isValid(patientId)) {
+      return res.status(400).json({ message: 'Invalid patient ID' });
     }
-  };
+
+    console.log("Patient ID:", patientId); 
+
+    const patientExists = await Patient.findById(new mongoose.Types.ObjectId(patientId));
+    if (!patientExists) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+
+
+    const appointments = await Appointment.find({ patientId:new mongoose.Types.ObjectId(patientId) })
+      .populate('doctorId', 'fullname email'); 
+
+    console.log("Appointments found:", appointments); 
+
+    return res.json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments:", error.message); 
+    return res.status(500).json({ message: 'Server error', error: error.message }); 
+  }
+};

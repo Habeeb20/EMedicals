@@ -10,6 +10,7 @@ patientRouter.post("/patientlogin", loginPatient)
 patientRouter.get("/patientprofile", verifyToken, getPatientProfile)
 patientRouter.put("/updatepatient", verifyToken, updatePatientProfile)
 patientRouter.get("/getallpatient", getAllPatients)
+patientRouter.get("/getapatient/:id", getPatientProfile)
 
 
 export default patientRouter
