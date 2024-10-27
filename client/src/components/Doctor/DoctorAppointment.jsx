@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-import PatientDetails from './patientDetails';
+// import PatientDetails from './patientDetails';
 
 export const DoctorAppointment = () => {
   const { doctorId } = useParams();
@@ -150,9 +150,20 @@ export const DoctorAppointment = () => {
             <ul className="appointment-list space-y-4">
               {appointments.map((appointment) => (
                 <li key={appointment.id} className="p-4 bg-gray-100 rounded-lg shadow">
-                  <p><strong>Patient:</strong> {appointment.patientName}</p>
-                  <p><strong>Date:</strong> {appointment.date}</p>
-                  <p><strong>Time:</strong> {appointment.time}</p>
+                <img
+                src={appointment.patientId.profilePicture}
+                alt="Profile Picture"
+                className="w-16 h-16 rounded-full object-cover mx-auto mb-7"
+              />
+                  <p><strong>Patient:</strong> {appointment.patientId?.fullname}</p>
+                  <p><strong>Patient Email:</strong> {appointment.patientId?.email}</p>
+                  <p><strong>Patient phone num:</strong> {appointment.patientId?.phoneNumber}</p>
+                  <p><strong>state:</strong> {appointment.patientId?.state}</p>
+                  <p><strong>Allergies:</strong> {appointment.patientId?.allergics}</p>
+                  <p><strong>Sickness:</strong> {appointment.sickness}</p>
+                  <p><strong>Drugs Taken:</strong> {appointment.drugTaken}</p>
+                  <p><strong>date started:</strong> {new Date(appointment.started).toLocaleDateString()}</p>
+                  <p><strong>Suggested appointment date:</strong> {new Date(appointment.appointmentDate).toLocaleDateString()}</p>
                 </li>
               ))}
             </ul>

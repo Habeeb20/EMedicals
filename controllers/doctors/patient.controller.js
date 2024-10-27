@@ -107,13 +107,25 @@ export const loginPatient = async (req, res) => {
 
 export const getPatientProfile = async (req, res) => {
   try {
-    const patient = await Patient.findById(req.user.id);
-    if (!patient) return res.status(404).json({ msg: 'Patient not found' });
+    const {id} = req.params;
+    console.log(req.params)
+   
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("id not found")
+      return res.status(400).json({ success: false, message: 'Invalid user ID' });
+    }
 
-    res.json(patient);
+    const patient = await Patient.findById(id).select('-password');
+    if(!patient){
+      console.log("patient not found")
+      return res.status(404).json({ success: false, message: 'patient not found' });
+    }
+    res.status(200).json(patient);
 
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Failed to get profile' });
+
   }
 };
 

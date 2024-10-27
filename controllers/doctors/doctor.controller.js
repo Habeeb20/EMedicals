@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs"
 import cloudinary from 'cloudinary'
 import nodemailer from "nodemailer"
 import crypto from "crypto"
+import mongoose from "mongoose"
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -162,6 +163,28 @@ export const getAllDoctors = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch doctors' });
   }
 };
+
+export const getDoctorDetails = async (req, res) => {
+  try {
+    const {id} = req.params;
+    console.log(req.params);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.log("id not found")
+      return res.status(400).json({ success: false, message: 'Invalid user ID' });
+    }
+
+    const patient = await Doctor.findById(id).select('-password');
+    if(!patient){
+      console.log("doctor not found")
+      return res.status(404).json({ success: false, message: 'doctor not found' });
+    }
+    res.status(200).json(patient);
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Failed to get profile' });
+  }
+}
 
 
 

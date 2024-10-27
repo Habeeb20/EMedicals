@@ -254,9 +254,12 @@ const ProfilePatient = () => {
                   LGA: {doctor.LGA}
                 </p>
                 <div className="flex justify-center space-x-2 mt-4">
-                  <button className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg">
-                    Chat
+                {doctor && <Link to={`/doctordetails/${doctor._id}`}>
+                <button className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg">
+                    View
                   </button>
+                </Link>}
+               
 
        
                  

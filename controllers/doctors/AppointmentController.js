@@ -44,7 +44,7 @@ export const bookAppointment = async (req, res) => {
 
 // Doctor View Appointments
 export const getAppointmentsForDoctor = async (req, res) => {
-  const doctorId = req.params.doctorId || req.body.doctorId;;
+  const doctorId = req.user.id 
 
 
   if (!doctorId || doctorId === 'undefined') {
@@ -53,7 +53,7 @@ export const getAppointmentsForDoctor = async (req, res) => {
   }
 
   try {
-    const appointments = await Appointment.find({ doctorId }).populate('patient');
+    const appointments = await Appointment.find({ doctorId }).populate('patientId');
     res.json(appointments);
   } catch (error) {
     console.log(error);

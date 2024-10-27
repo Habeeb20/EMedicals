@@ -1,5 +1,5 @@
 import express from "express"
-import { registerDoctor, loginDoctor, getDoctorProfile, updateDoctorProfile, getAllDoctors } from "../../controllers/doctors/doctor.controller.js"
+import { registerDoctor, loginDoctor, getDoctorProfile, updateDoctorProfile, getAllDoctors, getDoctorDetails } from "../../controllers/doctors/doctor.controller.js"
 // import { register, login, getprofile, verifyEmail, forgotPassword, resetPassword, getAlldoctors, logout, updateDoctorProfile, registerDoctor, loginDoctor } from "../../controllers/doctors/doctor.controller.js"
 import upload from "../../upload.js"
 import { verifyToken } from "../../middleware/verifyToken.js"
@@ -17,6 +17,7 @@ doctorRouter.post('/doctorlogin', loginDoctor)
 doctorRouter.get('/doctorprofile', verifyToken, getDoctorProfile)
 doctorRouter.put("/doctorsupdate/:id", verifyToken, updateDoctorProfile)
 doctorRouter.get("/doctorgetall", getAllDoctors)
+doctorRouter.get("/doctordetails/:id", getDoctorDetails)
 
 
 

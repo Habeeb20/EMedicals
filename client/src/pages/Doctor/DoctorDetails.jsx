@@ -1,57 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import axios from 'axios';
-import { Link, useParams,useNavigate } from 'react-router-dom';
-import Navbar from '../../../components/Navbar';
-const PatientMoreDetails = () => {
-    const {id} = useParams()
-    const [patient, setPatient] = useState([])
-    const [error, setError] = useState(null)
-    const [loading,setLoading] = useState(false)
-    
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import Navbar from '../../components/Navbar'
+import { useParams } from 'react-router-dom'
+const DoctorDetails = () => {
+    const {id } = useParams()
+    const [doctor,setDoctor] = useState([])
+    const [error, setError] = useState('')
+    const [laoding, setLoading] = useState(false)
 
     useEffect(() => {
-      if (!id) {
-        setError("User ID not found");
-        return; 
-    }
-    setLoading(true); 
+        const fetchProfile = async() => {
+            if(!id){
+                throw new Error("id not found")
+                setLoading(true)
+            }
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_D}/doctordetails/${id}`)
+                setDoctor(response.data)
+                console.log(response)
+            } catch (error) {
+                console.log(error)
+                setError(error)
 
-  
-        axios
-        .get(`${import.meta.env.VITE_API_P}/getapatient/${id}`)
-        .then((response) => {
-          setPatient(response.data);
-          console.log(response)
-          setError(null)
-        })
-        .catch((error) => {
-          console.log(error);
-          setError("failed to load profile. please try again")
-  
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-  
+            }finally{
+                setLoading(false)
+            }
 
-        
+        }
+        fetchProfile()
+      
     },[id])
-    if(error){
-        return(
-          <div className="flex flex-col items-center justify-center h-screen">
-          <p className="text-red-500">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-          >
-            Reload
-          </button>
-        </div>
-        )
-      }
-
-      if(!patient){
+    if(!doctor){
         return(
           <div className="flex items-center justify-center h-screen">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -59,11 +38,14 @@ const PatientMoreDetails = () => {
         </div>
         )
       }
+
+
   return (
-    <>
-       <Navbar />
+    <div>
+    <Navbar />
+    {error &&  <p className='text-red-500 text-center'>{error}</p>}
     <div className="bg-gray-50 min-h-screen p-8">
-      <h1 className="text-red-600 font-semibold text-xl mb-6">Patients</h1>
+      <h1 className="text-red-600 font-semibold text-xl mb-6">Doctor</h1>
       
       {/* Filters and Search */}
       <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md mb-8">
@@ -86,7 +68,7 @@ const PatientMoreDetails = () => {
         </div>
         <input
           type="text"
-          placeholder="Search patient by name or gender"
+          placeholder={doctor.fullname}
           className="border rounded-md px-4 py-2 flex-grow mx-4 outline-none"
         />
         <button className="bg-red-500 text-white rounded-lg px-6 py-2">All</button>
@@ -100,35 +82,43 @@ const PatientMoreDetails = () => {
           <div className="flex-shrink-0">
             <div className="w-32 h-32 rounded-full bg-blue-100 flex items-center justify-center">
               <img
-                src={patient.profilePicture}
+                src={doctor.profilePicture}
                 alt="Patient Avatar"
                 className="w-24 h-24 rounded-full"
               />
             </div>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-800">{patient.fullname}</h2>
-            <p className="text-gray-500 mt-1">{patient.fullname} <span className="mx-1">|</span> <span role="img" aria-label="Location">📍</span>{patient.LGA}, {patient.state}</p>
+            <h2 className="text-2xl font-semibold text-gray-800">{doctor.fullname}</h2>
+            <p className="text-gray-500 mt-1">{doctor.fullname} <span className="mx-1">|</span> <span role="img" aria-label="Location">📍</span>{doctor.LGA}, {doctor.state}</p>
             <div className="mt-4 flex space-x-8 text-gray-600">
               <div>
-                <p className="text-xs font-semibold text-gray-500">Allergies: {patient.allergics}</p>
-                <p className="text-lg font-semibold">O+</p>
+                <p className="text-xs font-semibold text-gray-500">Gender</p>
+                <p className="text-lg font-semibold">{doctor.gender}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500">{patient.email}</p>
-                <p className="text-lg font-semibold">{patient.phoneNumber}</p>
+                <p className="text-xs font-semibold text-gray-500">{doctor.email}</p>
+                <p className="text-lg font-semibold">{doctor.phoneNumber}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-500">Weight</p>
-                <p className="text-lg font-semibold">90kg</p>
+                <p className="text-xs font-semibold text-gray-500">number</p>
+                <p className="text-lg font-semibold">{doctor.uniqueNumber}</p>
               </div>
             </div>
+            <div>
+                <p className="text-xs mt-10 font-semibold text-gray-500">office Address</p>
+                <p className="text-lg font-semibold">{doctor.officeAddress}</p>
+              </div>
+              <div>
+                <p className="text-xs mt-10 font-semibold text-gray-500">Current work place:</p>
+                <p className="text-lg font-semibold">{doctor.currentWorkplace}</p>
+              </div>
           </div>
         </div>
 
         {/* Company Growth */}
         <div className="flex flex-col items-center justify-center flex-grow bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-          <h3 className="text-gray-600 font-semibold mb-4">Company Growth</h3>
+          <h3 className="text-gray-600 font-semibold mb-4">field of specialization: {doctor.specialization}</h3>
           <div className="relative w-40 h-40 flex items-center justify-center">
             {/* Circular Progress Bar */}
             <div className="absolute w-full h-full rounded-full bg-gradient-to-r from-red-500 to-blue-500">
@@ -145,14 +135,13 @@ const PatientMoreDetails = () => {
             <option>2020</option>
             <option>2019</option>
           </select>
-          <p className="text-gray-500 text-sm mt-2">80% Growth in the company in 2021</p>
+          <p className="text-gray-800 text-sm mt-2">Date of Birth:{new Date(doctor.dateOfBirth).toLocaleDateString()}</p>
         </div>
       </div>
     </div>
+      
+    </div>
+  )
+}
 
-    </>
- 
-  );
-};
-
-export default PatientMoreDetails;
+export default DoctorDetails

@@ -46,29 +46,13 @@ import { useAuthContext } from "./components/Doctor/context/AuthContext";
 import ChatWindow from "./pages/Doctor/chat/ChatWindow";
 import PatientMoreDetails from "./pages/Doctor/patients/PatientMoreDetails";
 import GetAppointmentsPatients from "./pages/Doctor/patients/GetAppointmentsPatients";
+
+import DoctorDetails from "./pages/Doctor/DoctorDetails";
 // const socket = io("http://localhost:8000");
 const App = () => {
   const { authUser } = useAuthContext();
   console.log(authUser);
 
-  // useEffect(() => {
-  //   socket.on("connect", () => {
-  //     console.log("Connected to socket.io server");
-  //   });
-
-  //   socket.on("notification", (data) => {
-  //     alert(data.message); // Show notification (simple alert for now)
-  //   });
-
-  //   socket.on("meeting_notification", (meetingDetails) => {
-  //     alert("you have a new meeting scheduled: ${meetingDetails}");
-  //   });
-
-  //   return () => {
-  //     socket.off("connect");
-  //     socket.off("notification");
-  //   };
-  // }, []);
 
   return (
     <Router>
@@ -147,6 +131,7 @@ const App = () => {
         <Route path="/doctorprofile" element={<ProfileDoctor />} />
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctordashboard" element={<DoctorDashboard />} />
+        <Route path="/doctordetails/:id" element={<DoctorDetails />} />
         //chat
         <Route
           path="/chatwindow"
