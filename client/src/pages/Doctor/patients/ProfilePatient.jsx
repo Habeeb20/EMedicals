@@ -179,7 +179,7 @@ const ProfilePatient = () => {
                 }`}
                 onClick={() => handleGenderFilter("man")}
               >
-                Man
+                Male
               </button>
               <button
                 className={`py-2 px-4 rounded-lg ${
@@ -187,7 +187,7 @@ const ProfilePatient = () => {
                 }`}
                 onClick={() => handleGenderFilter("woman")}
               >
-                Woman
+                Female
               </button>
             </div>
           </div>
