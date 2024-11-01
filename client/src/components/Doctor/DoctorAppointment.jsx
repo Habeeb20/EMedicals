@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,9 +10,10 @@ export const DoctorAppointment = () => {
   const { doctorId } = useParams();
   const [appointments, setAppointments] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [medical, setMedical] = useState([])
   const [doctor, setDoctor] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,6 +82,31 @@ export const DoctorAppointment = () => {
     fetchAllPatient();
   }, []);
 
+  useEffect(() => {
+    const fetchPatientProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_P}/getmedicalhistory`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        
+        setMedical(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchPatientProfile();
+  }, [navigate]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -114,6 +140,9 @@ export const DoctorAppointment = () => {
             <a href="/doctorappointment" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
               <span>Appointments</span>
             </a>
+            <a href="/seepatientresult" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>see your patients' results</span>
+          </a>
             <a href="/doctorprofile" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
               <span>Patients</span>
             </a>
@@ -161,11 +190,22 @@ export const DoctorAppointment = () => {
                   <p><strong>state:</strong> {appointment.patientId?.state}</p>
                   <p><strong>Allergies:</strong> {appointment.patientId?.allergics}</p>
                   <p><strong>Sickness:</strong> {appointment.sickness}</p>
-                  <p><strong>Drugs Taken:</strong> {appointment.drugTaken}</p>
+                  <p><strong>Drugs Taken:</strong> {appointment.drugsTaken}</p>
                   <p><strong>date started:</strong> {new Date(appointment.started).toLocaleDateString()}</p>
                   <p><strong>Suggested appointment date:</strong> {new Date(appointment.appointmentDate).toLocaleDateString()}</p>
+                  <p>{medical.patientId?.smokingOrAlcohol}</p>
+                  {patients && <Link to={`/medicaltestresult/${appointment._id}`}>
+              <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
+                    medical result
+                  </button>
+              </Link>}
                 </li>
+
+            
+           
               ))}
+           
+           
             </ul>
           )}
 

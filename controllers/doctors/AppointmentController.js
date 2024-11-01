@@ -3,6 +3,11 @@ import Doctor from '../../models/Doctors/doctor.model.js';
 import Patient from '../../models/Doctors/patient.model.js';
 import mongoose from 'mongoose';
 // Book Appointment
+
+
+
+
+
 export const bookAppointment = async (req, res) => {
   const {  sickness, started, drugsTaken } = req.body;
   const doctorId = req.params.doctorId || req.body.doctorId;

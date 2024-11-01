@@ -2,38 +2,39 @@ import React from 'react'
 import axios from 'axios'
 import { useState,useEffect } from 'react'
 import Navbar from '../../../components/Navbar'
-import { Link,useNavigate } from 'react-router-dom'
-import { use } from 'bcrypt/promises'
+import { Link,Navigate,useNavigate } from 'react-router-dom'
 
-const GetAppointmentsPatients = () => {
-  const navigate = useNavigate()
-    const [appointments, setAppointments] = useState([])
+const Donation = () => {
+    const navigate = useNavigate()
+
+    const [medicalHistory, setMedicalHistory] = useState([])
     const [error, setError] = useState('')
     const [patient, setPatient] = useState(null);
     const [loading, setLoading] = useState(true)
+
     useEffect(() => {
-        const fetchPatientAppointment = async () => {
+        const fetchPatientMedicalHistory = async () => {
             try {
                 const token = localStorage.getItem('token')
                 if (!token) {
                     throw new Error("Token not found");
                   }
-                    const response = await axios.get(`${import.meta.env.VITE_API_A}/patientappointments`, {
+                    const response = await axios.get(`${import.meta.env.VITE_API_P}/getpatientdonate`, {
                       headers:{
                           Authorization:`Bearer ${token}`
                       },
                       withCredentials: true
                     });
                     console.log(response)
-                    setAppointments(response.data)
+                    setMedicalHistory(response.data)
             } catch (error) {
-                console.error("Error fetching patient appointments:", error);
-                setError("Failed to load appointments.");
+                console.error("Error fetching patient medical History:", error);
+                setError("Failed to load medical history.");
             } finally {
                 setLoading(false);
             }
             }
-            fetchPatientAppointment()
+            fetchPatientMedicalHistory()
         }, [navigate])
 
         useEffect(() => {
@@ -52,7 +53,7 @@ const GetAppointmentsPatients = () => {
                     withCredentials: true,
                   }
                 );
-            
+                
                 setPatient(response.data);
               } catch (error) {
                 console.error(error);
@@ -61,9 +62,10 @@ const GetAppointmentsPatients = () => {
             fetchPatientProfile();
           }, [navigate]);
         
+
   return (
     <div>
-      <Navbar />
+    <Navbar />
       <div className="min-h-screen bg-gray-100 flex">
         {/* Sidebar */}
         <div className="hidden lg:flex flex-col w-64 bg-white border-r-2 border-gray-200 p-5">
@@ -75,7 +77,7 @@ const GetAppointmentsPatients = () => {
               <i className="fas fa-chart-pie"></i>
               <span>Overview</span>
             </a>
-            <a href="getpatientappointments" className="flex  text-purple-600  items-center space-x-2">
+            <a href="getpatientappointments" className="flex  items-center space-x-2">
               <i className="fas fa-calendar"></i>
               <span>Appointments</span>
             </a>
@@ -102,7 +104,7 @@ const GetAppointmentsPatients = () => {
               <i className="fas fa-comments"></i>
               <span>Fill your medical history</span>
             </a>
-            <a href="/medicalhistories" className="flex items-center space-x-2">
+            <a href="/medicalhistories" className="flex items-center   space-x-2">
               <i className="fas fa-comments"></i>
               <span> Your medical history</span>
             </a>
@@ -110,7 +112,7 @@ const GetAppointmentsPatients = () => {
               <i className="fas fa-comments"></i>
               <span>Wish to donate after death?</span>
             </a>
-            <a href="/patientdonations" className="flex items-center space-x-2">
+            <a href="/patientdonations" className="flex items-center  text-purple-600  space-x-2">
               <i className="fas fa-comments"></i>
               <span>see your donations</span>
             </a>
@@ -198,19 +200,20 @@ const GetAppointmentsPatients = () => {
           </div> */}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-    {appointments.length > 0 ? (
-        appointments.map((appointment, index) => (
+    {medicalHistory.length > 0 ? (
+        medicalHistory.map((medical, index) => (
             <div key={index} className="p-4 bg-white rounded-lg shadow">
-                <p><strong>Sickness:</strong> {appointment.sickness}</p>
-                <p><strong>Drugs Taken:</strong> {appointment.drugsTaken}</p>
-                <p><strong>Date Started:</strong> {new Date(appointment.started).toLocaleDateString()}</p>
-                <p><strong>Suggested Appointment Date:</strong> {new Date(appointment.appointmentDate).toLocaleDateString()}</p>
-                <p><strong>Doctor:</strong> {appointment.doctorId?.fullname}</p>
-                <p><strong>Email:</strong> {appointment.doctorId?.email}</p>
+            <h4>You wish to donate the following after death</h4>
+                <p><strong>Kidney:</strong> {medical.kidney}</p>
+                <p><strong>Lungs?:</strong> {medical.liver}</p>
+                <p><strong>liver?</strong> {medical.heart}</p>
+                <p><strong>Heart</strong> {medical.lungs}</p>
+
+               
             </div>
         ))
     ) : (
-        <p>No appointments found.</p>
+        <p>No donation  found.</p>
     )}
 </div>
 
@@ -231,8 +234,9 @@ const GetAppointmentsPatients = () => {
           </div> */}
         </div>
       </div>
+      
     </div>
   )
 }
 
-export default GetAppointmentsPatients
+export default Donation

@@ -6,7 +6,7 @@ const DoctorDetails = () => {
     const {id } = useParams()
     const [doctor,setDoctor] = useState([])
     const [error, setError] = useState('')
-    const [laoding, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const fetchProfile = async() => {

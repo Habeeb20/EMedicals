@@ -1,116 +1,75 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../../components/Navbar";
 
-const ProfilePatient = () => {
-  const [doctor, setDoctor] = useState([]);
-  const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [patient, setPatient] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [genderFilter, setGenderFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const doctorsPerPage = 8;
-  const navigate = useNavigate();
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate, useParams } from 'react-router-dom';
+import Navbar from '../../../components/Navbar';
+const SeeYourMedicalResult = () => {
+    const {patientId} = useParams();
+    const [medicalResult, setMedicalResult] = useState([])
+    const [doctor, setDoctor] = useState([])
+    const [patient, setPatient] = useState([])
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_D}/doctorgetall`
-        );
-        setDoctor(response.data);
-        setFilteredDoctors(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setError("Failed to fetch doctors");
-        setLoading(false);
-      }
-    };
-    fetchDoctors();
-  }, [navigate]);
+    useEffect(() => {
+        const fetchProfile = async() => {
+            setLoading(true); 
+            try {
+                const token = localStorage.getItem('token')
+                if(!token){
+                    throw new Error('Token not found')
+                    
+                 
+                }
 
-  useEffect(() => {
-    const fetchPatientProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Token not found");
-        }
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_P}/patientprofile`,
-          {
+                
+        const response = await axios.get(`${import.meta.env.VITE_API_P}/patientprofile`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
             withCredentials: true,
+          });
+          setPatient(response.data);
+          toast.success('Profile fetched successfully');
+            } catch (error) {
+                setError(error.message);
+                console.log(error)
+            }finally {
+                setLoading(false);
+              }
+        }
+        fetchProfile()
+    }, [])
+
+    useEffect(() => {
+        const fetchMedicalResults = async () => {
+          try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Token not found');
+    
+            const response = await axios.get(`${import.meta.env.VITE_API_P}/getmedicaltest`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            setMedicalResult(response.data); 
+          } catch (err) {
+            console.log(err)
+            setError(err.message || 'Error fetching appointments');
+          } finally {
+            setLoading(false);
           }
-        );
-        setPatient(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchPatientProfile();
-  }, [navigate]);
+        };
+    
+        fetchMedicalResults();
+      }, [patientId]);
 
-  // Filter doctors by gender
-  const handleGenderFilter = async (gender) => {
-    setGenderFilter(gender);
-    setSearchQuery("");
-    setCurrentPage(1);
-
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_D}/doctorgetall?gender=${gender}`
-      );
-      setFilteredDoctors(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSearch = async (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    setCurrentPage(1);
-  
-    try {
-     
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_D}/doctorgetall?specialization=${query}`
-      );
-      
-      setFilteredDoctors(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  // Pagination
-  const indexOfLastDoctor = currentPage * doctorsPerPage;
-  const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
-  const currentDoctors = filteredDoctors.slice(
-    indexOfFirstDoctor,
-    indexOfLastDoctor
-  );
-  const totalPages = Math.ceil(filteredDoctors.length / doctorsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  if (loading)
-    return <p className="text-center text-indigo-900">Loading profile...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
-
+   
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-gray-100 flex">
+    <div>     
+     <Navbar />
+     <div className="min-h-screen bg-gray-100 flex">
         {/* Sidebar */}
         <div className="hidden lg:flex flex-col w-64 bg-white border-r-2 border-gray-200 p-5">
           <nav className="flex-1 space-y-4">
@@ -127,7 +86,7 @@ const ProfilePatient = () => {
             </a>
             <a
               href="#"
-              className="flex items-center space-x-2 text-purple-600 font-semibold"
+              className="flex items-center space-x-2 text-grey-600 font-semibold"
             >
               <i className="fas fa-user-md"></i>
               <span>Specialists</span>
@@ -140,7 +99,7 @@ const ProfilePatient = () => {
               <i className="fas fa-comments"></i>
               <span>Chats</span>
             </a>
-            <a href="/patientdiagnosis" className="flex items-center space-x-2">
+            <a href="/patientdiagnosis" className="flex items-center  text-purple-600 space-x-2">
               <i className="fas fa-comments"></i>
               <span>previous diagnosis with doctors</span>
             </a>
@@ -176,9 +135,6 @@ const ProfilePatient = () => {
                 <p className="text-sm text-gray-600">PATIENT</p>
               </>
             )}
-            <a href="#" className="text-red-500 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
-            <span>Logout</span>
-          </a>
           </nav>
         </div>
 
@@ -186,6 +142,7 @@ const ProfilePatient = () => {
         <div className="flex-1 p-6">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
+          {error && <p className="text-red-500">{error}</p>}
             <h1 className="text-xl font-semibold text-gray-700">Doctors</h1>
             <div className="flex items-center space-x-4">
               <button
@@ -248,51 +205,38 @@ const ProfilePatient = () => {
 
           {/* Doctor Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {currentDoctors.map((doctor) => (
+          {loading && <p className="text-red-500">{loading}...</p>}
+            {medicalResult.map((medical) => (
               <div
-                key={doctor.id}
+                key={medical.id}
                 className="bg-white p-4 rounded-lg shadow-md relative"
               >
                 <div className="absolute top-4 right-4">
                   <span className="block h-3 w-3 rounded-full bg-green-500"></span>
                 </div>
-                <img
-                  src={doctor.profilePicture}
-                  alt="Doctor"
-                  className="w-24 h-24 mx-auto rounded-full"
-                />
+            
                 <h2 className="mt-4 text-center font-semibold text-gray-700">
-                  {doctor.fullname}
+                  {medical.sickness}
                 </h2>
                 <p className="text-center text-blue-500 text-sm">
-                  {doctor.specialization}
+                  {medical.cause}
                 </p>
                 <p className="text-center text-black text-sm">
-                  {doctor.currentWorkplace}
+                  {medical.drugsTaken}
                 </p>
                 <p className="text-center text-black text-sm">
-                  State: {doctor.state}
+                  State: {medical.prescribedDrugs}
                 </p>
                 <p className="text-center text-black text-sm">
-                  LGA: {doctor.LGA}
+                  LGA: {medical.date}
                 </p>
                 <div className="flex justify-center space-x-2 mt-4">
-                {doctor && <Link to={`/doctordetails/${doctor._id}`}>
-                <button className="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg">
-                    View
-                  </button>
-                </Link>}
+              
                
 
        
                  
-                  {doctor && <Link to={`/doctor/${doctor._id}/book-appointment`}>
-                  <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
-                    Book
-                  </button>
-
-                  </Link>
-                  }
+                 
                   
                 
                 
@@ -317,8 +261,9 @@ const ProfilePatient = () => {
           </div>
         </div>
       </div>
-    </>
-  );
-};
+      
+    </div>
+  )
+}
 
-export default ProfilePatient;
+export default SeeYourMedicalResult

@@ -30,6 +30,10 @@ import CemeteryDashboard from "./pages/Cemetary/CemeteryDashboard";
 import AllCemeteries from "./pages/Cemetary/AllCemeteries";
 import Acemetery from "./pages/Cemetary/Acemetery";
 import GetAllCemetery from "./pages/Cemetary/GetAllCemetery";
+
+
+
+
 import LoginDoctor from "./pages/Doctor/LoginDoctor";
 import ProfileDoctor from "./pages/Doctor/ProfileDoctor";
 import Doctors from "./pages/Doctor/patients/Doctors";
@@ -48,6 +52,14 @@ import PatientMoreDetails from "./pages/Doctor/patients/PatientMoreDetails";
 import GetAppointmentsPatients from "./pages/Doctor/patients/GetAppointmentsPatients";
 
 import DoctorDetails from "./pages/Doctor/DoctorDetails";
+import MedicalHitoryForm from "./pages/Doctor/patients/MedicalHitoryForm";
+import MedicalHitory from "./pages/Doctor/patients/MedicalHitory";
+import DonateForm from "./pages/Doctor/patients/DonateForm";
+import Donation from "./pages/Doctor/patients/Donation";
+import DiagnosisPatient from "./pages/Doctor/patients/DiagnosisPatient";
+import TestMedical from "./pages/Doctor/patients/TestMedical";
+import SeePatientResult from "./pages/Doctor/SeePatientResult";
+import SeeYourMedicalResult from "./pages/Doctor/patients/seeYourMedicalResult";
 // const socket = io("http://localhost:8000");
 const App = () => {
   const { authUser } = useAuthContext();
@@ -145,12 +157,21 @@ const App = () => {
           path="/chatsignup"
           element={authUser ? <Navigate to={"/chatwindow"} /> : <ChatSignup />}
         />
+
+
         //patient
         <Route path="/patientsignup" element={<PatientSignup />} />
         <Route path="/patientlogin" element={<PatientLogin />} />
         <Route path="/patientprofile" element={<ProfilePatient />} />
         <Route path="/patientmore/:id" element={<PatientMoreDetails />} />
-        
+        <Route path="/registermedicalhistory" element={<MedicalHitoryForm />} />
+        <Route path="/medicalhistories" element={<MedicalHitory />} />
+        <Route path="/registerdonation" element={<DonateForm />} />
+        <Route path="/patientdonations" element={<Donation />} />
+        <Route path="/patientdiagnosis" element={<DiagnosisPatient />} />
+        <Route path="/medicaltestresult/:patientId" element={<TestMedical />} />
+        <Route path="/seepatientresult" element={<SeePatientResult />} />
+        <Route path="/patientdiagnosis" element={<SeeYourMedicalResult />} />
 
 
         //cemetary

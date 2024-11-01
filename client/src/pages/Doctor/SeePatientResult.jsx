@@ -4,19 +4,19 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-const ProfileDoctor = ({doctorId: propDoctorId}) => {
-  const { doctorId: paramDoctorId } = useParams()
-  const doctorId = propDoctorId || paramDoctorId;
+const SeePatientResult = () => {
+
+  const [medicalresult, setMedicalResult]  = useState([])
+  const [loading, setLoading] = useState(true)
   const [patients, setPatients] = useState([]);
   const [doctor, setDoctor] = useState({});
   const [error, setError] = useState('');
  
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
+ 
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchProfile = async () => {
+  const fetchMedicalResult = async () => {
     try {
       const token = localStorage.getItem("token")
       console.log(token)
@@ -26,14 +26,14 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
  
       setLoading(true);
 
-      const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_P}/getmedicaltestfordoctor`, {
         headers: {
           Authorization:`Bearer ${token}`
         },
         withCredentials: true
       });
       console.log(response.data);
-      setDoctor(response.data.doctor);
+      setMedicalResult(response.data);
       toast.success("successfully fetched")
     } catch (error) {
       console.error(error)
@@ -43,50 +43,99 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
       setLoading(false)
     }
   }
-   fetchProfile()
+   fetchMedicalResult()
   }, [navigate]);
 
 
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchProfile = async () => {
       try {
+        const token = localStorage.getItem("token")
+        console.log(token)
+        if(!token){
+          throw new Error("token not found")
+        }
+   
         setLoading(true);
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-          throw new Error('Token not found');
-        }
-
-     
-        const response = await axios.get(`${import.meta.env.VITE_API_A}/doctor`, {
+  
+        const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:`Bearer ${token}`
           },
-          withCredentials: true,
+          withCredentials: true
         });
-
-       
-        if (response.data && response.data.appointments) {
-          setAppointments(response.data.appointments);
-          toast.success('Appointments fetched successfully!');
-        } else {
-          throw new Error('No appointments found');
-        }
+        console.log(response.data);
+        setDoctor(response.data.doctor);
+        toast.success("successfully fetched")
       } catch (error) {
-        console.error(error);
-        setError('Failed to fetch appointments');
-        toast.error('Error fetching appointments');
-      } finally {
-        setLoading(false); 
+        console.error(error)
+        setError(error)
       }
-    };
-
-    
-    if (doctorId) {
-      fetchAppointments();
+      finally{
+        setLoading(false)
+      }
     }
-  }, [doctorId]); 
-  useEffect(() => {
+     fetchProfile()
+    }, [navigate]);
+
+
+
+
+
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+          try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("token not found");
+
+                   // Get unique patient IDs, filtering out null or undefined values
+        const patientIds = [...new Set(medicalresult.map(med => med.patientId).filter(id => id !== null && id !== undefined))];
+
+        // Log patient IDs for debugging
+        console.log("Fetching patient details for IDs:", patientIds);
+
+            const patientRequests = patientIds.map(id => 
+              axios.get(`${import.meta.env.VITE_API_P}/getpatient/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+              })
+            );
+    
+            const responses = await Promise.all(patientRequests);
+            const patientsData = responses.reduce((acc, response) => {
+              acc[response.data._id] = response.data; 
+              return acc;
+            }, {});
+    
+            setPatients(patientsData);
+          } catch (error) {
+            console.error(error);
+            toast.error("Failed to fetch patient details");
+          }
+        };
+    
+        if (medicalresult.length > 0) {
+          fetchPatients();
+        }
+      }, [medicalresult]);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+useEffect(() => {
     const fetchAllPatient = async () => {
       try {
         const token = localStorage.getItem("token")
@@ -138,10 +187,10 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
           <a href="/doctorappointment" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Appointments</span>
           </a>
-          <a href="/seepatientresult" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/seepatientresult" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>see your patients' results</span>
           </a>
-          <a href="/doctorprofile" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/doctorprofile" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Patients</span>
           </a>
           <a href="/chatlogin" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
@@ -211,50 +260,45 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
 
         {/* Patient Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-       {patients.length > 0 ? (
-        patients.map((patient) => (
-          <div key={patient._id} className="bg-white shadow-md rounded-lg p-4">
-          <div className="flex justify-between items-center">
-
-          <img
-                  src={patient.profilePicture}
-                  alt="profilepicture"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="text-sm text-gray-500">{patient.age} years old</div>
-              </div>
-              <h3 className="text-lg font-semibold mt-2">{patient.fullname}</h3>
-              <p className="text-sm text-gray-500">{patient.email}</p>
-              <p className="text-sm text-gray-500"> {patient.phoneNumber}</p>
-              <p className="text-sm text-gray-500"> {patient.state}</p>
-              <p className="text-sm text-gray-500"> {patient.homeAddress}</p>
-              <p className="text-sm text-gray-500"> {patient.allergics}</p>
-        
-  <div className="flex space-x-2 mt-4">
-    <Link to={`/patientmore/${patient._id}`}>
-      <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-        View
-      </button>
-    </Link>
-    <a
-      href={`https://www.google.com/maps/search/?api=1&query=${doctor.officeAddress},${patient.homeAddress}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 text-center"
-    >
-      Google Map
-    </a>
+        {medicalresult.length > 0 ? (
+            medicalresult.map((medical) => {
+              const patient = patients[medical.patientId]; // Get patient details by ID
+              return (
+                <div key={medical._id} className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-2xl">
+  <div className="flex items-center space-x-4">
+    <img
+      src={medical.patient?.profilePicture || "/path/to/defaultImage.jpg"} // Use a default image if profile picture is not available
+      alt="profile"
+      className="w-16 h-16 rounded-full border-2 border-green-500"
+    />
+    <div>
+      <h3 className="text-xl font-semibold text-gray-800">{patient?.fname}</h3>
+      <p className="text-sm text-gray-500">{patient?.email}</p>
+    </div>
   </div>
-            
-            </div>
-        ))
-       ): (
-        <p>No patients found.</p>
-       
 
+  <div className="mt-4 space-y-2">
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Name:</span>john paul</p>
 
-              
-       )}
+  </div>
+
+  <div className="border-t mt-4 pt-4 space-y-2">
+    <p className="text-lg font-semibold text-gray-800">Medical Information</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Sickness:</span> {medical.sickness}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Cause:</span> {medical.cause}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Date Started:</span> {new Date(medical.started).toLocaleDateString()}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Allergies:</span> {medical.allergics}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Drugs Taken:</span> {medical.drugsTaken}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Prescribed Drugs:</span> {medical.prescribedDrugs}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Consultation Date:</span> {new Date(medical.date).toLocaleDateString()}</p>
+  </div>
+</div>
+
+              );
+            })
+          ) : (
+            <p>No patient records found.</p>
+          )}
           
       
         </div>
@@ -272,4 +316,4 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
   );
 };
 
-export default ProfileDoctor;
+export default SeePatientResult;
