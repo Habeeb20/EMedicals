@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-
+import User from "../models/hospitals/userSchema.js"
 export const verifyToken = (req, res, next) => {
   let token = req.header('authorization');
 
@@ -13,5 +13,26 @@ export const verifyToken = (req, res, next) => {
     next();
   } catch (e) {
     res.status(400).json({ msg: 'Token is not valid' });
+  }
+};
+
+
+
+
+
+export const auth = (allowedRoles) => async (req, res, next) => {
+  try {
+      const token = req.header('Authorization').replace('Bearer ', '');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+
+      if (!user || !allowedRoles.includes(user.role)) {
+          return res.status(403).json({ error: 'Access denied' });
+      }
+
+      req.user = user;
+      next();
+  } catch (error) {
+      res.status(401).json({ error: 'Please authenticate' });
   }
 };

@@ -123,7 +123,7 @@ export default function UserLandingProfile() {
 
             </Link>
              
-            <Link to='/pharmacyuser'>
+            <Link to='/searchdrugs'>
             <div className="bg-purple-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
               <FaPrescriptionBottle className="text-4xl text-purple-500" />
               <div>

@@ -34,26 +34,49 @@ export const protect = async (req, res, next) => {
 
 export const isAuthenticate = async (req, res, next) => {
   try {
-    const token = req.cookies.access_token; // Retrieve token from cookies
+    const token = req.cookies.access_token; 
 
     if (!token) {
-      // If no token found, send unauthorized error
+    
       return next(createError(401, "Unauthorized: No token provided"));
     }
 
-    // Verify token using JWT secret
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
       if (err) {
-        // If token is invalid or expired, send forbidden error
+    
         return next(createError(403, "Forbidden: Invalid token"));
       }
 
-      req.user = user; // Attach decoded user data to request
-      next(); // Proceed to the next middleware or route handler
+      req.user = user; 
+      next(); 
     });
   } catch (error) {
-    // Catch any unexpected errors and pass to error handler
+ 
     next(error);
   }
 };
+
+
+
+
+
+export const auth = (roles = []) => {
+    return (req, res, next) => {
+        const token = req.header('Authorization').split(' ')[1];
+        if (!token) return res.status(403).send('Access Denied');
+        
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = decoded;
+            if (roles.length && !roles.includes(decoded.role)) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+            next();
+        } catch (error) {
+            res.status(400).send('Invalid Token');
+        }
+    };
+};
+
+
 

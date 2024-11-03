@@ -26,6 +26,14 @@ import userchatrouter from "./routes/Doctors/chat/userChatRoute.js";
 import patientDonateRoute from "./routes/Doctors/patientDonate.route.js";
 import patientMedicalRoute from "./routes/Doctors/patientMedicalHistory.route.js";
 import medicalTestRoute from "./routes/Doctors/medicalTest.route.js";
+import pharmacyDrugRoute from "./routes/pharmacy/drugRoute.js";
+import pharmacyOrderRoute from "./routes/pharmacy/OrderRoute.js";
+import phamrcyAdminrouter from "./routes/pharmacy/Admin.route.js";
+// import pharmacyReviewRoute from "./routes/pharmacy/PReview.route.js";
+import pharmacyRoute from "./routes/pharmacy/authRoute.js";
+import hospitaladminrouter from "./routes/hospital/admin.route.js";
+import hospitaldoctorrouter from "./routes/hospital/doctor.route.js";
+import hospitalpatientrouter from "./routes/hospital/patient.route.js";
 
 dotenv.config();
 
@@ -42,7 +50,7 @@ app.use(
       "http://localhost:5173",
       "http://localhost:5174",
       "http://localhost:3000",
-      "http://localhost:3001",
+      "http://localhost:5175",
     ],
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -83,6 +91,23 @@ app.use("/api/mortuary", messageRouter);
 //cemetery
 app.use("/api/cemetery", cemeteryRouter);
 app.use("/api/cemetery", cemeteryCommentRouter);
+
+
+
+//pharmacy
+
+app.use("/api/pharmacy", pharmacyDrugRoute)
+app.use("/api/pharmacy", pharmacyOrderRoute)
+app.use("/api/pharmacy", phamrcyAdminrouter)
+// app.use("/api/pharmacy", pharmacyReviewRoute)
+app.use("/api/pharmacy", pharmacyRoute)
+
+
+
+//hospital
+app.use("/api/hospital", hospitaladminrouter)
+app.use("/api/hospital", hospitaldoctorrouter)
+app.use("/api/hospital", hospitalpatientrouter)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

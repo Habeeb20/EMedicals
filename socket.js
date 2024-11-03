@@ -38,4 +38,16 @@ io.on("connection", (socket) => {
   });
 });
 
-export { app, io, server };
+
+const sendNotification = (message, recipientId) => {
+  const recipientSocket = connectedUsers[recipientId];
+  if (recipientSocket) {
+    io.to(recipientSocket).emit('notification', message);
+  }
+};
+const updateInventory = (updatedDrug) => {
+  io.emit('inventoryUpdate', updatedDrug);
+};
+
+
+export { app, io, server, sendNotification };

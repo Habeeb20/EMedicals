@@ -60,6 +60,14 @@ import DiagnosisPatient from "./pages/Doctor/patients/DiagnosisPatient";
 import TestMedical from "./pages/Doctor/patients/TestMedical";
 import SeePatientResult from "./pages/Doctor/SeePatientResult";
 import SeeYourMedicalResult from "./pages/Doctor/patients/seeYourMedicalResult";
+
+import LoginPharmacy from "./pages/Pharmacy/LoginPharmacy";
+import RegisterPharmacy from "./pages/Pharmacy/RegisterPharmacy";
+import ProfilePharmacy from "./pages/Pharmacy/ProfilePharmacy";
+import SearchDrugs from "./pages/Pharmacy/SearchDrugs";
+import DrugDetails from "./pages/Pharmacy/DrugDetails";
+import ViewCart from "./pages/Pharmacy/ViewCart";
+import OrderDetails from "./pages/Pharmacy/OrderDetail";
 // const socket = io("http://localhost:8000");
 const App = () => {
   const { authUser } = useAuthContext();
@@ -181,6 +189,19 @@ const App = () => {
         <Route path="/cemeterydashboard" element={<CemeteryDashboard />} />
         //mortuary
         <Route path="/mortuarysignup" element={<MortuarySignup />} />
+
+
+
+
+
+        //pharmacy
+        <Route path="/pharmacistlogin" element={<LoginPharmacy />} />
+        <Route path="/registerpharmacy" element={<RegisterPharmacy />}  />
+        <Route path="/profilepharmacy"  element={<ProfilePharmacy />} />
+        <Route path="/searchdrugs" element={<SearchDrugs />}/>
+        <Route path="/drugsdetails/:id" element={<DrugDetails />}/>
+        <Route path="/viewcart" element={<ViewCart />} />
+        <Route path="/orderdetails" element={<OrderDetails  />} />
       </Routes>
       <Toaster />
     </Router>
