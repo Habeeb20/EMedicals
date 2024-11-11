@@ -13,7 +13,7 @@ const pharmacyDrugRoute = express.Router()
 pharmacyDrugRoute.post("/drug",  protect,  upload,   addDrug)
 
 pharmacyDrugRoute.get("/getdrug", getDrugs)
-pharmacyDrugRoute.get("/getdrugforapharmacist", verifyToken, getDrugsForAPharmacist)
+pharmacyDrugRoute.get("/getdrugforapharmacist", protect, getDrugsForAPharmacist)
 
 pharmacyDrugRoute.get("/getadrug/:id", getAdrug )
 pharmacyDrugRoute.put("/updatedrug", protect,  admin, updateDrug)

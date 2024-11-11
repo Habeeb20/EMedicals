@@ -27,13 +27,13 @@ export const getAdrug = async(req, res) => {
 
 export const getDrugsForAPharmacist = async (req, res) => {
   try {
+    console.log(req.user.id)
     const drugs = await Drug.find({ pharmacistId: req.user.id });
+    console.log(drugs)
 
     if (drugs.length > 0) {
       res.status(200).json(drugs);
-    } else {
-      res.status(404).json({ message: "No drugs found for this pharmacist" });
-    }
+    } 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred while retrieving drugs" });

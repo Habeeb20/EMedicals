@@ -45,22 +45,30 @@ const ProfilePharmacy = () => {
 
  
 
-  const fetchDrugsData = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_PH}/getdrugforapharmacist`, {
-        headers:{
-          Authorization:`Bearer ${token}`,
-          'Content-Type':'application/json'
-        },
-        withCredentials:true
+  useEffect(() => {
+    const fetchDrugsData = async () => {
+      try {
+        const token = localStorage.getItem("authToken")
+        const response = await axios.get(`${import.meta.env.VITE_API_PH}/getdrugforapharmacist`, {
+          headers:{
+            Authorization:`Bearer ${token}`,
+            'Content-Type':'application/json'
+          },
+          withCredentials:true
+  
+        });
+        console.log(response)
+        setGetDrugs(response.data.drugs);
+      } catch (error) {
+        console.log(error)
+        toast.error("Failed to load drugs data.");
+      }
+    };
+    fetchDrugsData()
 
-      });
-      console.log(response)
-      setGetDrugs(response.data.drugs);
-    } catch (error) {
-      toast.error("Failed to load drugs data.");
-    }
-  };
+  }, [navigate])
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
