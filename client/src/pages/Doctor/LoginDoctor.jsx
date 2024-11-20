@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const LoginDoctor = () => {
@@ -42,6 +42,11 @@ const LoginDoctor = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button className="w-full bg-blue-500 text-white p-2" type="submit">Login</button>
+        <p>Dnt have an account? 
+        <Link to="/doctorsignup">
+        signup
+        </Link>
+        </p>
       </form>
     </div>
   );

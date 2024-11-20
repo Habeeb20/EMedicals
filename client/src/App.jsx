@@ -68,6 +68,8 @@ import SearchDrugs from "./pages/Pharmacy/SearchDrugs";
 import DrugDetails from "./pages/Pharmacy/DrugDetails";
 import ViewCart from "./pages/Pharmacy/ViewCart";
 import OrderDetails from "./pages/Pharmacy/OrderDetail";
+import DashboardHomePage from "./pages/HRMS/DashboardHomePage";
+import HomePage from "./pages/HRMS/HomePage";
 
 
 // const socket = io("http://localhost:8000");
@@ -204,6 +206,15 @@ const App = () => {
         <Route path="/drugsdetails/:id" element={<DrugDetails />}/>
         <Route path="/viewcart" element={<ViewCart />} />
         <Route path="/orderdetails" element={<OrderDetails  />} />
+
+
+
+
+
+
+        ///HRMS
+        <Route path="/hrms/*" element={<HomePage />} />
+      
 
         
 

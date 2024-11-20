@@ -183,6 +183,12 @@ const PatientLogin = () => {
                   sign up.
                 </a>
               </p>
+              <p className="mt-4 text-center text-gray-500 text-sm">
+                Are you a doctor? log in{" "}
+                <a href="/doctorlogin" className="text-blue-500 font-semibold">
+                  Login.
+                </a>
+              </p>
             </form>
           </div>
         </div>
