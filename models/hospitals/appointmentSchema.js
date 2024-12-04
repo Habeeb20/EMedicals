@@ -1,24 +1,17 @@
-import mongoose from "mongoose"
 
-const MessageSchema = new mongoose.Schema({
-    sender: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },
-    message: String,
-    timestamp: { type: Date, default: Date.now },
+
+
+import mongoose from 'mongoose';
+
+const appointmentSchema = mongoose.Schema({
+  patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser', required: true },
+  doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },
+  sickness: { type: String, required: true },
+  medication: { type: String },
+  dateStarted: { type: Date, required: true },
+  appointmentDate: { type: Date, required: true },
+  status: { type: String, enum: ['pending', 'accepted', 'rejected', 'rescheduled'], default: 'pending' },
+  rescheduleInfo: { type: String, default: null },
 });
 
-const AppointmentSchema = new mongoose.Schema({
-    patientId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },
-    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },
-    status: { type: String, enum: ['pending', 'accepted', 'rejected', 'rescheduled'], default: 'pending' },
-    date: Date,
-    medicalReport: String, 
-    messageThread: [MessageSchema],
-    notifications: [{
-        type: { type: String, enum: ['appointment', 'report'] },
-        message: String,
-        isRead: { type: Boolean, default: false },
-        timestamp: { type: Date, default: Date.now },
-    }],
-});
-
-export default mongoose.model('HAppointment', AppointmentSchema);
+export default mongoose.model('HAppointment', appointmentSchema);

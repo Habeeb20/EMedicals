@@ -1,35 +1,34 @@
 import Appointment from '../../models/hospitals/appointmentSchema.js';
 
+// Book an appointment
 export const bookAppointment = async (req, res) => {
-    try {
-        const { doctorId, date } = req.body;
-        const newAppointment = new Appointment({
-            patientId: req.user._id,
-            doctorId,
-            date,
-            status: 'pending',
-            notifications: [{
-                type: 'appointment',
-                message: 'Appointment booking request submitted.',
-            }],
-        });
+  const { patientId, sickness, dateStarted, medication, appointmentDate, specialization } = req.body;
 
-        await newAppointment.save();
-        res.status(201).json({ message: 'Appointment booked successfully', appointment: newAppointment });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to book appointment' });
-    }
+  try {
+    const newAppointment = new Appointment({
+      patientId,
+      sickness,
+      dateStarted,
+      medication,
+      appointmentDate,
+      specialization,
+      status: 'pending',
+    });
+    await newAppointment.save();
+    res.status(201).json({ message: 'Appointment booked successfully', newAppointment });
+  } catch (error) {
+    res.status(500).json({ message: 'Error booking appointment', error });
+  }
 };
 
-export const getNotifications = async (req, res) => {
-    try {
-        const appointments = await Appointment.find({ patientId: req.user._id });
+// Get patient's appointments
+export const getPatientAppointments = async (req, res) => {
+  const { patientId } = req.params;
 
-        const notifications = appointments.flatMap(app => app.notifications);
-        res.json({ notifications });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to retrieve notifications' });
-    }
+  try {
+    const appointments = await Appointment.find({ patientId });
+    res.status(200).json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching appointments', error });
+  }
 };

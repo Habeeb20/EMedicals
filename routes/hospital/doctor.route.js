@@ -1,14 +1,21 @@
-import express from "express"
-import { acceptAppointment, rejectAppointment,sendMedicalResult,rescheduleAppointment } from "../../controllers/hospital/doctorController.js";
-import {auth} from "../../middleware/verifyToken.js"
 
 
-const hospitaldoctorrouter = express.Router();
+// routes/doctor.js
+import express from 'express';
 
-// Doctor routes for managing appointments and sending reports
- hospitaldoctorrouter.put('/appointments/:appointmentId/accept', auth(['doctor']), acceptAppointment);
- hospitaldoctorrouter.put('/appointments/:appointmentId/reject', auth(['doctor']), rejectAppointment);
- hospitaldoctorrouter.put('/appointments/:appointmentId/reschedule', auth(['doctor']), rescheduleAppointment);
- hospitaldoctorrouter.put('/appointments/:appointmentId/report', auth(['doctor']), sendMedicalResult);
+import {
+  getAppointmentsBySpecialization,
+  updateAppointmentStatus,
+} from '../../controllers/hospital/doctorController.js';
+import { auth } from '../../middleware/verifyToken.js';
+const router = express.Router();
 
-export default hospitaldoctorrouter;
+
+router.use(auth(['doctor']));
+// Get appointments for a doctor by specialization
+router.get('/:doctorId/appointments', getAppointmentsBySpecialization);
+
+// Update appointment status (accept/reject/reschedule)
+router.patch('/appointments/:appointmentId', updateAppointmentStatus);
+
+export default router;

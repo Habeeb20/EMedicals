@@ -1,12 +1,18 @@
 import express from "express"
 import { auth } from "../../middleware/verifyToken.js";
-import { bookAppointment, getNotifications } from "../../controllers/hospital/patientController.js";
+import  { bookAppointment, getPatientAppointments } from "../../controllers/hospital/patientController.js";
 
-const hospitalpatientrouter = express.Router();
+const router = express.Router();
+
+router.use(auth(['patient']));
+// Book an appointment
+router.post('/appointments', bookAppointment);
+
+// Get patient's appointments
+router.get('/:patientId/appointments', getPatientAppointments);
 
 
-hospitalpatientrouter .post('/appointments/book', auth(['patient']), bookAppointment);
-hospitalpatientrouter .get('/notifications', auth(['patient']), getNotifications);
 
 
-export default hospitalpatientrouter ;
+
+export default router;

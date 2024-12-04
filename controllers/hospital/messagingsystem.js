@@ -1,4 +1,4 @@
-// server/routes/messaging.js
+
 
 const express = require('express');
 const Appointment = require('../models/Appointment');

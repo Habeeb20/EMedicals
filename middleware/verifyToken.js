@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from "../models/hospitals/userSchema.js"
+
+
 export const verifyToken = (req, res, next) => {
   let token = req.header('authorization');
 
@@ -36,3 +38,8 @@ export const auth = (allowedRoles) => async (req, res, next) => {
       res.status(401).json({ error: 'Please authenticate' });
   }
 };
+
+
+
+
+
