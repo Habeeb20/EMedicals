@@ -73,6 +73,13 @@ import HomePage from "./pages/HRMS/HomePage";
 import LoginHospitalAdmin from "./pages/Hospital/Admin/LoginHospitalAdmin";
 import SignupHospitalAdmin from "./pages/Hospital/Admin/SignupHospitalAdmin";
 import AdminDashboard from "./pages/Hospital/Admin/DashboardHospitalAdmin";
+import LoginDoctorHospital from "./pages/Hospital/Doctors/LoginDoctorhospital";
+import LoginPatientHospital from "./pages/Hospital/patients/LoginPatientHospital";
+import DoctorDashboardHospital from "./pages/Hospital/Doctors/DoctorDashboardHospital";
+import PopModal from "./pages/Hospital/PopModal";
+import LoginNurseHospital from "./pages/Hospital/Nurse/LoginNurseHospital";
+import NurseDashboardHospital from "./pages/Hospital/Nurse/NurseDashboardHospital";
+import PatientDashboardHospital from "./pages/Hospital/patients/PatientDashboardHospital";
 
 
 // const socket = io("http://localhost:8000");
@@ -216,6 +223,16 @@ const App = () => {
         <Route path="/loginhospitaladmin" element={<LoginHospitalAdmin />} />
         <Route path="/signuphospitaladmin" element={<SignupHospitalAdmin />} />
         <Route path="/dashboardhospitaladmin" element={<AdminDashboard />} />
+
+
+        <Route path="/logindoctordashboardhospital" element={<LoginDoctorHospital />} />
+        <Route path="/loginpatienthospital" element={<LoginPatientHospital />} />
+        <Route path="/doctordashboardhospital" element={<DoctorDashboardHospital />} />
+        <Route path="/loginnursehospital" element={<LoginNurseHospital />} />
+        <Route path="/nursedashboardhospital" element={<NurseDashboardHospital />} />
+        <Route path="/loginpatienthospital" element={<LoginPatientHospital />} />
+        <Route path="/patientdashboardhospital" element={<PatientDashboardHospital />} />
+        <Route path="/popmodal" element={<PopModal />} />
 
 
 

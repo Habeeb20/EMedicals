@@ -1,8 +1,51 @@
-import React from 'react'
+import React,  {useState} from 'react'
 import { FaHospital, FaPrescriptionBottle, FaVials, FaBookDead, FaUserMd } from 'react-icons/fa'; 
 import { Link } from 'react-router-dom';
 import im from "../assets/EMedicals/young-woman-doctor-white-coat-with-stethoscope-pointing-with-index-finger-side-with-serious-face-standing-orange-wall-removebg-preview 1.png"
+
+const Modal = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 className="text-xl font-bold mb-4 text-center">Choose an Option</h2>
+        <div className="flex flex-col space-y-4">
+          <Link
+            to="/loginhospitaladmin"
+            onClick={onClose}
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as Admin
+          </Link>
+          <Link
+            to="/logindoctordashboardhospital"
+            onClick={onClose}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as Doctor
+          </Link>
+          <Link
+            to="/loginnursehospital"
+            onClick={onClose}
+            className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as Nurse
+          </Link>
+        </div>
+        <button
+          onClick={onClose}
+          className="mt-4 w-full bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const AdminHome = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div>
       <main className="flex-1 p-6">
@@ -42,12 +85,17 @@ const AdminHome = () => {
 
         {/* Grid Boxes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Link to='/loginhospitaladmin'>
+        <Link  to="#"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsModalOpen(true);
+        }}
+        className="text-blue-500 underline">
         <div className="bg-blue-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaHospital className="text-4xl text-blue-500" />
             <div>
-              <h3 className="text-xl font-bold">Hospitals</h3>
-              <p className="text-gray-500">login as a hospital personnel</p>
+              <h3 className="text-xl font-bold text-none">Hospitals</h3>
+              <p className="text-gray-500 text-none">login as a hospital personnel</p>
             </div>
           </div>
         </Link>
@@ -100,6 +148,7 @@ const AdminHome = () => {
           </div>
 
             </Link>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
          
         </div>
       </main>

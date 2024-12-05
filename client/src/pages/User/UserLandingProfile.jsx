@@ -331,7 +331,7 @@ export default function UserLandingProfile() {
           {/* Grid Boxes */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   
-            <Link to='/hospitaluser'>
+            <Link to='/loginpatienthospital'>
               <div className="bg-blue-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
                 <FaHospital className="text-4xl text-blue-500" />
                 <div>

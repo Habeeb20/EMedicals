@@ -7,14 +7,16 @@ import { FaUser, FaCalendarAlt, FaHeartbeat } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import toast from 'react-hot-toast';
-
+import {useParams } from "react-router-dom"
 ChartJS.register(BarElement, CategoryScale, LinearScale);
 
 const AdminDashboard = () => {
+  const {id} = useParams()
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [doctorActions, setDoctorActions] = useState([]);
   const [nurses, setNurses] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState()
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -46,17 +48,7 @@ const AdminDashboard = () => {
     }
   }, [token]);
 
-  const fetchPatients = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_HO}/patients`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setPatients(response.data);
-    } catch (error) {
-      console.error(error);
-      toast.error('Error fetching patients');
-    }
-  };
+
 
   const fetchAppointments = async () => {
     try {
@@ -70,9 +62,22 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchDoctorActions = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_HO}/getdoctordashboard`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setDoctors(response.data);
+      console.log("this is ur doctor details",response.data)
+    } catch (error) {
+      console.error(error);
+      toast.error('Error fetching doctor actions');
+    }
+  };
+
   const fetchNurses = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_HO}/allnurses`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_HO}/getnursedashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNurses(response.data);
@@ -85,17 +90,19 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchDoctorActions = async () => {
+  const fetchPatients = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_HO}/alldoctors`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_HO}/getpatientdashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setDoctorActions(response.data);
+      setPatients(response.data);
     } catch (error) {
       console.error(error);
-      toast.error('Error fetching doctor actions');
+      toast.error('Error fetching patients');
     }
   };
+
+ 
 
   const handleModalOpen = (role) => {
     setFormType(role);
@@ -126,7 +133,7 @@ const AdminDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_HO}/registerastaff`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_HO}/registerhospitalstaff`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(`${formType} added successfully!`);
@@ -136,6 +143,7 @@ const AdminDashboard = () => {
       // console.log("this is ur id",response.data._id)
     } catch (error) {
       console.error(error);
+
       toast.error(`Error adding ${formType}`);
     }
   };
@@ -148,12 +156,12 @@ const AdminDashboard = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await axios.put(`${import.meta.env.VITE_API_HO}/edit/${userId}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_HO}/edit/${id}`, formData, {
         headers:{Authorization: `Bearer ${token}`},
 
       })
       console.log(response.data)
-      console.log(userId)
+      console.log("this is your id*****", id)
       toast.success("details has been edited successfully")
       setSuccessMessage('Profile updated successfully!');
     } catch (error) {
@@ -212,20 +220,10 @@ const AdminDashboard = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+          <div  className="bg-white rounded-lg shadow-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">Add {formType.charAt(0).toUpperCase() + formType.slice(1)}</h2>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block mb-1">Full Name</label>
-                <input
-                  type="text"
-                  name="fullname"
-                  value={formData.fullname}
-                  onChange={handleInputChange}
-                  className="w-full border rounded px-3 py-2"
-                  required
-                />
-              </div>
+           
               <div className="mb-4">
                 <label className="block mb-1">Email</label>
                 <input
@@ -248,6 +246,17 @@ const AdminDashboard = () => {
                   required
                 />
               </div>
+              <div className="mb-4">
+                <label className="block mb-1">Full Name</label>
+                <input
+                  type="text"
+                  name="fullname"
+                  value={formData.fullname}
+                  onChange={handleInputChange}
+                  className="w-full border rounded px-3 py-2"
+                  required
+                />
+              </div>
               {formType === 'doctor' && (
                 <div className="mb-4">
                   <label className="block mb-1">Specialization</label>
@@ -261,7 +270,7 @@ const AdminDashboard = () => {
                 </div>
               )}
               <div className="mb-4">
-                <label className="block mb-1">Category</label>
+                <label className="block mb-1">Category(private or General</label>
                 <input
                   type="text"
                   name="category"
@@ -270,6 +279,21 @@ const AdminDashboard = () => {
                   className="w-full border rounded px-3 py-2"
                 />
               </div>
+              <div className="mb-4">
+  <label className="block mb-1">Role</label>
+  <select
+    name="role"
+    value={formData.role}
+    onChange={handleInputChange}
+    className="w-full border rounded px-3 py-2"
+  >
+    <option value="" disabled>Select a role</option>
+    <option value="doctor">Doctor</option>
+    <option value="nurse">Nurse</option>
+    <option value="patient">Patient</option>
+  </select>
+</div>
+
               <div className="mb-4">
                 <label className="block mb-1">Phone number</label>
                 <input
@@ -347,8 +371,8 @@ const AdminDashboard = () => {
   <div className="bg-white shadow rounded-lg p-4 flex items-center justify-between">
     <FaHeartbeat className="text-4xl text-red-600" />
     <div className="text-right">
-      <h3 className="text-2xl font-bold">{doctorActions.length}</h3>
-      <p className="text-gray-500">Doctor Actions</p>
+      <h3 className="text-2xl font-bold">{doctors.length}</h3>
+      <p className="text-gray-500">Doctors</p>
     </div>
   </div>
 
@@ -369,15 +393,40 @@ const AdminDashboard = () => {
 
 {/* Patients Section */}
 <section className="mb-6">
-  <h2 className="text-xl font-semibold mb-4">Registered Patients</h2>
+  <h2 className="text-xl font-semibold mb-4 text-green-600">Registered Patients</h2>
   <div className="bg-white shadow rounded-lg p-4">
-    {/* <ul className="list-disc pl-6 space-y-2">
-      {patients && patients?.map((patient) => (
-        <li key={patient._id}>
-          {patient.fullname} - <span className="text-gray-500">{patient.email}</span>
-        </li>
-      ))}
-    </ul> */}
+  <ul className="list-disc pl-6 space-y-2">
+  {/* Add a heading section */}
+  <li className="font-bold">
+    <div className="grid grid-cols-6 gap-4">
+    <span>Picture</span>
+      <span>Full Name</span>
+      <span>Email</span>
+      <span>Phone Number</span>
+      <span>Location</span>
+      <span>Date added</span>
+    </div>
+  </li>
+
+  {/* Map through the nurses data */}
+  {patients &&
+    patients.map((patient) => (
+      <li key={patient._id} className="grid grid-cols-6 gap-4 items-center">
+      <span>{patient.picture1}</span>
+        <span>{patient.fullname}</span>
+        <span className="text-gray-500">{patient.email}</span>
+        <span className="text-gray-500">{patient.phone}</span>
+        <span className="text-gray-500">{patient.location || patient.state || patient.LGA}</span>
+        <span className="text-gray-500">{new Date(patient.createdAt).toLocaleDateString()}</span>
+        {/* <button
+          onClick={() => setShowPopup(true)}
+          className="mt-5 py-3 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          Edit Profile
+        </button> */}
+      </li>
+    ))}
+</ul>
   </div>
 </section>
 
@@ -526,32 +575,48 @@ const AdminDashboard = () => {
             </div>
 
 )}
-  <h2 className="text-xl font-semibold mb-4">Registered Nurses</h2>
-  <div className="bg-white shadow rounded-lg p-4">
-    { <ul className="list-disc pl-6 space-y-2">
-      {nurses && nurses?.map((nurse) => (
-        <>
-        <li key={nurse._id}>
-          {nurse.fullname} - <span className="text-gray-500">{nurse.email}</span> - <span className="text-gray-500">{nurse.phone}</span> - <span className="text-gray-500">{nurse.state}</span> 
-        </li>
-        <button
-        onClick={() => setShowPopup(true)}
-        className="mt-5 py-3 px-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-      >
-        Edit Profile
-      </button>
+  <h2 className="text-xl font-semibold mb-4 text-green-600">Registered Nurses</h2>
+  <div className="bg-white shadow rounded-lg p-2">
+  <ul className="list-disc pl-6 space-y-2">
+  {/* Add a heading section */}
+  <li className="font-bold">
+    <div className="grid grid-cols-6 gap-4">
+    <span>picture</span>
+      <span>Full Name</span>
+      <span>Email</span>
+      <span>Phone Number</span>
+      <span>Location</span>
+      <span>Date added</span>
+    </div>
+  </li>
 
-        </>
-      
-        
-      ))}
-    </ul> }
+  {/* Map through the nurses data */}
+  {nurses &&
+    nurses.map((nurse) => (
+      <li key={nurse._id} className="grid grid-cols-6 gap-4 items-center">
+      <span>{nurse.picture1}</span>
+        <span>{nurse.fullname}</span>
+        <span className="text-gray-500">{nurse.email}</span>
+        <span className="text-gray-500">{nurse.phone}</span>
+        <span className="text-gray-500">{nurse.location || nurse.state || nurse.LGA}</span>
+        <span className="text-gray-500">{new Date(nurse.createdAt).toLocaleDateString()}</span>
+
+        {/* <button
+          onClick={() => setShowPopup(true)}
+          className="mt-5 py-3 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          Edit Profile
+        </button> */}
+      </li>
+    ))}
+</ul>
+
   </div>
 </section>
 
 {/* Appointments Section */}
 <section className="mb-6">
-  <h2 className="text-xl font-semibold mb-4">Appointments</h2>
+  <h2 className="text-xl font-semibold mb-4 text-green-600">Appointments</h2>
   <div className="bg-white shadow rounded-lg p-4">
     <ul className="list-disc pl-6 space-y-2">
       {/* {appointments.map((appt) => (
@@ -566,15 +631,45 @@ const AdminDashboard = () => {
 
 {/* Doctor Actions Section */}
 <section>
-  <h2 className="text-xl font-semibold mb-4">Doctor Actions</h2>
+  <h2 className="text-xl font-semibold mb-4 text-green-600">Doctors</h2>
   <div className="bg-white shadow rounded-lg p-4">
-    {/* <ul className="list-disc pl-6 space-y-2">
-      {doctorActions.map((action) => (
-        <li key={action._id}>
-          Appointment ID: {action._id}, Status: <span className="text-gray-500">{action.status}</span>
-        </li>
-      ))}
-    </ul> */}
+  <ul className="list-disc pl-6 space-y-2">
+  {/* Add a heading section */}
+  <li className="font-bold">
+    <div className="grid grid-cols-6 gap-4">
+    <span>picture</span>
+      <span>Full Name</span>
+      <span>Email</span>
+      <span>Phone Number</span>
+      <span>Location</span>
+      <span>Date Added</span>
+    </div>
+  </li>
+
+  {/* Map through the nurses data */}
+  {doctors && Array.isArray(doctors) &&
+    doctors?.map((doctor) => (
+      <li key={doctor._id} className="grid grid-cols-6 gap-4 items-center">
+       <img 
+      src={doctor.picture1} 
+      alt="User" 
+      className="rounded-full w-12 h-12 object-cover"
+    />
+        <span>{doctor.fullname}</span>
+        <span className="text-gray-500">{doctor.email}</span>
+        <span className="text-gray-500">{doctor.phone}</span>
+        <span className="text-gray-500">{doctor.location || doctor.state || doctor.LGA}</span>
+        <span className="text-gray-500">{new Date(doctor.createdAt).toLocaleTimeString()}</span>
+
+        {/* <button
+          onClick={() => setShowPopup(true)}
+          className="mt-5 py-3 px-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          Edit Profile
+        </button> */}
+      </li>
+    ))}
+</ul>
   </div>
 </section>
     {error && <div className="text-red-500 mt-5">{error}</div>}

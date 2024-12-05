@@ -6,7 +6,8 @@ import cloudinary from "cloudinary"
 import nodemailer from "nodemailer"
 import crypto from "crypto"
 import bcrypt from "bcryptjs";
-
+import Staff from "../../models/hospitals/staffSchema.js";
+import { protect2 } from "../../middleware/protect.js";
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -118,7 +119,8 @@ export const registerUser = async (req, res) => {
       await newUser.save();
       res.status(201).json({ message: `${role} registered successfully!` });
     } catch (error) {
-      res.status(500).json({ message: 'Error registering user', error });
+      console.log(error)
+      res.status(500).json({ message:  error.message });
     }
   };
 
@@ -206,6 +208,402 @@ export const getAllDoctorsActions = async (req, res) => {
       res.status(500).json({ message: 'Error fetching actions', error });
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  export const registerHospitalStaff = async (req, res) => {
+    const { email, password, role} = req.body;
+  
+    if (!email || !password || !role) {
+      res.status(400);
+      throw new Error("Username and password are required.");
+    }
+
+    const existingstaff = await Staff.findOne({ email });
+    if (existingstaff) {
+      res.status(400).json({message:"User with this username already exists."});
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const staff = new Staff({
+      email,
+      password: hashedPassword,
+      role
+    });
+
+    await staff.save();
+
+    res.status(201).json({
+      message: "User registered successfully.",
+      staff,
+    });
+  
+
+  }
+
+
+  export const loginHospitalStaff = async(req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("Username and password are required.");
+    }
+    const user = await Staff.findOne({ email });
+    if (!user) {
+      res.status(404).json({ message: "email not found " });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(404);
+      throw new Error("Invalid  password.");
+    }
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({
+      message:"Login successful",
+      token, user})
+
+  }
+
+export const doctordashboard = async(req, res) =>{
+
+    const userId = req.user.id;
+
+    let user = await Staff.findById(userId)
+    if (!user) {
+      user = await User.findById(userId);
+    }
+;
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found.");
+    }
+
+    res.status(200).json(user);
+
+  
+}
+
+export const nursedashboard = async(req, res) =>{
+
+  const userId = req.user.id;
+
+  let user = await Staff.findById(userId)
+  if (!user) {
+    user = await User.findById(userId);
+  }
+;
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found.");
+  }
+
+  res.status(200).json(user);
+
+
+}
+
+export const patientdashboard = async(req, res) => {
+
+
+    const userId = req.user.id;
+
+    let user = await Staff.findById(userId);
+    if (!user) {
+      user = await User.findById(userId);
+    }
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found.");
+    }
+
+    res.status(200).json(user);
+
+  }
+
+  
+  export const doctoreditdashboard = async(req, res) => {
+
+  
+
+    const {id} = req.params
+
+    const user = await Staff.findById(id);
+    if (!user) {
+      res.status(404);
+      throw new Error("School not found.");
+    }
+
+    if (user._id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Not authorized to update this school.");
+      }
+      const updates = { ...req.body };
+
+      const uploadFile = async (file) => {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: "schools",
+        });
+        return result.secure_url;
+      };
+
+      if (req.files) {
+        if (req.files.picture1) {
+          updates.picture1 = await uploadFile(req.files.picture1);
+        }
+      }
+
+    
+   
+
+    const updatedUser = await Staff.findByIdAndUpdate(id, updates, {
+        new: true,
+      });
+      console.log(updatedUser)
+      if (!updatedUser) {
+        res.status(500);
+        throw new Error("Failed to update exam.");
+      }
+    
+      res.status(200).json({
+        message: "Exam updated successfully.",
+        updatedUser,
+      });
+
+
+  }
+
+
+  export const nurseeditdashboard = async(req, res) => {
+
+  
+
+    const {id} = req.params
+
+    const user = await Staff.findById(id);
+    if (!user) {
+      res.status(404);
+      throw new Error("School not found.");
+    }
+
+    if (user._id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Not authorized to update this school.");
+      }
+      const updates = { ...req.body };
+
+      const uploadFile = async (file) => {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: "schools",
+        });
+        return result.secure_url;
+      };
+
+      if (req.files) {
+        if (req.files.picture1) {
+          updates.picture1 = await uploadFile(req.files.picture1);
+        }
+      }
+
+    
+   
+
+    const updatedUser = await Staff.findByIdAndUpdate(id, updates, {
+        new: true,
+      });
+      console.log(updatedUser)
+      if (!updatedUser) {
+        res.status(500);
+        throw new Error("Failed to update exam.");
+      }
+    
+      res.status(200).json({
+        message: "Exam updated successfully.",
+        updatedUser,
+      });
+
+
+  }
+
+
+
+  export const patienteditdashboard = async(req, res) => {
+
+  
+
+    const {id} = req.params
+
+    const user = await Staff.findById(id);
+    if (!user) {
+      res.status(404);
+      throw new Error("School not found.");
+    }
+
+    if (user._id.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Not authorized to update this school.");
+      }
+      const updates = { ...req.body };
+
+      const uploadFile = async (file) => {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: "schools",
+        });
+        return result.secure_url;
+      };
+
+      if (req.files) {
+        if (req.files.picture1) {
+          updates.picture1 = await uploadFile(req.files.picture1);
+        }
+      }
+
+    
+   
+
+    const updatedUser = await Staff.findByIdAndUpdate(id, updates, {
+        new: true,
+      });
+      if (!updatedUser) {
+        res.status(500);
+        throw new Error("Failed to update exam.");
+      }
+      res.status(200).json({
+        message: "Exam updated successfully.",
+        updatedUser,
+      });
+
+
+  }
+
+
+
+
+  export const getAllDoctorsForAdmin = async (req, res) => {
+    try {
+     
+      if (req.user.role !== 'admin') {
+        res.status(403);
+        throw new Error('Access denied: Admins only.');
+      }
+  
+      const doctors = await Staff.find({ role: 'doctor' }); 
+      res.status(200).json(doctors);
+    } catch (error) {
+
+      res.status(500).json({ message: 'Failed to retrieve doctors', error: error.message });
+    }
+  };
+
+  export const getAllNursesForAdmin = async (req, res) => {
+    try {
+     
+      if (req.user.role !== 'admin') {
+        res.status(403);
+        throw new Error('Access denied: Admins only.');
+      }
+  
+      const nurses = await Staff.find({ role: 'nurse' }); 
+  
+  
+      res.status(200).json(nurses);
+    } catch (error) {
+      // Return error if something goes wrong
+      res.status(500).json({ message: 'Failed to retrieve nurses', error: error.message });
+    }
+  };
+
+  
+  export const getAllPatientsForAdmin = async (req, res) => {
+    try {
+     
+      if (req.user.role !== 'admin') {
+        res.status(403);
+        throw new Error('Access denied: Admins only.');
+      }
+  
+      const nurses = await Staff.find({ role: 'patient' }); 
+  
+  
+      res.status(200).json(nurses);
+    } catch (error) {
+      // Return error if something goes wrong
+      res.status(500).json({ message: 'Failed to retrieve nurses', error: error.message });
+    }
+  };
+  
+  
+
+
+
+
+  export const getAllDoctorsForAdmin3 = async (req, res) => {
+    try {
+     
+      if (req.user.role !== 'doctor') {
+        res.status(403);
+        throw new Error('Access denied: doctors only.');
+      }
+  
+      const doctors = await Staff.find(); 
+      res.status(200).json(doctors);
+    } catch (error) {
+      
+      res.status(500).json({ message: 'Failed to retrieve doctors', error: error.message });
+    }
+  };
+
+
+
   
 
 
