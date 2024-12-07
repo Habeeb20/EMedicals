@@ -2,7 +2,7 @@ import React from "react";
 import axios from 'axios';
 import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {toast} from "react-hot-toast";
 
@@ -10,15 +10,20 @@ import {toast} from "react-hot-toast";
 
 
 const DoctorDashboardHospital = () => {
+  const {id} = useParams()
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSection, setSelectedSection] = useState("overview");
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [doctorId, setDoctorId] = useState('')
   const [userId, setUserId] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+  const [appointments, setAppointments] = useState([]);
   const [username, setUsername] = useState('');
   const [user, setUser] = useState([]);
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -31,6 +36,7 @@ const DoctorDashboardHospital = () => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);
+        setDoctorId(data._id)
         setUserId(data._id)
       } catch (error) {
         console.log(error)
@@ -101,6 +107,50 @@ const DoctorDashboardHospital = () => {
     );
   }
 
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${import.meta.env.VITE_API_HO}/appointments/doctor/${id}`, {
+          headers:{Authorization: `Bearer ${token}`}
+        })
+
+        setAppointments(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching doctor appointments:", error);
+        setLoading(false); 
+      }
+    }
+
+    fetchAppointments();
+  }, [])
+
+  const updateAppointmentStatus = async (appointmentId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `${import.meta.env.VITE_API_HO}/appointments/doctor/${doctorId}/${appointmentId}`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment._id === appointmentId
+            ? { ...appointment, status }
+            : appointment
+        )
+      );
+    } catch (error) {
+      console.error("Error updating appointment status:", error);
+    }
+  };
+
+
+
+
   const renderContent = () => {
     switch (selectedSection) {
       case "home":
@@ -126,6 +176,59 @@ const DoctorDashboardHospital = () => {
               Appointments
             </h3>
             <p>Manage your appointments here.</p>
+            {appointments.length > 0 ? (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Patient</th>
+              <th className="border px-4 py-2">Sickness</th>
+              <th className="border px-4 py-2">Appointment Date</th>
+              <th className="border px-4 py-2">Status</th>
+              <th className="border px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.map((appointment) => (
+              <tr key={appointment._id}>
+                <td className="border px-4 py-2">{appointment.patientName}</td>
+                <td className="border px-4 py-2">{appointment.sickness}</td>
+                <td className="border px-4 py-2">
+                  {new Date(appointment.appointmentDate).toLocaleDateString()}
+                </td>
+                <td className="border px-4 py-2">{appointment.status}</td>
+                <td className="border px-4 py-2">
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "accepted")
+                    }
+                    className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "rejected")
+                    }
+                    className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "rescheduled")
+                    }
+                    className="bg-yellow-500 text-white px-2 py-1 rounded"
+                  >
+                    Reschedule
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No appointments found.</p>
+      )}
           </div>
         );
       case "reports":
@@ -161,7 +264,7 @@ const DoctorDashboardHospital = () => {
           <h4 className="">  Your state of Origin: <span className="font-bold"> {userData.state}</span></h4>
           <h4 className="">  Your LGA: <span className="font-bold"> {userData.LGA}</span></h4>
           <h4 className="">  Your Home Address: <span className="font-bold"> {userData.location}</span></h4>
-          <h4 className="">  Your Available time: <span className="font-bold"> {userData.fullname}</span></h4>
+          <h4 className="">  Your Available time: <span className="font-bold"> {userData.doctorTime}</span></h4>
           <img 
   src={userData.picture1} 
   alt="User" 
@@ -276,6 +379,19 @@ const DoctorDashboardHospital = () => {
                   type="text"
                   name="category"
                   value={userData.category}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                 what time will you be Available(e.g 4:00pm - 8:00pm) everyday/ specify the day
+                </label>
+                <input
+                  type="text"
+                  name="doctorTime"
+                  value={userData.doctorTime}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />

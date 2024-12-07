@@ -34,6 +34,7 @@ import pharmacyRoute from "./routes/pharmacy/authRoute.js";
 import hospitaladminrouter from "./routes/hospital/admin.route.js";
 import hospitaldoctorrouter from "./routes/hospital/doctor.route.js";
 import hospitalpatientrouter from "./routes/hospital/patient.route.js";
+import wellnessrouter from "./routes/wellRoute.js";
 
 dotenv.config();
 
@@ -108,6 +109,11 @@ app.use("/api/pharmacy", pharmacyRoute)
 app.use("/api/hospital", hospitaladminrouter)
 app.use("/api/hospital", hospitaldoctorrouter)
 app.use("/api/hospital", hospitalpatientrouter)
+
+
+
+//wellness
+app.use("/api/wellness", wellnessrouter)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

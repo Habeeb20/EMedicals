@@ -148,6 +148,17 @@ const AdminHome = () => {
           </div>
 
             </Link>
+
+            <Link to='/wellnesslogin'>
+            <div className="bg-orange-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+            <FaUserMd className="text-4xl text-orange-500" />
+            <div>
+              <h3 className="text-xl font-bold">wellness centers</h3>
+              <p className="text-gray-500">register your Gym center, spa etc</p>
+            </div>
+          </div>
+
+            </Link>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
          
         </div>

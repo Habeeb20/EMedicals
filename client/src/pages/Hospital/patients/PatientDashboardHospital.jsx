@@ -18,6 +18,7 @@ import {toast} from "react-hot-toast";
 
 
 const PatientDashboardHospital = () => {
+  const [appointments, setAppointments] = useState([]);
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSection, setSelectedSection] = useState("overview");
@@ -49,6 +50,24 @@ const PatientDashboardHospital = () => {
     ],
   };
 
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        const response = await axios.get(`${import.meta.env.VITE_API_HO}/appointments/patient/${userId}`, {
+          headers:{Authorization:`Bearer ${token}`}
+        })
+        setAppointments(response.data);
+        setLoading(false)
+      } catch (error) {
+        console.error("Error fetching patient appointments:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchAppointments();
+  }, [])
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -129,6 +148,7 @@ const PatientDashboardHospital = () => {
       case "Dashboard":
         return (
           <>
+          <Navbar />
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold">Good Morning {userData.email}</h1>
               <button className="bg-green-600 text-white px-4 py-2 rounded-lg">
@@ -167,7 +187,35 @@ const PatientDashboardHospital = () => {
           </>
         );
       case "Appointments":
-        return (<h2 className="text-2xl font-bold">Appointments Section</h2>);
+        return ( <>
+        <h2 className="text-2xl font-bold">Appointments Section</h2>
+        {appointments.length > 0 ? (
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Doctor</th>
+              <th className="border px-4 py-2">Sickness</th>
+              <th className="border px-4 py-2">Appointment Date</th>
+              <th className="border px-4 py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.map((appointment) => (
+              <tr key={appointment._id}>
+                <td className="border px-4 py-2">{appointment.doctorName}</td>
+                <td className="border px-4 py-2">{appointment.sickness}</td>
+                <td className="border px-4 py-2">
+                  {new Date(appointment.appointmentDate).toLocaleDateString()}
+                </td>
+                <td className="border px-4 py-2">{appointment.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No appointments found.</p>
+      )}
+        </>);
       case "Patients":
         return <h2 className="text-2xl font-bold">Patients Section</h2>;
       case "Settings":
@@ -369,7 +417,7 @@ const PatientDashboardHospital = () => {
     <div className="flex flex-col lg:flex-row h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-full lg:w-1/4 bg-white border-r">
-        <div className="p-4 text-2xl font-bold text-green-600">Pip Clinic</div>
+        <div className="p-4 text-2xl font-bold text-green-600">{userData.hospitalName}</div>
         <nav className="mt-6">
           <ul>
             <li

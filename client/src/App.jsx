@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Signup from "./pages/Hospital/Doctors/signup";
+
 import LandingHome from "./pages/LandingHome";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -80,6 +80,15 @@ import PopModal from "./pages/Hospital/PopModal";
 import LoginNurseHospital from "./pages/Hospital/Nurse/LoginNurseHospital";
 import NurseDashboardHospital from "./pages/Hospital/Nurse/NurseDashboardHospital";
 import PatientDashboardHospital from "./pages/Hospital/patients/PatientDashboardHospital";
+import WellLogin from "./pages/wellness/WellLogin";
+import WellRegister from "./pages/wellness/WellRegister";
+import WellDashboard from "./pages/wellness/WellDashboard";
+import WellnessDetails from "./pages/wellness/WellnessDetails";
+import Testing from "./pages/User/Testing";
+
+
+
+
 
 
 // const socket = io("http://localhost:8000");
@@ -233,6 +242,21 @@ const App = () => {
         <Route path="/loginpatienthospital" element={<LoginPatientHospital />} />
         <Route path="/patientdashboardhospital" element={<PatientDashboardHospital />} />
         <Route path="/popmodal" element={<PopModal />} />
+
+
+
+
+        ///wellness
+        <Route path="/wellnesslogin" element={<WellLogin />} />
+        <Route path="/wellnessregister" element={<WellRegister />} />
+        <Route path="/wellnessdashboard" element={<WellDashboard />} />
+        <Route path="/wellness/:id" element={<WellnessDetails />} />
+
+
+
+
+          <Route path="/testing" element={<Testing />} />
+      
 
 
 

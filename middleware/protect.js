@@ -50,8 +50,7 @@ export const protect3 = async (req, res, next) => {
         // Attach user info to request
         req.user = await Staff.findById(decoded.id).select("-password");
         if (!req.user) {
-          res.status(401);
-          throw new Error("User not found.");
+          res.status(401).json({message:"User not found."});
         }
   
         next(); // Proceed to the next middleware/controller
@@ -113,4 +112,15 @@ export const protect2 = async (req, res, next) => {
     res.status(401);
     throw new Error('Not authorized, no token provided.');
   }
+};
+
+
+
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Not authorized to access this route' });
+    }
+    next();
+  };
 };

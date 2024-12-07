@@ -32,6 +32,7 @@
     "react-undraw-illustrations": "^2.0.3",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.8.1",
+    "swiper": "^11.1.15",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

@@ -70,7 +70,7 @@ export const edit = async(req, res) => {
     const {id} = req.params;
 
     const admin = await User.findById(id);
-    if(admin){
+    if(!admin){
         res.status(404)
         throw new Error("admin not found")
     }
@@ -93,6 +93,16 @@ export const edit = async(req, res) => {
         if (req.files.profilePicture) {
           updates.profilePicture = await uploadFile(req.files.profilePicture);
         }
+        if (req.files.picture1) {
+          updates.picture1 = await uploadFile(req.files.picture1);
+        }
+        if (req.files.picture2) {
+          updates.picture2 = await uploadFile(req.files.picture2);
+        }
+
+        if (req.files.picture3) {
+          updates.picture3 = await uploadFile(req.files.picture3);
+        }
     }
 
     const updatedAdmin = await User.findByIdAndUpdate(id, updates, {
@@ -104,6 +114,23 @@ export const edit = async(req, res) => {
     }
 }
 
+
+
+export const getAdminDashboard = async(req, res) => {
+
+
+    const userId = req.user.id;
+
+    let user = await User.findById(userId)
+  
+    if (!user) {
+      res.status(404).json({message:"User not found."});
+    }
+
+    res.status(200).json(user);
+
+  
+}
 
 
 // Register doctors, nurses, or patients
@@ -211,6 +238,16 @@ export const getAllDoctorsActions = async (req, res) => {
 
 
 
+  export const getAllHospital = async(req, res) => {
+    try {
+const hospital = await User.find({role: 'admin',})
+res.status(200).json(hospital)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({message: "hospitals not found"})
+    }
+  }
+
 
 
 
@@ -257,9 +294,9 @@ export const getAllDoctorsActions = async (req, res) => {
 
 
   export const registerHospitalStaff = async (req, res) => {
-    const { email, password, role} = req.body;
+    const { hospitalName, email, password, role} = req.body;
   
-    if (!email || !password || !role) {
+    if (!hospitalName || !email || !password || !role) {
       res.status(400);
       throw new Error("Username and password are required.");
     }
@@ -272,6 +309,7 @@ export const getAllDoctorsActions = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const staff = new Staff({
+      hospitalName,
       email,
       password: hashedPassword,
       role
@@ -301,8 +339,7 @@ export const getAllDoctorsActions = async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      res.status(404);
-      throw new Error("Invalid  password.");
+      res.status(404).json({message: "Invalid  password."});
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",

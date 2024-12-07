@@ -18,7 +18,9 @@ import { register, login,  registerUser,
     getAllNursesForAdmin,
     nursedashboard,
     nurseeditdashboard,
-    getAllPatientsForAdmin, } from '../../controllers/hospital/adminController.js';
+    getAllPatientsForAdmin,
+    getAllHospital,
+    getAdminDashboard, } from '../../controllers/hospital/adminController.js';
 import { auth } from '../../middleware/verifyToken.js';
 import { protect2, protect3 } from '../../middleware/protect.js';
 
@@ -26,10 +28,11 @@ import { protect2, protect3 } from '../../middleware/protect.js';
 const router = express.Router();
 
 
-
+router.get('/', getAllHospital)
 router.post('/register', register);
 router.post('/login', login);
-router.put('/edit/:id', auth(['admin']), edit);
+router.put('/edit/:id', protect2, edit);
+router.get("/admindashboard", protect2, getAdminDashboard)
 // Register user (doctor, nurse, or patient)
 router.post('/registerastaff', auth(['admin']),  registerUser);
 
