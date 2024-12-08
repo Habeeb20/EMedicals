@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-const userSchema = mongoose.Schema(
+const hospitalSchema = mongoose.Schema(
   {
     fullname: { type: String, required: true },
     email: { type: String,  required: true },
@@ -57,11 +57,11 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
+hospitalSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
-export default mongoose.model("HUser", userSchema);
+export default mongoose.model("Hospital", hospitalSchema);

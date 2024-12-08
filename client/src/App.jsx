@@ -85,6 +85,8 @@ import WellRegister from "./pages/wellness/WellRegister";
 import WellDashboard from "./pages/wellness/WellDashboard";
 import WellnessDetails from "./pages/wellness/WellnessDetails";
 import Testing from "./pages/User/Testing";
+import ConsultDoctor from "./pages/quickAction/ConsultADoctor";
+import ConsultADoctorList from "./pages/quickAction/ConsultADoctorList";
 
 
 
@@ -256,6 +258,10 @@ const App = () => {
 
 
           <Route path="/testing" element={<Testing />} />
+
+          //quickAction
+          <Route path="/consultadoctor" element={<ConsultDoctor />} />
+          <Route path="/consultadoctorlist" element={<ConsultADoctorList />} />
       
 
 

@@ -36,17 +36,7 @@ const SignupHospitalAdmin = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const form = new FormData();
-      Object.keys(formData).forEach((key) => {
-        form.append(key, formData[key]);
-      });
-
-      const response = await axios.post(`${import.meta.env.VITE_API_HO}/register`, form, {
-        headers: {
-          'Content-Type': 'application/json',
-      
-        },
-      });
+      const response = await axios.post(`${import.meta.env.VITE_API_HO}/hregister`);
 
       if (response.data) {
         navigate('/loginhospitaladmin');

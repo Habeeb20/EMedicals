@@ -255,6 +255,10 @@ const DoctorDashboardHospital = () => {
             <h3 className="text-xl font-semibold mb-4 text-green-700">
               Your profile
             </h3>
+
+            <a href="/consultadoctor" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>patients can consult you?</span>
+          </a>
             <p>Manage your settings here.</p>
           
           <h4 className="">  Your email: <span className="font-bold"> {userData.email}</span></h4>

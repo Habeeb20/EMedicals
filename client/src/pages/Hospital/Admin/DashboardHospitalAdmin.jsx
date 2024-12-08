@@ -1,6 +1,7 @@
 
 
-
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaUser, FaCalendarAlt, FaHeartbeat } from 'react-icons/fa';
@@ -52,6 +53,7 @@ const AdminDashboard = () => {
       fetchDoctorActions();
       fetchNurses();
       handleEditButton();
+      fetchProfile()
     } else {
       toast.error('Unauthorized. Please log in.');
     }
@@ -65,7 +67,7 @@ const AdminDashboard = () => {
       
 
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_HO}/admindashboard`,
+          `${import.meta.env.VITE_API_HO}/h/dashboard`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);
@@ -192,12 +194,13 @@ const AdminDashboard = () => {
 
   const handleEditButton = async (e) => {
     e.preventDefault();
+    setLoading(true)
     setSuccessMessage('')
 
     try {
       const token = localStorage.getItem('token');
    
-      const response = await axios.put(`${import.meta.env.VITE_API_HO}/edit/${userId}`, formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_HO}/h/${userId}`, formData, {
         headers:{Authorization: `Bearer ${token}`},
 
       })
@@ -432,7 +435,7 @@ const AdminDashboard = () => {
           
 
          
-    
+    {}
               <button
                 type="submit"
                 className="w-full py-3 px-4 bg-orange-600 text-white rounded-lg hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300"
@@ -443,6 +446,8 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
+
+      
     
         <button
           className="bg-orange-500 text-white py-2 px-4 rounded"

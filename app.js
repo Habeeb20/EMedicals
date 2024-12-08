@@ -35,7 +35,8 @@ import hospitaladminrouter from "./routes/hospital/admin.route.js";
 import hospitaldoctorrouter from "./routes/hospital/doctor.route.js";
 import hospitalpatientrouter from "./routes/hospital/patient.route.js";
 import wellnessrouter from "./routes/wellRoute.js";
-
+import HRouter from "./routes/hospital/hospitalRoute.js"
+import cdoctorRoute from "./routes/QuickAction/consultdoctorRoute.js";
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -109,6 +110,11 @@ app.use("/api/pharmacy", pharmacyRoute)
 app.use("/api/hospital", hospitaladminrouter)
 app.use("/api/hospital", hospitaldoctorrouter)
 app.use("/api/hospital", hospitalpatientrouter)
+
+
+app.use("/api/hospital", HRouter )
+
+app.use("/api/quickaction", cdoctorRoute)
 
 
 
