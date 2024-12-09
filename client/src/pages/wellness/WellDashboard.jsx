@@ -12,6 +12,8 @@ const WellDashboard = () => {
     LGA:'',
     location:'',
     category:'',
+    masseuse: '',
+    nannies:'',
     details:'',
     discountFor:'',
     availableTime:'',
@@ -349,7 +351,33 @@ const WellDashboard = () => {
          
 
             
+ 
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Do you have a masseuse?(Yes or No)
+                </label>
+                <input
+                  type="text"
+                  name="masseuse"
+                  value={userData.masseuse}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
 
+              
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Do you have a nanny that can render service to your customers in need?(Yes or No)
+                </label>
+                <input
+                  type="text"
+                  name="nannies"
+                  value={userData.nannies}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
 
           
               

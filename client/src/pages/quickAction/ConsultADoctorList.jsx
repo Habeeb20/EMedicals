@@ -41,7 +41,7 @@ const ConsultADoctorList = () => {
         <div className="relative mb-6">
           <input
             type="text"
-            placeholder="Search doctor"
+            placeholder="Search by doctor name or specialization"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full p-3 pl-10 text-gray-700 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
@@ -82,10 +82,14 @@ const ConsultADoctorList = () => {
                 <p className="text-gray-600">{doctor.YOE}</p>
               </div>
               <div className="flex gap-4">
-                <button className="w-full p-2 text-white bg-purple-500 rounded-lg hover:bg-purple-600">
-                  Chat Doctor
+                <button 
+                  onClick={() => window.location.href = `mailto:${doctor.email}`}
+                  className="w-full p-2 text-white bg-purple-500 rounded-lg hover:bg-purple-600">
+                  send mail
                 </button>
-                <button className="w-full p-2 text-purple-500 border-2 border-purple-500 rounded-lg hover:bg-purple-500 hover:text-white">
+                <button 
+                 onClick={() => window.location.href = `tel:${doctor.phone}`}
+                className="w-full p-2 text-purple-500 border-2 border-purple-500 rounded-lg hover:bg-purple-500 hover:text-white">
                   Call Doctor
                 </button>
               </div>

@@ -87,6 +87,12 @@ import WellnessDetails from "./pages/wellness/WellnessDetails";
 import Testing from "./pages/User/Testing";
 import ConsultDoctor from "./pages/quickAction/ConsultADoctor";
 import ConsultADoctorList from "./pages/quickAction/ConsultADoctorList";
+import HomeCarePopup from "./pages/quickAction/HomeCarePopup";
+import SelectHomeCare from "./pages/quickAction/SelectHomeCare";
+import GetHomeCare from "./pages/quickAction/GetHomecare";
+import FindDrugs from "./pages/quickAction/FindDrugs";
+import FundRaisingPopup from "./pages/quickAction/FundRaisingPopup";
+import RaiseFund from "./pages/quickAction/RaisingFund";
 
 
 
@@ -262,6 +268,12 @@ const App = () => {
           //quickAction
           <Route path="/consultadoctor" element={<ConsultDoctor />} />
           <Route path="/consultadoctorlist" element={<ConsultADoctorList />} />
+          <Route path="/gethomecare" element={<HomeCarePopup />} /> 
+          <Route path="/get-home-care" element={<GetHomeCare />} />
+          <Route path="/selectedhomecare" element={<SelectHomeCare />} />
+          <Route path="/finddrugs" element={<FindDrugs />} />
+          <Route path="/fundraisingpopup" element={<FundRaisingPopup />} />
+          <Route path="/raisefund" element={<RaiseFund />} />
       
 
 

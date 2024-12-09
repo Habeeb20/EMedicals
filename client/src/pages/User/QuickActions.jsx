@@ -7,10 +7,10 @@ const QuickActions = () => {
 
   const actions = [
     { id: 1, name: "Call an ambulance", icon: <FaAmbulance />, link: "/ambulance", bgColor: "bg-red-100" },
-    { id: 2, name: "Fundbridge", icon: <FaDonate />, link: "/fundbridge", bgColor: "bg-purple-100" },
-    { id: 3, name: "Get home care", icon: <FaHome />, link: "/homecare", bgColor: "bg-blue-100" },
+    { id: 2, name: "Fundbridge", icon: <FaDonate />, link: "/fundraisingpopup", bgColor: "bg-purple-100" },
+    { id: 3, name: "Get home care", icon: <FaHome />, link: "/gethomecare", bgColor: "bg-blue-100" },
     { id: 4, name: "Consult a doctor", icon: <FaPhoneAlt />, link: "/consultadoctorlist", bgColor: "bg-green-100" },
-    { id: 5, name: "Purchase medicines", icon: <FaCapsules />, link: "/medicines", bgColor: "bg-yellow-100" },
+    { id: 5, name: "Purchase medicines", icon: <FaCapsules />, link: "/finddrugs", bgColor: "bg-yellow-100" },
     { id: 6, name: "Review Report & Cost", icon: <FaFileAlt />, link: "/review", bgColor: "bg-pink-100" },
     { id: 7, name: "Health Tourism", icon: <FaPlane />, link: "/tourism", bgColor: "bg-indigo-100" },
   ];

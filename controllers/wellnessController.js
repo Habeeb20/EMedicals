@@ -68,7 +68,7 @@ const storage = new CloudinaryStorage({
     res.status(404).json({message:"invalid email"})
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+  const isPasswordValid = await bcrypt.compare(password, user?.password);
   if (!isPasswordValid) {
     res.status(404);
     throw new Error("Invalid  password.");

@@ -195,6 +195,27 @@ export const registerUser = async (req, res) => {
           res.status(500).json({ message: 'Error fetching doctors for the hospital', error });
         }
       };
+
+      export const getAllDoctorsforQuickAction = async (req, res) => {
+     
+        try {
+          const doctors = await User.find({ role: 'doctor' });
+          res.status(200).json(doctors);
+        } catch (error) {
+          res.status(500).json({ message: 'Error fetching doctors for the hospital', error });
+        }
+      };
+      
+
+      export const getAllNursesforQuickAction = async (req, res) => {
+     
+        try {
+          const doctors = await User.find({ role: 'nurses' });
+          res.status(200).json(doctors);
+        } catch (error) {
+          res.status(500).json({ message: 'Error fetching nurses for the hospital', error });
+        }
+      };
       
 
 
@@ -337,7 +358,7 @@ res.status(200).json(hospital)
       res.status(404).json({ message: "email not found " });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user?.password);
     if (!isPasswordValid) {
       res.status(404).json({message: "Invalid  password."});
     }
@@ -353,7 +374,7 @@ res.status(200).json(hospital)
 
 export const doctordashboard = async(req, res) =>{
 
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     let user = await Staff.findById(userId)
     if (!user) {

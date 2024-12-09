@@ -20,7 +20,9 @@ import { register, login,  registerUser,
     nurseeditdashboard,
     getAllPatientsForAdmin,
     getAllHospital,
-    getAdminDashboard, } from '../../controllers/hospital/adminController.js';
+    getAdminDashboard,
+    getAllNursesforQuickAction,
+    getAllDoctorsforQuickAction, } from '../../controllers/hospital/adminController.js';
 import { auth } from '../../middleware/verifyToken.js';
 import { protect2, protect3 } from '../../middleware/protect.js';
 
@@ -51,7 +53,8 @@ router.get("/allnurses", auth(['admin']), getAllNurses)
 // Get all doctors' actions (accept/reject/reschedule)
 router.get('/doctor-actions', auth(['admin']), getAllDoctorsActions);
 
-
+router.get("/allnurseshospital", getAllNursesforQuickAction)
+router.get("/alldoctorshospital", getAllDoctorsforQuickAction)
 
 
 

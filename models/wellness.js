@@ -13,6 +13,8 @@ const wellnessSchema = new mongoose.Schema({
     details:String,
     features:String,
     services:String,
+    masseuse:String,
+    nannies:String,
     picture1: String,
     picture2:String,
     picture3: String,

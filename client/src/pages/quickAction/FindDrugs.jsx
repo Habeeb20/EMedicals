@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const SearchDrugs = () => {
+const FindDrugs = () => {
   const [pharmacies, setPharmacies] = useState([]);
   const [filteredPharmacies, setFilteredPharmacies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,7 +76,7 @@ const SearchDrugs = () => {
       <div className="w-full min-h-screen p-4 bg-gray-50">
         <div className="max-w-5xl mx-auto">
           {/* Category Tabs */}
-          <div className="flex space-x-2 overflow-x-auto mb-4">
+          {/* <div className="flex space-x-2 overflow-x-auto mb-4">
             {['Pharmacy', 'Doctors', 'Nurses', 'Hospitals'].map((category) => (
               <button
                 key={category}
@@ -88,7 +88,7 @@ const SearchDrugs = () => {
                 {category}
               </button>
             ))}
-          </div>
+          </div> */}
 
           {/* Search Section */}
           <div className="flex items-center space-x-2 mb-4">
@@ -144,8 +144,8 @@ const SearchDrugs = () => {
                 />
                 <div className="ml-4 flex-1">
                   {/* <h3 className="text-lg font-semibold text-gray-800">{pharmacy.name}</h3> */}
-                  <h3 className="text-lg font-semibold text-gray-800">{pharmacy.name || pharmacy.fullname}</h3>
-                  <p className="text-sm text-gray-500">{pharmacy.category || pharmacy.email}</p>
+                  <h3 className="text-lg font-semibold text-gray-800">{pharmacy.name }</h3>
+                  <p className="text-sm text-gray-500">{pharmacy.category}</p>
                   <p className="text-sm text-gray-500">{pharmacy.price}</p>
                   <div className="flex items-center space-x-4 mt-2">
                     <span className="flex items-center text-purple-600 text-sm">
@@ -178,4 +178,4 @@ const SearchDrugs = () => {
   );
 };
 
-export default SearchDrugs;
+export default FindDrugs;
