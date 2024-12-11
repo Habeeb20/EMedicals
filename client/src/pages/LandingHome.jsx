@@ -130,6 +130,7 @@ import m2 from "../assets/EMedicals/doc.jpeg"
 import { Link } from 'react-router-dom';
 import LPage from '../components/Landing/LPage';
 import LPage2 from '../components/Landing/LPage2';
+import LPage3 from '../components/Landing/LPage3';
 
 const LandingHome = () => {
   const { ref: headingRef, inView: headingInView } = useInView({ triggerOnce: true });
@@ -206,6 +207,7 @@ const LandingHome = () => {
       </section>
       <LPage />
       <LPage2 />
+      <LPage3 />
 
     
     </div>
