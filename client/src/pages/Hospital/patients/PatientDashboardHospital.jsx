@@ -235,6 +235,18 @@ const PatientDashboardHospital = () => {
           <h4 className="">  Your LGA: <span className="font-bold"> {userData.LGA}</span></h4>
           <h4 className="">  Your Home Address: <span className="font-bold"> {userData.location}</span></h4>
           <h4 className="">  Your Available time: <span className="font-bold"> {userData.fullname}</span></h4>
+          <h4 className=""> Your height: <span className="font-bold">{userData.height}</span></h4>
+          <h4 className=""> Your weight: <span className="font-bold">{userData.weight}</span></h4>
+          <h4 className=""> Your marital Status: <span className="font-bold">{userData.maritalStatus}</span></h4>
+          <h4 className=""> Your next of kin: <span className="font-bold">{userData.NextOfKin}</span></h4>
+          <h4 className=""> Your profession: <span className="font-bold">{userData.profession}</span></h4>
+          <h4 className=""> Your place of work: <span className="font-bold">{userData.placeOfWork}</span></h4>
+          <h4 className=""> Your place Of Work Address: <span className="font-bold">{userData.placeOfWorkAddress}</span></h4>
+          <h4 className=""> Your employer phone number: <span className="font-bold">{userData.EmployerPhone}</span></h4>
+
+
+
+    
           <img 
   src={userData.picture1} 
   alt="User" 
@@ -333,12 +345,12 @@ const PatientDashboardHospital = () => {
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  State
+                  Marital status(married/single/divorce/ engaged)
                 </label>
                 <input
                   type="text"
-                  name="state"
-                  value={userData.state}
+                  name="maritalStatus"
+                  value={userData.maritalStatus}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -348,16 +360,84 @@ const PatientDashboardHospital = () => {
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  LGA
+                Next of kin name
                 </label>
                 <input
                   type="text"
-                  name="LGA"
-                  value={userData.LGA}
+                  name="NextOfKin"
+                  value={userData.NextOfKin}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
+
+              
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Next of kin phone number
+                </label>
+                <input
+                  type="text"
+                  name="NextOfKinPhone"
+                  value={userData.NextOfKinPhone}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Your profession
+                </label>
+                <input
+                  type="text"
+                  name="profession"
+                  value={userData.profession}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Name of your place of work 
+                </label>
+                <input
+                  type="text"
+                  name="placeOfWork"
+                  value={userData.placeOfWork}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Address of your place of work 
+                </label>
+                <input
+                  type="text"
+                  name="placeOfWorkAddress"
+                  value={userData.placeOfWorkAddress}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                Employer phone number
+                </label>
+                <input
+                  type="text"
+                  name="EmployerPhone"
+                  value={userData.EmployerPhone}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+
 
 
 

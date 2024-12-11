@@ -93,6 +93,9 @@ import GetHomeCare from "./pages/quickAction/GetHomecare";
 import FindDrugs from "./pages/quickAction/FindDrugs";
 import FundRaisingPopup from "./pages/quickAction/FundRaisingPopup";
 import RaiseFund from "./pages/quickAction/RaisingFund";
+import SignupModalTelemedicine from "./pages/Telemedicine/SignupModalTelemedicine";
+import TeleDashboard from "./pages/Telemedicine/TeleDashboard";
+import LoginTeleMedicine from "./pages/Telemedicine/LoginTeleMedicine";
 
 
 
@@ -109,9 +112,10 @@ const App = () => {
     <Router>
       {/* <Navbar /> */}
       <Routes>
-        <Route path="/" element={<Choose />} />
+      <Route path="/" element={<LandingHome />} />
+        <Route path="/signin" element={<Choose />} />
         <Route path="/adminhome" element={<AdminHome />} />
-        <Route path="/" element={<LandingHome />} />
+      
         <Route path="/usersignup" element={<UserSignup />} />
         <Route path="/userlogin" element={<UserLogin />} />
         <Route path="/userverifyEmail" element={<UserVerifyEmail />} />
@@ -274,6 +278,12 @@ const App = () => {
           <Route path="/finddrugs" element={<FindDrugs />} />
           <Route path="/fundraisingpopup" element={<FundRaisingPopup />} />
           <Route path="/raisefund" element={<RaiseFund />} />
+
+          //SignupModalTelemedicine
+
+          <Route path="/SignupModalTelemedicine" element={<SignupModalTelemedicine />} />
+          <Route path="/teledashboard" element={<TeleDashboard />} />
+          <Route path="/logintelemedicine" element={<LoginTeleMedicine />} />
       
 
 

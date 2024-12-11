@@ -6,12 +6,13 @@ const staffSchema = new mongoose.Schema({
     email:{type:String, required:true},
     password:{type:String, required:true},
     role: {type:String, required:true},
+    state: {type:String, required:true},
+    LGA: {type:String, required:true},
     doctorTime:String,
     specialization: String,
     fullname:String,
     phone:String,
-    state:String,
-    LGA:String,
+   
     location:String,
     category:String,
     picture1: String,
@@ -21,6 +22,17 @@ const staffSchema = new mongoose.Schema({
     bloodGroup:String,
     bloodType:String,
     genoType:String, 
+
+
+    weight:String,
+    height:String,
+    maritalStatus:String,
+    NextOfKin:String,
+    NextOfKinPhone:String,
+    profession:String,
+    placeOfWork:String,
+    placeofworkAddress:String,
+    EmployerPhone:String,
 
 
     homecarePersonel:String,

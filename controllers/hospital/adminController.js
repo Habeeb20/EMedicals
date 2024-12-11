@@ -315,9 +315,9 @@ res.status(200).json(hospital)
 
 
   export const registerHospitalStaff = async (req, res) => {
-    const { hospitalName, email, password, role} = req.body;
+    const { hospitalName, email, password, role, state, LGA} = req.body;
   
-    if (!hospitalName || !email || !password || !role) {
+    if (!hospitalName || !email || !password || !role || !state || !LGA) {
       res.status(400);
       throw new Error("Username and password are required.");
     }
@@ -333,7 +333,9 @@ res.status(200).json(hospital)
       hospitalName,
       email,
       password: hashedPassword,
-      role
+      role,
+      state,
+      LGA
     });
 
     await staff.save();

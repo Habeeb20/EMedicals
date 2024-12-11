@@ -53,12 +53,12 @@ export default function UserLandingProfile() {
   }, [navigate]);
 
   useEffect(() => {
-    // Interval to swap background images every 3 seconds
+
     const intervalId = setInterval(() => {
       setBgImage((prevImage) => (prevImage === im2 ? im3 : im2));
     }, 3000);
 
-    // Clear interval on component unmount
+
     return () => clearInterval(intervalId);
   }, []);
 
