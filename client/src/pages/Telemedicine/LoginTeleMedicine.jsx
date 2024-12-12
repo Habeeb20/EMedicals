@@ -12,7 +12,7 @@ const LoginTeleMedicine = () => {
     email: "",
     password: "",
   });
-
+  const [path, setPath] = useState('')
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,6 +45,8 @@ const LoginTeleMedicine = () => {
         const { token } = response.data;
         localStorage.setItem("token", token);
         localStorage.setItem("email", formData.email);
+        console.log(response.data.path)
+        setPath(response.data.path)
         toast.success("login successful");
         navigate("/teledashboard");
       }

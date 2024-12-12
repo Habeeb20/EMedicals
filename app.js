@@ -38,6 +38,7 @@ import wellnessrouter from "./routes/wellRoute.js";
 import HRouter from "./routes/hospital/hospitalRoute.js"
 import cdoctorRoute from "./routes/QuickAction/consultdoctorRoute.js";
 import teleRouter from "./routes/Telemedicine/teleuser.Route.js";
+import teleDoctorRouter from "./routes/Telemedicine/teleDoctor.Route.js";
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -125,6 +126,7 @@ app.use("/api/wellness", wellnessrouter)
 
 //teleuser
 app.use("/api/teleuser", teleRouter)
+app.use("/api/teleuser", teleDoctorRouter)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

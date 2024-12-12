@@ -9,7 +9,11 @@ const teleUserSchema = new mongoose.Schema({
     phone:{type:String, required:true},
     NameOfBusiness:{type:String, required:true},
     password:{type:String, required:true},
+    role: { type: String, default: "user", },
     typeOfPath:String,
+    location:String,
+    state:String,
+    LGA:String,
    
 
     height:String,

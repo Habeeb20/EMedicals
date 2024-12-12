@@ -96,6 +96,8 @@ import RaiseFund from "./pages/quickAction/RaisingFund";
 import SignupModalTelemedicine from "./pages/Telemedicine/SignupModalTelemedicine";
 import TeleDashboard from "./pages/Telemedicine/TeleDashboard";
 import LoginTeleMedicine from "./pages/Telemedicine/LoginTeleMedicine";
+import AboutUs from "./pages/AboutUs";
+import TeleHospital from "./pages/Telemedicine/TeleHospital";
 
 
 
@@ -284,6 +286,11 @@ const App = () => {
           <Route path="/SignupModalTelemedicine" element={<SignupModalTelemedicine />} />
           <Route path="/teledashboard" element={<TeleDashboard />} />
           <Route path="/logintelemedicine" element={<LoginTeleMedicine />} />
+          <Route path="/telehospitals" element={<TeleHospital />} />
+
+
+          //aboutus
+          <Route path="/aboutus" element={<AboutUs />} />
       
 
 
