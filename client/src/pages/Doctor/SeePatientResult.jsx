@@ -187,6 +187,9 @@ useEffect(() => {
           <a href="/doctorappointment" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Appointments</span>
           </a>
+          <a href="/alllabs" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Labs</span>
+          </a>
           <a href="/seepatientresult" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>see your patients' results</span>
           </a>
@@ -267,7 +270,7 @@ useEffect(() => {
                 <div key={medical._id} className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-2xl">
   <div className="flex items-center space-x-4">
     <img
-      src={medical.patient?.profilePicture || "/path/to/defaultImage.jpg"} // Use a default image if profile picture is not available
+      src={patient?.profilePicture || "/path/to/defaultImage.jpg"} // Use a default image if profile picture is not available
       alt="profile"
       className="w-16 h-16 rounded-full border-2 border-green-500"
     />

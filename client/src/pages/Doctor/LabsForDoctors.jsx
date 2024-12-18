@@ -4,19 +4,22 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-const ProfileDoctor = ({doctorId: propDoctorId}) => {
-  const { doctorId: paramDoctorId } = useParams()
-  const doctorId = propDoctorId || paramDoctorId;
+import { FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
+const LabsForDoctors = () => {
+  const [filteredLabs, setFilteredLabs] = useState([])
+  const [searchTerm, setSearchTerm] = useState('');
+  const [medicalresult, setMedicalResult]  = useState([])
+  const [loading, setLoading] = useState(true)
   const [patients, setPatients] = useState([]);
+  const [labs, setLabs] = useState([])
   const [doctor, setDoctor] = useState({});
   const [error, setError] = useState('');
+  const [locationInput, setLocationInput] = useState('');
  
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchProfile = async () => {
+  const fetchMedicalResult = async () => {
     try {
       const token = localStorage.getItem("token")
       console.log(token)
@@ -26,14 +29,14 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
  
       setLoading(true);
 
-      const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_P}/getmedicaltestfordoctor`, {
         headers: {
           Authorization:`Bearer ${token}`
         },
         withCredentials: true
       });
       console.log(response.data);
-      setDoctor(response.data.doctor);
+      setMedicalResult(response.data);
       toast.success("successfully fetched")
     } catch (error) {
       console.error(error)
@@ -43,73 +46,142 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
       setLoading(false)
     }
   }
-   fetchProfile()
+   fetchMedicalResult()
   }, [navigate]);
 
 
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchProfile = async () => {
       try {
+        const token = localStorage.getItem("token")
+        console.log(token)
+        if(!token){
+          throw new Error("token not found")
+        }
+   
         setLoading(true);
-        const token = localStorage.getItem('token');
-        
-        if (!token) {
-          throw new Error('Token not found');
-        }
-
-     
-        const response = await axios.get(`${import.meta.env.VITE_API_A}/doctor`, {
+  
+        const response = await axios.get(`${import.meta.env.VITE_API_D}/doctorprofile`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:`Bearer ${token}`
           },
-          withCredentials: true,
+          withCredentials: true
         });
-
-       
-        if (response.data && response.data.appointments) {
-          setAppointments(response.data.appointments);
-          toast.success('Appointments fetched successfully!');
-        } else {
-          throw new Error('No appointments found');
-        }
+        console.log(response.data);
+        setDoctor(response.data.doctor);
+        toast.success("successfully fetched")
       } catch (error) {
-        console.error(error);
-        setError('Failed to fetch appointments');
-        toast.error('Error fetching appointments');
-      } finally {
-        setLoading(false); 
+        console.error(error)
+        setError(error)
       }
-    };
-
-    
-    if (doctorId) {
-      fetchAppointments();
+      finally{
+        setLoading(false)
+      }
     }
-  }, [doctorId]); 
-  useEffect(() => {
-    const fetchAllPatient = async () => {
+     fetchProfile()
+    }, [navigate]);
+
+
+
+
+
+
+    useEffect(() => {
+        const fetchPatients = async () => {
+          try {
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("token not found");
+
+            
+        const patientIds = [...new Set(medicalresult.map(med => med.patientId).filter(id => id !== null && id !== undefined))];
+
+        // Log patient IDs for debugging
+        console.log("Fetching patient details for IDs:", patientIds);
+
+            const patientRequests = patientIds.map(id => 
+              axios.get(`${import.meta.env.VITE_API_P}/getpatient/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+              })
+            );
+    
+            const responses = await Promise.all(patientRequests);
+            const patientsData = responses.reduce((acc, response) => {
+              acc[response.data._id] = response.data; 
+              return acc;
+            }, {});
+    
+            setPatients(patientsData);
+          } catch (error) {
+            console.error(error);
+            toast.error("Failed to fetch patient details");
+          }
+        };
+    
+        if (medicalresult.length > 0) {
+          fetchPatients();
+        }
+      }, [medicalresult]);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+useEffect(() => {
+    const fetchAllLabs = async () => {
       try {
         const token = localStorage.getItem("token")
         if(!token){
           throw new Error("token not found")
         }
         
-        const response = await axios.get(`${import.meta.env.VITE_API_P}/getallpatient`)
+        const response = await axios.get(`${import.meta.env.VITE_API_L}/all`)
         if(!response){
           console.log("details not found")
           toast.error("patient not not found")
         }
-        console.log(response)
-        setPatients(response.data)
+        console.log("labs!!!", response.data)
+        setLabs(response.data)
+        setFilteredLabs(response.data)
       } catch (error) {
         console.log(error)
         toast.error(error)
       }
     }
-    fetchAllPatient ()
+    fetchAllLabs ()
   }, [])
 
 
+ const  handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    const filtered = labs.filter((lab) =>
+        lab.location.toLowerCase().includes(term.toLowerCase()) 
+    );
+    setFilteredLabs(filtered);
+  }
+
+
+ const  handleLocationSearch = () => {
+    const filtered = labs.filter((lab) => {
+        return lab.location && lab.location.includes(locationInput);
+
+    } );
+
+    setFilteredLabs(filtered);
+  }
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -122,7 +194,7 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
 
    <>
     <Navbar />
-    <div className="min-h-screen bg-gray-100 flex flex-col lg:flex-row">
+    <div className=" bg-gray-100 flex flex-col lg:flex-row">
       {/* Sidebar */}
       <aside  className="hidden md:block w-1/4 bg-white shadow-lg p-6">
       
@@ -138,17 +210,14 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
           <a href="/doctorappointment" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Appointments</span>
           </a>
-          <a href="/alllabs" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/alllabs" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Labs</span>
           </a>
-          <a href="/seepatientresult" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/seepatientresult" className="flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>see your patients' results</span>
           </a>
-          <a href="/doctorprofile" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+          <a href="/doctorprofile" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Patients</span>
-          </a>
-          <a href="/consultadoctor" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
-            <span>patients can consult you?</span>
           </a>
           <a href="/chatlogin" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>Chats</span>
@@ -215,52 +284,59 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
           </div>
         </div>
 
-        {/* Patient Cards */}
+                <div className="flex items-center space-x-2 mb-4">
+            <input
+              type="text"
+              placeholder="Search labs by address"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="flex-1 p-2 border border-gray-300 rounded-md text-sm"
+            />
+            <button className="bg-blue-500 text-white p-2 rounded-md">
+              <FaSearch />
+            </button>
+          </div>
+
+    
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-       {patients.length > 0 ? (
-        patients.map((patient) => (
-          <div key={patient._id} className="bg-white shadow-md rounded-lg p-4">
-          <div className="flex justify-between items-center">
+        {filteredLabs.length > 0 ? (
+            filteredLabs.map((medical) => {
 
-          <img
-                  src={patient.profilePicture}
-                  alt="profilepicture"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="text-sm text-gray-500">{patient.age} years old</div>
-              </div>
-              <h3 className="text-lg font-semibold mt-2">{patient.fullname}</h3>
-              <p className="text-sm text-gray-500">{patient.email}</p>
-              <p className="text-sm text-gray-500"> {patient.phoneNumber}</p>
-              <p className="text-sm text-gray-500"> {patient.state}</p>
-              <p className="text-sm text-gray-500"> {patient.homeAddress}</p>
-              <p className="text-sm text-gray-500"> {patient.allergics}</p>
-        
-  <div className="flex space-x-2 mt-4">
-    <Link to={`/patientmore/${patient._id}`}>
-      <button className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-        View
-      </button>
-    </Link>
-    <a
-      href={`https://www.google.com/maps/search/?api=1&query=${doctor.officeAddress},${patient.homeAddress}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 text-center"
-    >
-      Google Map
-    </a>
+              return (
+                <div key={medical._id} className="bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105 hover:shadow-2xl">
+  <div className="flex items-center space-x-4">
+    <img
+      src={medical?.picture1 || "https://placeholder.com"} 
+      alt="profile"
+      className="w-16 h-16 rounded-full border-2 border-green-500"
+    />
+    <div>
+      <h3 className="text-xl font-semibold text-gray-800">{medical?.name}</h3>
+   
+    </div>
   </div>
-            
-            </div>
-        ))
-       ): (
-        <p>No patients found.</p>
-       
 
+  <div className="mt-4 space-y-2">
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">Name:</span>{medical.name}</p>
 
-              
-       )}
+  </div>
+
+  <div className="border-t mt-4 pt-4 space-y-2">
+    <p className="text-lg font-semibold text-gray-800">Lab Information</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">email:</span> {medical.email}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">state:</span> {medical.state}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700"> LGA:</span> {medical.LGA}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">location:</span> {medical.location}</p>
+    <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">phone:</span> {medical.phone}</p>
+   
+  </div>
+</div>
+
+              );
+            })
+          ) : (
+            <p>No lab found.</p>
+          )}
           
       
         </div>
@@ -278,4 +354,4 @@ const ProfileDoctor = ({doctorId: propDoctorId}) => {
   );
 };
 
-export default ProfileDoctor;
+export default LabsForDoctors;

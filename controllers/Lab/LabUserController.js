@@ -130,3 +130,17 @@ export const editlabprofile = async(req, res) => {
 
 }
 
+
+
+export const getAllLab = async(req, res) => {
+    try {
+        const allLab = await LabModel.find()
+        console.log("this is labs!!!", allLab)
+        res.status(200).json(allLab)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message:"an error with you the network while fetching the data"})
+    }
+
+
+}
