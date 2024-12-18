@@ -38,6 +38,78 @@ const LabUser = new mongoose.Schema({
     picture1:{
         type:String
     },
+    testA:{
+        type:String
+    },
+    testAPrice:{
+        type:String
+    },
+    testB:{
+        type:String
+    },
+    testBPrice:{
+        type:String
+    },
+    testC:{
+        type:String
+    },
+    testCPrice:{
+        type:String
+    },
+    testD:{
+        type:String
+    },
+    testDPrice:{
+        type:String
+    },
+    testE:{
+        type:String
+    },
+    testEPrice:{
+        type:String
+    },
+    testF:{
+        type:String
+    },
+    testFPrice:{
+        type:String
+    },
+    testG:{
+        type:String
+    },
+    testGPrice:{
+        type:String
+    },
+    testH:{
+        type:String
+    },
+    testHPrice:{
+        type:String
+    },
+    testI:{
+        type:String
+    },
+    testIPrice:{
+        type:String
+    },
+    testJ:{
+        type:String
+    },
+    testJPrice:{
+        type:String
+    },
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+
 
 
     uniqueNumber: { type: String, unique: true },

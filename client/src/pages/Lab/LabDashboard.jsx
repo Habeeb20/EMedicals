@@ -15,6 +15,7 @@ const LabDashboard= () => {
   const [successMessage, setSuccessMessage] =useState('')
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [cancelPopup, setCancelPopup] = useState(false)
   const [userId, setUserId] = useState('')
   const [userData, setUserData] = useState({
     name:'',
@@ -26,9 +27,27 @@ const LabDashboard= () => {
     LGA: '',
     location:'',
     picture1:'',
-
-})
-
+    testA:'',
+    testAPrice:'',
+    testB:'',
+    testBPrice:'',
+    testC:'',
+    testCPrice:'',
+    testD:'',
+    testDPrice:'',
+    testE:'',
+    testEPrice:'',
+    testF:'',
+    testFPrice:'',
+    testG:'',
+    testGPrice:'',
+    testH:'',
+    testHPrice:'',
+    testI:'',
+    testIPrice:'',
+    testJ:'',
+    testJPrice:''
+  })
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -145,10 +164,16 @@ const LabDashboard= () => {
             <p className="text-lg font-bold">Hi {userData.name}! </p>
             <p>Welcome! {userData.email}</p>
           </div>
-          {showPopup && (
+          {showPopup &&  (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Update Your Profile</h2>
+            <button
+        onClick={() => setShowPopup(false)}
+        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
+      >
+        ✕
+      </button>
             <form onSubmit={handleSubmit} className="space-y-6">
               {Object.keys(userData).map((key) =>
              
@@ -189,6 +214,39 @@ const LabDashboard= () => {
                 />
               </div>
 
+        {Array.from({ length: 9 }).map((_, index) => (
+          <div key={index} className="space-y-4">
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Name of Test {index + 1}
+              </label>
+              <input
+                type="text"
+                name={`test${String.fromCharCode(65 + index)}`}
+                value={userData[`test${String.fromCharCode(65 + index)}`]}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Price of Test {index + 1}
+              </label>
+              <input
+                type="text"
+                name={`test${String.fromCharCode(65 + index)}Price`}
+                value={userData[`test${String.fromCharCode(65 + index)}Price`]}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+        ))}
+
+
+
+          
+
          
 
               <div className="flex flex-col">
@@ -213,7 +271,7 @@ const LabDashboard= () => {
         </div>
       )}
           <button
-        onClick={() => setShowPopup(true)}
+        onClick={() => setShowPopup(true) && setCancelPopup(true) }
         className="mt-5 mx-4 py-3 px-6 bg-green-600 text-white rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
       >
         Edit Profile

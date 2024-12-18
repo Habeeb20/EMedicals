@@ -139,7 +139,11 @@ export const DoctorAppointment = () => {
             </a>
             <a href="/doctorappointment" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
               <span>Appointments</span>
+              
             </a>
+            <a href="/alllabs" className=" flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>Labs</span>
+          </a>
             <a href="/seepatientresult" className="text-gray-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
             <span>see your patients' results</span>
           </a>
