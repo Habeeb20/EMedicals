@@ -99,6 +99,11 @@ import LoginTeleMedicine from "./pages/Telemedicine/LoginTeleMedicine";
 import AboutUs from "./pages/AboutUs";
 import TeleHospital from "./pages/Telemedicine/TeleHospital";
 
+import LabPatientDetails from "./pages/Lab/LabPatientDetails";
+import LabRegister from "./pages/Lab/LabRegister";
+import LabLogin from "./pages/Lab/LabLogin";
+import LabDashboard from "./pages/Lab/LabDashboard";
+
 
 
 
@@ -291,6 +296,14 @@ const App = () => {
 
           //aboutus
           <Route path="/aboutus" element={<AboutUs />} />
+
+
+          //lab
+          <Route path="/labregister" element={<LabRegister />} />
+          <Route path="/lablogin" element={<LabLogin />} />
+          {/* <Route path="/lab" element={<LabAppointment />} /> */}
+          <Route path="/labdashboard" element={<LabDashboard />} />
+          <Route path="/lab2" element={<LabPatientDetails />} />
       
 
 

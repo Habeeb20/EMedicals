@@ -9,7 +9,7 @@ import {
 const medicalTestRoute = express.Router();
 
 medicalTestRoute.post("/createmedicaltest/:id", verifyToken, createMedicalTest);
-medicalTestRoute.get("/getmedicaltest", verifyToken, getMedicalTest);
+medicalTestRoute.get("/getmedicaltest/:patientId", verifyToken, getMedicalTest);
 medicalTestRoute.get(
   "/getmedicaltestfordoctor",
   verifyToken,

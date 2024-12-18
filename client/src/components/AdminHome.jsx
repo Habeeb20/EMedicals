@@ -112,7 +112,7 @@ const AdminHome = () => {
 
         </Link>
 
-          <Link to='/lablogin'>
+          <Link to='/labregister'>
           <div className="bg-teal-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaVials className="text-4xl text-teal-500" />
             <div>

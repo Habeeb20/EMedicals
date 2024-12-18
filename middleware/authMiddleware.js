@@ -6,6 +6,7 @@ import Wellness from '../models/wellness.js';
 import asyncHandler from "express-async-handler"
 import Hospital from '../models/hospitals/hospitalSchema.js';
 import TeleUser from '../models/Telemedicine/tUserModel.js';
+import LabUser from '../models/Lab/Lab.Model.js';
 export const protect = async (req, res, next) => {
   let token;
 
@@ -196,3 +197,35 @@ export const protect6 = asyncHandler(async (req, res, next) => {
 
 
 
+
+export const protect8 = async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+
+      token = req.headers.authorization.split(" ")[1];
+
+      // Verify the token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Attach user to the request
+      req.user = await LabUser.findById(decoded.id).select("-password");
+      if (!req.user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      next();
+    } catch (error) {
+      console.error("Token verification error:", error.message);
+      return res.status(401).json({ message: "Not authorized, token failed" });
+    }
+  }
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+};

@@ -39,6 +39,17 @@ import HRouter from "./routes/hospital/hospitalRoute.js"
 import cdoctorRoute from "./routes/QuickAction/consultdoctorRoute.js";
 import teleRouter from "./routes/Telemedicine/teleuser.Route.js";
 import teleDoctorRouter from "./routes/Telemedicine/teleDoctor.Route.js";
+
+
+
+import userRoute from "./routes/hospital/user.route.js"
+import userAdminroute from "./routes/hospital/admin.route.js"
+import userPatientroute from "./routes/hospital/userPatient.js"
+
+
+
+import labUserRouter from "./routes/lab/labUserRoute.js"
+import labTestRoute from "./routes/lab/labTestRoute.js"
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -127,6 +138,12 @@ app.use("/api/wellness", wellnessrouter)
 //teleuser
 app.use("/api/teleuser", teleRouter)
 app.use("/api/teleuser", teleDoctorRouter)
+
+
+
+//lab
+app.use("/api/lab", labTestRoute )
+app.use("/api/lab", labUserRouter)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

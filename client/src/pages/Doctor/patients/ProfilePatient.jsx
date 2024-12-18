@@ -14,7 +14,7 @@ const ProfilePatient = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const doctorsPerPage = 8;
   const navigate = useNavigate();
-
+ 
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -49,7 +49,8 @@ const ProfilePatient = () => {
             withCredentials: true,
           }
         );
-        setPatient(response.data);
+        console.log(response.data)
+        setPatient(response.data.patient);
       } catch (error) {
         console.error(error);
       }
@@ -322,3 +323,82 @@ const ProfilePatient = () => {
 };
 
 export default ProfilePatient;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react';
+
+// const PatientDashboard = () => {
+//     const [recipientEmail, setRecipientEmail] = useState('');
+//     const [status, setStatus] = useState('');
+
+//     const shareMedicalHistory = async () => {
+//         try {
+//             const response = await fetch('/api/share-medical-history', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify({
+//                     patientId: '12345', // Replace with dynamic patient ID
+//                     recipientEmail,
+//                 }),
+//             });
+
+//             const data = await response.json();
+//             if (response.ok) {
+//                 setStatus('Medical history shared successfully!');
+//             } else {
+//                 setStatus(`Error: ${data.message}`);
+//             }
+//         } catch (error) {
+//             setStatus('Error sharing medical history.');
+//         }
+//     };
+
+//     return (
+//         <div>
+//             <h1>Patient Dashboard</h1>
+//             <input
+//                 type="email"
+//                 placeholder="Recipient Email"
+//                 value={recipientEmail}
+//                 onChange={(e) => setRecipientEmail(e.target.value)}
+//             />
+//             <button onClick={shareMedicalHistory}>Share Medical History</button>
+//             {status && <p>{status}</p>}
+//         </div>
+//     );
+// };
+
+// export default PatientDashboard;

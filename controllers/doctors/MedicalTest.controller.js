@@ -4,48 +4,6 @@ import Patient from "../../models/Doctors/patient.model.js";
 import mongoose from "mongoose";
 
 
-// export const createMedicalTest = async(req, res) => {
-//     const {sickness, started, drugsTaken, prescribedDrugs, cause, } = req.body
-//     const patientId = req.params.patientId || req.body.patientId
-
-
-//     try {
-//         const patient = await Patient.findById(patientId)
-//         if(!patient){
-//             console.log("patient not found")
-//             return res.status(404).json({message: 'patient not found'})
-//         }
-//         console.log(patient)
-
-//         const doctor = await Doctor.findById(req.user.id);
-        
-//         if(!doctor) {
-//             console.log("doctor not found")
-//             return res.status(404).json({message:"doctor not found"})
-//         }
-//             const newMedicalTest = new medicalTest({
-//                 doctorId:new mongoose.Types.ObjectId(req.user.id),
-//                 patientId:new mongoose.Types.ObjectId(patientId),
-//                 sickness, started, drugsTaken, prescribedDrugs, cause,
-//             })
-
-//             await newMedicalTest.save()
-//             console.log("new medical result is saved")
-//             res.status(200).json(newMedicalTest)
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({ error: 'Failed to register medical test result' });
-//     }
-// }
-
-
-
-
-
-
-//patient view medical
-
-
 
 export const createMedicalTest = async (req, res) => {
     const { sickness, started, drugsTaken, prescribedDrugs, cause } = req.body;
@@ -58,15 +16,6 @@ export const createMedicalTest = async (req, res) => {
         console.log("Looking up patient with ID:", patientId);
 
 
-        // Find patient by ID
-        // const patient = await Patient.findById(patientId);
-        // if (!patient) {
-        //     console.log("Patient not found with ID:", patientId);
-        //     return res.status(404).json({ message: 'Patient not found' });
-        // }
-        // console.log("Patient found:", patient);
-
-        // Check if the doctor exists in req.user.id
         const doctor = await Doctor.findById(req.user.id);
         if (!doctor) {
             console.log("Doctor not found with ID:", req.user.id);
@@ -99,16 +48,20 @@ export const createMedicalTest = async (req, res) => {
 
 
 export const getMedicalTest = async (req, res) => {
-    const patientId= req.user.id
+    const { patientId } = req.params;
+ 
 
-    if(!patientId || patientId === "undefined"){
-        console.log("patient not found")
-        return res.status(400).json({error: "doctor not found"})
-    }
+
 
     try {
-        const medicaltest= await medicalTest.find({patientId}).populate('doctorId');
+        const medicaltest= await medicalTest.find({patientId}).populate('doctorId').populate("patientId", "name email"); ;
+
+        if (!medicaltest.length) {
+            return res.status(404).json({ message: "No medical tests found for this patient" });
+        }
+    
         res.json((medicaltest))
+        console.log(medicaltest)
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Failed to fetch medicals' });

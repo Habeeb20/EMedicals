@@ -134,7 +134,7 @@ const storage = new CloudinaryStorage({
         throw new Error("Failed to update exam.");
       }
       res.status(200).json({
-        message: "Exam updated successfully.",
+        message: "updated successfully.",
         updatedwellness,
       });
 

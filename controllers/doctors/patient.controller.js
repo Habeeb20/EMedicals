@@ -70,15 +70,17 @@ export const loginPatient = async (req, res) => {
 
 
 export const getProfile = async(req, res) => {
+  const userId = req.user.id
   try {
-    const patient = await Patient.findById(req.user.id)
-    if(patient){
+    const patient = await Patient.findById(userId).select("-password")
+    if(!patient){
       console.log("patient not found")
       return res.status(404).json({message: "patient not found"})
     }
     res.status(200).json({success: true, patient})
   } catch (error) {
     console.log(error) 
+    
     res.status(500).json({message: "an error occured from the server"})
   }
 }
@@ -87,7 +89,7 @@ export const getProfile = async(req, res) => {
 
 export const getPatientProfile = async (req, res) => {
   try {
-    const { id } = req.user;
+    const { id } = req.params
 
     console.log(id)
    

@@ -26,8 +26,10 @@ export const bookAppointment = async (req, res) => {
 
 
     const patient = await Patient.findById(req.user.id);
-    if (!patient) return res.status(404).json({ msg: 'Patient not found' });
-
+    if (!patient){
+      console.log("patient not found")
+       return res.status(404).json({ msg: 'Patient not found' });
+    }
     const newAppointment = new Appointment({
       patientId:new mongoose.Types.ObjectId(req.user.id), 
       doctorId: new mongoose.Types.ObjectId(doctorId),

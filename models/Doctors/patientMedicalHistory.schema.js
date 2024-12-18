@@ -33,6 +33,8 @@ const patientMedicalSchema = new mongoose.Schema({
     smokingOrAlcohol:{
         type:String,
     },
+    patientId: {type: String},
+    recipientEmail:{type:String} 
 
 
 

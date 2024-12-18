@@ -14,7 +14,9 @@ const patientSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   userType: { type: String, default: 'Patient' }, // Define user type
   online: { type: Boolean, default: false },      // Track online status
-  lastActive: { type: Date },       
+  lastActive: { type: Date },
+       
+
 });
 
 export default  mongoose.model('Patient', patientSchema);
