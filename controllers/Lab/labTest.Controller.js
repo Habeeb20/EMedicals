@@ -1,124 +1,143 @@
-import Test from "../../models/Lab/labTechnician.model.js";
-
+import LabTest from "../../models/Lab/LabTestModel.js";
 import LabUser from "../../models/Lab/Lab.Model.js";
+import Doctor from "../../models/Doctors/doctor.model.js";
+import Patient from "../../models/Doctors/patient.model.js";
+import mongoose from "mongoose";
 
-
-
-export const createTest = async (req, res) => {
-  const { name, description, price, patientId } = req.body;
+export const LabBookAppointment = async(req, res) => {
+  const {testName, price, patientName, patientContact} = req.body
+  const labId = req.params.labId || req.body.labId;
 
   try {
- 
-    const patient = await LabUser.findById(patientId);
-    if (!patient || patient.role !== "patient") {
-      return res.status(400).json({ message: "Invalid or non-existent patient." });
+    const Lab = await LabUser.findById(labId);
+    if(!Lab){
+      console.log("lab not found")
+      return res.status(404).json({message: "lab not found"})
     }
 
-    // Create the test
-    const test = await Test.create({
-      name,
-      description,
+    console.log(Lab)
+
+    const doctor = await Doctor.findById(req.user.id)
+    if(!doctor){
+      console.log("doctor not found")
+      return res.status(404).json({message: "doctor not found"})
+    }
+
+    const patient = await Patient.findById(req.user.id)
+    if(!patient){
+      console.log("patient not found")
+      return res.status(404).json({message: "patient not found"})
+    }
+
+    const newAppointment = new LabTest({
+      labId: new mongoose.Types.ObjectId(labId),
+      patientId:new mongoose.Types.ObjectId(req.user.id), 
+      doctorId: new mongoose.Types.ObjectId(req.user.id),
+      testName,
       price,
-      patient: patientId,
-    });
+      patientName,
+      patientContact,
+    })
 
-    res.status(201).json({ message: "Test created successfully.", test });
+    await newAppointment.save();
+    console.log("new appointment creadted with a lab", newAppointment)
+
+    res.status(201).json(newAppointment);
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: 'Failed to book appointment' });
   }
-};
+}
 
-// Get all Tests
-export const getAllTests = async (req, res) => {
+export const getAppointmentofDoctorsForLab = async(req, res) => {
+  const labId = req.user.id
+  if(!labId || labId === 'undefined'){
+    console.log("lab not found")
+    return res.status(400).json({error: 'lab id is not found'})
+  }
+
   try {
-    const tests = await Test.find()
-      .populate("patient", "name email")
-      .populate("technician", "name email");
-    res.status(200).json(tests);
+    const appointment = await LabUser.find({labId}).populate('doctorId')
+    res.json(appointment)
   } catch (error) {
     console.log(error)
-    res.status(500).json({ message: error.message });
+    res.status(500).json({error: 'failed to fetch appointment'})
   }
-};
-
-// // Get a Test by ID
-// export const getTestById = async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const test = await Test.findById(id)
-//       .populate("patient", "name email")
-//       .populate("technician", "name email");
-
-//     if (!test) {
-//       return res.status(404).json({ message: "Test not found." });
-//     }
-
-//     res.status(200).json(test);
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// Update a Test (Admin can update test details or assign a technician)
+}
 
 
-
-// export const updateTest = async (req, res) => {
-//   const { id } = req.params;
-//   const { name, description, price, status, technicianId } = req.body;
-
-//   try {
-//     const test = await Test.findById(id);
-//     if (!test) {
-//       return res.status(404).json({ message: "Test not found." });
-//     }
-
-//     // Validate and assign technician if provided
-//     if (technicianId) {
-//       const technician = await LabUser.findById(technicianId);
-//       if (!technician || technician.role !== "technician") {
-//         return res.status(400).json({ message: "Invalid or non-existent technician." });
-//       }
-//       test.technician = technicianId;
-//     }
-
-//     // Update fields
-//     if (name) test.name = name;
-//     if (description) test.description = description;
-//     if (price) test.price = price;
-//     if (status && ["Pending", "Completed"].includes(status)) {
-//       test.status = status;
-//     }
-
-//     const updatedTest = await test.save();
-
-//     res.status(200).json({
-//       message: "Test updated successfully.",
-//       test: updatedTest,
-//     });
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// Delete a Test
-export const deleteTest = async (req, res) => {
-  const { id } = req.params;
+export const getAppointmentofPatientsForLab  = async(req, res) => {
+  const labId = req.user.id
+  if(!labId || labId === 'undefined'){
+    console.log("lab not found")
+    return res.status(400).json({error: 'lab id is not found'})
+  }
 
   try {
-    const test = await Test.findById(id);
-    if (!test) {
-      return res.status(404).json({ message: "Test not found." });
+    const appointment = await LabUser.find({labId}).populate('patientId')
+    res.json(appointment)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({error: 'failed to fetch appointment'})
+  }
+
+}
+
+
+
+export const getLabAppointmentForDoctor = async(req, res) => {
+  try {
+    const doctorId = req.user.id;
+
+    if(!mongoose.Types.ObjectId.isValid(doctorId)){
+      return res.status(400).json({message:'Invalid patient ID'})
     }
 
-    await test.deleteOne();
-    res.status(200).json({ message: "Test deleted successfully." });
+    console.log("doctor Id:", doctorId)
+
+
+    const doctorExists = await Doctor.findById(new mongoose.Types.ObjectId(doctorId))
+    if(!doctorExists){
+      return res.status(404).json({message: "doctor not found"})
+    }
+
+
+    const appointments = await LabUser.find({doctorId:new mongoose.Types.ObjectId(doctorId)}).populate('labId', 'name email');
+    console.log("Appointments found:", appointments);
+
+    return res.json(appointments);
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching appointments:", error.message); 
+    return res.status(500).json({ message: 'Server error', error: error.message }); 
   }
-};
+}
+
+
+
+
+export const getLabAppointmentForPatient = async(req, res) => {
+  try {
+    const patientId = req.user.id;
+
+    if(!mongoose.Types.ObjectId.isValid(patientId)){
+      return res.status(400).json({message:'Invalid patient ID'})
+    }
+
+    console.log("doctor Id:", patientId)
+
+
+    const doctorExists = await Patient.findById(new mongoose.Types.ObjectId(patientId))
+    if(!doctorExists){
+      return res.status(404).json({message: "doctor not found"})
+    }
+
+
+    const appointments = await LabUser.find({patientId:new mongoose.Types.ObjectId(patientId)}).populate('labId', 'name email');
+    console.log("Appointments found:", appointments);
+
+    return res.json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments:", error.message); 
+    return res.status(500).json({ message: 'Server error', error: error.message }); 
+  }
+}

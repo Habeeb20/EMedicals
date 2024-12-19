@@ -21,5 +21,22 @@ const Labtestappointment = new mongoose.Schema({
         type:String,
         required: true
     },
+    price:{
+        type:String,
+        required: true
+    },
+    status: { type: String, enum: ["Pending", "Completed"], default: "Pending" },
+    patientName:{
+        type:String,
+        required:true
+    },
+    patientContact:{
+        type:String,
+        required: true
+    }
     
+}, {
+    timestamps: true
 })
+
+export default mongoose.model("LabTest", Labtestappointment)

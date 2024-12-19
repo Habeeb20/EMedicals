@@ -1,22 +1,17 @@
 import express from "express";
-import { createTest,  
-    getAllTests,
+import { verifyToken } from "../../middleware/verifyToken.js";
+import { getAppointmentofDoctorsForLab, getAppointmentofPatientsForLab, getLabAppointmentForDoctor, getLabAppointmentForPatient, LabBookAppointment } from "../../controllers/Lab/labTest.Controller.js";
 
-    deleteTest, } from "../../controllers/Lab/labTest.Controller.js";
 
 const router = express.Router();
 
-router.post("/create", createTest);
-
-router.get("/", getAllTests);
-
-
-// router.get("/:id", getTestById);
-
-
-// router.put("/:id", updateTest);
+router.post("/booklabappointment/:labid", verifyToken, LabBookAppointment );
+router.get("/labappointmentofdoctors", verifyToken, getAppointmentofDoctorsForLab)
+router.get("/labappointmentofpatient", verifyToken, getAppointmentofPatientsForLab)
+router.get("/patientlabappointment",  verifyToken, getLabAppointmentForPatient)
+router.get('/doctorlabappointment', verifyToken, getLabAppointmentForDoctor)
 
 
-router.delete("/:id", deleteTest);
+
 
 export default router;
