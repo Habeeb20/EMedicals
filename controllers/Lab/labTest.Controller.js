@@ -5,7 +5,7 @@ import Patient from "../../models/Doctors/patient.model.js";
 import mongoose from "mongoose";
 
 export const LabBookAppointment = async(req, res) => {
-  const {testName, price, patientName, patientContact} = req.body
+  const {testName,  patientName, patientContact} = req.body
   const labId = req.params.labId || req.body.labId;
 
   try {
@@ -23,18 +23,13 @@ export const LabBookAppointment = async(req, res) => {
       return res.status(404).json({message: "doctor not found"})
     }
 
-    const patient = await Patient.findById(req.user.id)
-    if(!patient){
-      console.log("patient not found")
-      return res.status(404).json({message: "patient not found"})
-    }
-
+   
     const newAppointment = new LabTest({
       labId: new mongoose.Types.ObjectId(labId),
-      patientId:new mongoose.Types.ObjectId(req.user.id), 
+      // patientId:new mongoose.Types.ObjectId(req.user.id), 
       doctorId: new mongoose.Types.ObjectId(req.user.id),
       testName,
-      price,
+    
       patientName,
       patientContact,
     })
@@ -49,6 +44,49 @@ export const LabBookAppointment = async(req, res) => {
   }
 }
 
+
+
+export  const LabBookAppointmentforPatient = async(req, res) =>{
+  const {testName,  patientName, patientContact} = req.body
+  const labId = req.params.labId || req.body.labId;
+
+  try {
+    const Lab = await LabUser.findById(labId);
+    if(!Lab){
+      console.log("lab not found")
+      return res.status(404).json({message: "lab not found"})
+    }
+
+    console.log(Lab)
+
+    const patient = await Patient.findById(req.user.id)
+    if(!patient){
+      console.log("patient not found")
+      return res.status(404).json({message: "doctor not found"})
+    }
+
+   
+    const newAppointment = new LabTest({
+      labId: new mongoose.Types.ObjectId(labId),
+      // patientId:new mongoose.Types.ObjectId(req.user.id), 
+      patientId: new mongoose.Types.ObjectId(req.user.id),
+      testName,
+    
+      patientName,
+      patientContact,
+    })
+
+    await newAppointment.save();
+    console.log("new appointment creadted with a lab", newAppointment)
+
+    res.status(201).json(newAppointment);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: 'Failed to book appointment' });
+  }
+
+}
+
 export const getAppointmentofDoctorsForLab = async(req, res) => {
   const labId = req.user.id
   if(!labId || labId === 'undefined'){
@@ -57,7 +95,8 @@ export const getAppointmentofDoctorsForLab = async(req, res) => {
   }
 
   try {
-    const appointment = await LabUser.find({labId}).populate('doctorId')
+    const appointment = await LabTest.find({labId}).populate('doctorId')
+    console.log(appointment)
     res.json(appointment)
   } catch (error) {
     console.log(error)

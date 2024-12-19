@@ -312,6 +312,13 @@ const SingleLabProfileForDoctor = () => {
               {lab.testJ}  {-lab.testJPrice}#
             </h6>
           </div>
+          {lab && <Link to={`/lab/labbookappointment/${lab._id}`}>
+                  <button className="bg-blue-500 text-white py-2 px-4 rounded-lg">
+                    Book
+                  </button>
+
+                  </Link>
+                  }
                 {/* Comments */}
                 <div className="mt-6">
           <h3 className="font-bold text-lg">Comments</h3>

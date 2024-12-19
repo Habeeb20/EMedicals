@@ -10,6 +10,7 @@ import s2 from "../../assets/EMedicals/ss3.jpg"
 import s3 from "../../assets/EMedicals/ss4.jpg"
 import s4 from "../../assets/EMedicals/ss5.jpg"
 const LabDashboard= () => {
+  const {labId} = useState();
   const [showPopup, setShowPopup] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] =useState('')
@@ -17,6 +18,7 @@ const LabDashboard= () => {
   const navigate = useNavigate();
   const [cancelPopup, setCancelPopup] = useState(false)
   const [userId, setUserId] = useState('')
+  const [appointments, setAppointments] = useState([]);
   const [userData, setUserData] = useState({
   
     phone:'',
@@ -43,6 +45,30 @@ const LabDashboard= () => {
     testJ:'',
     testJPrice:''
   })
+
+  useEffect(() => {
+    const fetchAppointments = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Token not found');
+
+        const response = await axios.get(`${import.meta.env.VITE_API_L}/labappointmentofdoctors`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAppointments(response.data);
+        console.log(response.data) 
+      } catch (err) {
+        setError(err.message || 'Error fetching appointments');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAppointments();
+  }, [labId]);
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -311,17 +337,17 @@ const LabDashboard= () => {
       <div className="mt-4 flex items-center justify-between">
         <div className="flex space-x-4">
           <button className="px-4 py-2 bg-white text-green-900 font-semibold rounded-md">
-            Patients
+          Appointments
           </button>
-          <button className="px-4 py-2 text-white font-semibold rounded-md">
-            Appointments
-          </button>
+          {/* <button className="px-4 py-2 text-white font-semibold rounded-md">
+          Patients
+          </button> */}
         </div>
         <div className="relative">
-          <button className="bg-gray-200 text-green-900 px-4 py-2 rounded-md">
+          {/* <button className="bg-gray-200 text-green-900 px-4 py-2 rounded-md">
             Today &#9662;
-          </button>
-          <div className="absolute top-full mt-1 bg-white text-black rounded-md shadow-lg">
+          </button> */}
+          {/* <div className="absolute top-full mt-1 bg-white text-black rounded-md shadow-lg">
             {['Yesterday', 'This week', 'This month'].map((filter, idx) => (
               <button
                 key={idx}
@@ -330,39 +356,55 @@ const LabDashboard= () => {
                 {filter}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* New Patients */}
       <div className="mt-6">
-        <h2 className="text-xl font-bold text-white">New Patients</h2>
-        <div className="space-y-4 mt-4">
-          {[1, 2, 3].map((_, idx) => (
-            <div
-              key={idx}
-              className="bg-gray-100 text-black p-4 rounded-lg flex items-center justify-between"
-            >
-              <div className="flex items-center">
-                <img
-                  src="/path/to/avatar.jpg"
-                  alt="Avatar"
-                  className="w-12 h-12 rounded-full mr-3"
-                />
-                <div>
-                  <p className="font-bold text-lg">Kunal Mehra</p>
-                  <p className="text-sm">HIV - Pending</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-bold">$230</p>
-                <button className="text-green-700 font-semibold">Add payment</button>
-              </div>
-            </div>
-          ))}
+  <h2 className="text-xl font-bold text-white">New Appointment</h2>
+  <div className="space-y-4 mt-4">
+    {appointments.length === 0 ? (
+      <p>No appointments found for your lab yet.</p>
+    ) : (
+      appointments.map((appointment) => (
+        <div key={appointment.id} className="flex items-center bg-white text-black">
+          <img
+            src={appointment.doctorId.profilePicture}
+            alt="Avatar"
+            className="w-12 h-12 rounded-full mr-3"
+          />
+          <div>
+            <p className="font-bold text-lg">Doctor {appointment.doctorId?.fullname}</p>
+            <p className="text-sm">
+              {appointment.doctorId?.email} 
+            </p>
+            <p className="text-sm">
+              {appointment.patientName} 
+            </p>
+            <p className="text-sm">
+              {appointment.testName} 
+            </p>
+            <p className="text-sm">
+              {appointment.patientContact} 
+            </p>
+            <p className="text-sm">
+              {new Date(appointment.createdAt).toLocaleDateString()} 
+            </p>
+
+          </div>
         </div>
-      </div>
+      ))
+    )}
+    <div className="text-right">
+      <p className="font-bold">$230</p>
+      <button className="text-green-700 font-semibold">Add payment</button>
     </div>
+  </div>
+</div>
+
+      </div>
+
 
     </>
  
@@ -370,3 +412,49 @@ const LabDashboard= () => {
 };
 
 export default LabDashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
