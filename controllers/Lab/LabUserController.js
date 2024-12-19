@@ -144,3 +144,27 @@ export const getAllLab = async(req, res) => {
 
 
 }
+
+export const getASingleLab = async (req,res) => {
+  try {
+    const {id} = req.params
+    console.log(req.params);
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        console.log("id not found")
+        return res.status(400).json({success: false,  message: 'Invalid user ID'})
+    }
+
+    const patient = await LabModel.findById(id).select('-password');
+    if(!patient){
+        console.log("lab not found")
+        return res.status(404).json({success:false, message: "lab not found"})
+    }
+    res.status(200).json(patient);
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({message: "an error occured with the network"})
+  }
+
+    
+}

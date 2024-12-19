@@ -328,6 +328,11 @@ useEffect(() => {
     <p className="text-sm text-gray-600"><span className="font-medium text-gray-700"> LGA:</span> {medical.LGA}</p>
     <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">location:</span> {medical.location}</p>
     <p className="text-sm text-gray-600"><span className="font-medium text-gray-700">phone:</span> {medical.phone}</p>
+    {doctor && <Link to={`/labdetails/${medical._id}`}>
+                <button className="bg-blue-200 mt-3 text-gray-700 py-2 px-4 rounded-lg">
+                    View details
+                  </button>
+                </Link>}
    
   </div>
 </div>

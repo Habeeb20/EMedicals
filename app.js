@@ -50,6 +50,7 @@ import userPatientroute from "./routes/hospital/userPatient.js"
 
 import labUserRouter from "./routes/lab/labUserRoute.js"
 import labTestRoute from "./routes/lab/labTestRoute.js"
+import labcommentRouter from "./routes/lab/labComment.js";
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -144,6 +145,7 @@ app.use("/api/teleuser", teleDoctorRouter)
 //lab
 app.use("/api/lab", labTestRoute )
 app.use("/api/lab", labUserRouter)
+app.use("/api/lab", labcommentRouter)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

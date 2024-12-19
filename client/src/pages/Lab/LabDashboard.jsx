@@ -18,13 +18,8 @@ const LabDashboard= () => {
   const [cancelPopup, setCancelPopup] = useState(false)
   const [userId, setUserId] = useState('')
   const [userData, setUserData] = useState({
-    name:'',
-    password:'',
-    email:'',
-    role: '',
+  
     phone:'',
-    state:'',
-    LGA: '',
     location:'',
     picture1:'',
     testA:'',
@@ -90,6 +85,7 @@ const LabDashboard= () => {
 
   
   const handleChange = (e) => {
+    e.preventDefault()
     const { name, value } = e.target;
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
@@ -170,7 +166,7 @@ const LabDashboard= () => {
             <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Update Your Profile</h2>
             <button
         onClick={() => setShowPopup(false)}
-        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
+        className="absolute top-2 right-2 bg-red-500 text-black rounded-full p-2 hover:bg-red-600 transition"
       >
         ✕
       </button>
@@ -194,7 +190,7 @@ const LabDashboard= () => {
                   name="phone"
                   value={userData.phone}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
             
@@ -210,7 +206,7 @@ const LabDashboard= () => {
                   name="location"
                   value={userData.location}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 border text-black  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
@@ -225,7 +221,7 @@ const LabDashboard= () => {
                 name={`test${String.fromCharCode(65 + index)}`}
                 value={userData[`test${String.fromCharCode(65 + index)}`]}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div className="flex flex-col">
@@ -237,7 +233,7 @@ const LabDashboard= () => {
                 name={`test${String.fromCharCode(65 + index)}Price`}
                 value={userData[`test${String.fromCharCode(65 + index)}Price`]}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>

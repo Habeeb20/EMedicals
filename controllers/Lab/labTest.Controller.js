@@ -63,44 +63,47 @@ export const getAllTests = async (req, res) => {
 // };
 
 // Update a Test (Admin can update test details or assign a technician)
-export const updateTest = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, price, status, technicianId } = req.body;
 
-  try {
-    const test = await Test.findById(id);
-    if (!test) {
-      return res.status(404).json({ message: "Test not found." });
-    }
 
-    // Validate and assign technician if provided
-    if (technicianId) {
-      const technician = await LabUser.findById(technicianId);
-      if (!technician || technician.role !== "technician") {
-        return res.status(400).json({ message: "Invalid or non-existent technician." });
-      }
-      test.technician = technicianId;
-    }
 
-    // Update fields
-    if (name) test.name = name;
-    if (description) test.description = description;
-    if (price) test.price = price;
-    if (status && ["Pending", "Completed"].includes(status)) {
-      test.status = status;
-    }
+// export const updateTest = async (req, res) => {
+//   const { id } = req.params;
+//   const { name, description, price, status, technicianId } = req.body;
 
-    const updatedTest = await test.save();
+//   try {
+//     const test = await Test.findById(id);
+//     if (!test) {
+//       return res.status(404).json({ message: "Test not found." });
+//     }
 
-    res.status(200).json({
-      message: "Test updated successfully.",
-      test: updatedTest,
-    });
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: error.message });
-  }
-};
+//     // Validate and assign technician if provided
+//     if (technicianId) {
+//       const technician = await LabUser.findById(technicianId);
+//       if (!technician || technician.role !== "technician") {
+//         return res.status(400).json({ message: "Invalid or non-existent technician." });
+//       }
+//       test.technician = technicianId;
+//     }
+
+//     // Update fields
+//     if (name) test.name = name;
+//     if (description) test.description = description;
+//     if (price) test.price = price;
+//     if (status && ["Pending", "Completed"].includes(status)) {
+//       test.status = status;
+//     }
+
+//     const updatedTest = await test.save();
+
+//     res.status(200).json({
+//       message: "Test updated successfully.",
+//       test: updatedTest,
+//     });
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 // Delete a Test
 export const deleteTest = async (req, res) => {

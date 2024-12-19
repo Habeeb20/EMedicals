@@ -6,7 +6,8 @@ import {
  
     labdashboard,
     editlabprofile,
-    getAllLab, } from "../../controllers/Lab/LabUserController.js";
+    getAllLab,
+    getASingleLab, } from "../../controllers/Lab/LabUserController.js";
 
 import { verifyToken } from "../../middleware/verifyToken.js";
 import { protect8 } from "../../middleware/authMiddleware.js";
@@ -19,6 +20,7 @@ router.post("/login", loginAdmin)
 router.get("/getuserprofile", protect8, labdashboard)
 router.put("/:id", protect8, editlabprofile)
 router.get("/all", getAllLab)
+router.get("/ldetails/:id", getASingleLab)
 // router.post("/add", addUser);
 
 

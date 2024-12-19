@@ -15,6 +15,7 @@ const LoginDoctor = () => {
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_D}/doctorlogin`, { email, password });
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem("email", email)
       toast.success("successfully logged in")
       navigate('/doctorprofile');
     } catch (error) {

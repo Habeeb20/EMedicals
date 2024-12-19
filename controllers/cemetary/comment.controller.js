@@ -1,8 +1,8 @@
 import CommentCemetery from "../../models/cemetary/comment.js";
 
 export const postComment = async (req, res) => {
-  const { userName, commentText, userId } = req.body;  // Include userId in the request body
-  const { id } = req.params; // mortuaryId from URL params
+  const { userName, commentText, userId } = req.body;  
+  const { id } = req.params; 
 
   try {
     const newComment = new CommentCemetery({

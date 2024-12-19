@@ -104,6 +104,7 @@ import LabRegister from "./pages/Lab/LabRegister";
 import LabLogin from "./pages/Lab/LabLogin";
 import LabDashboard from "./pages/Lab/LabDashboard";
 import LabsForDoctors from "./pages/Doctor/LabsForDoctors";
+import SingleLabProfileForDoctor from "./pages/Doctor/singleLabProfileForDoctor";
 
 
 
@@ -303,8 +304,10 @@ const App = () => {
           <Route path="/labregister" element={<LabRegister />} />
           <Route path="/lablogin" element={<LabLogin />} />
           <Route path="/alllabs" element={<LabsForDoctors />} />
-          {/* <Route path="/lab" element={<LabAppointment />} /> */}
           <Route path="/labdashboard" element={<LabDashboard />} />
+          <Route path="/labdetails/:id" element={<SingleLabProfileForDoctor />} />
+          {/* <Route path="/lab" element={<LabAppointment />} /> */}
+
           <Route path="/lab2" element={<LabPatientDetails />} />
       
 

@@ -14,6 +14,7 @@ const LoginPatient = () => {
     try {
       const res = await axios.post('/api/patients/login', { email, password });
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem("email", email)
       navigate('/patient-profile');
     } catch (error) {
       setError('Invalid login credentials');
