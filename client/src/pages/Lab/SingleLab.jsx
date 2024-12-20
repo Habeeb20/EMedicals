@@ -5,15 +5,16 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar'
 import { toast } from 'react-toastify'
 import { ToastContainer } from 'react-toastify'
-import { FaShareAlt } from 'react-icons/fa'
+import { FaShareAlt, FaStar } from 'react-icons/fa'
 const SingleLab = () => {
     const {id} = useParams()
     const navigate = useNavigate()
     const [lab, setLab] = useState(null)
+    const [error,setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState("")
-
+    const [user, setUser] = useState([])
     const handleShare = (lab) => {
         if(navigator.share){
             navigator.share({
@@ -26,6 +27,37 @@ const SingleLab = () => {
             alert("sharing not supported on this device")
           }
     }
+    useEffect(() => {
+      const fetchProfile = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          console.log(token);
+          if (!token) {
+            throw new Error("No token found");
+          }
+  
+          const response = await axios.get(`${import.meta.env.VITE_API}/getprofile`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          });
+          setUser(response.data.user);
+        } catch (err) {
+          console.error(err); 
+          if (err.response?.status === 401) {
+            setError('Unauthorized access, please login again');
+            localStorage.removeItem('token');
+            navigate('/login');
+          } else {
+            setError('Failed to fetch profile');
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProfile();
+    }, [navigate]);
 
     useEffect(() => {
         if(!id){
@@ -108,7 +140,7 @@ const SingleLab = () => {
         {/* Funeral Home Card */}
         <div className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row md:space-x-4 items-center md:items-start">
           <img
-            src={lab.profilePicture || "https://via.placeholder.com/150"}
+            src={lab.picture1 || "https://via.placeholder.com/150"}
             alt={lab.name}
             className="w-32 h-32 rounded-md object-cover"
           />
@@ -119,17 +151,54 @@ const SingleLab = () => {
             <h6 className="font-bold ">LGA: {lab.LGA}</h6>
             <h6 className="font-bold ">Address: {lab.address}</h6>
             <h6 className="font-bold ">Unique Number: {lab.uniqueNumber}</h6>
-            <h6 className="font-bold ">Tests and Prices</h6>
-            <h6 className="font-semibold"> {lab.testA} - {lab.testAPrice}</h6>
-            <h6 className="font-semibold"> {lab.testB} - {lab.testBPrice}</h6>
-            <h6 className="font-semibold"> {lab.testC} - {lab.testCPrice}</h6>
-            <h6 className="font-semibold"> {lab.testD} - {lab.testDPrice}</h6>
-            <h6 className="font-semibold"> {lab.testE} - {lab.testEPrice}</h6>
-            <h6 className="font-semibold"> {lab.testF} - {lab.testFPrice}</h6>
-            <h6 className="font-semibold"> {lab.testG} - {lab.testGPrice}</h6>
-            <h6 className="font-semibold"> {lab.testH} - {lab.testHPrice}</h6>
-            <h6 className="font-semibold"> {lab.testI} - {lab.testIPrice}</h6>
-            <h6 className="font-semibold"> {lab.testJ} - {lab.testJPrice}</h6>
+            <h6 className="font-bold p-4 ">Tests and Prices</h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testA}  {-lab.testAPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testB}  {-lab.testBPrice}#
+            </h6>
+            <h6 className="font-semibold ">
+              {" "}
+              {lab.testC}     {-lab.testCPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testD} {-lab.testDPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testE}  {-lab.testEPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testF}  {-lab.testFPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testG}  {-lab.testGPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testH}  {-lab.testHPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testI}  {-lab.testIPrice}#
+            </h6>
+            <h6 className="font-semibold">
+              {" "}
+              {lab.testJ}  {-lab.testJPrice}#
+            </h6>
+            {lab && <Link to={`/lab/labbookappointmentforpatient/${lab._id}`}>
+                  <button className="bg-green-500 text-white py-2 px-4 rounded-lg">
+                    Book
+                  </button>
+
+                  </Link>
+                  }
 
 
             <div className="flex items-center justify-center md:justify-start space-x-1 text-green-600">

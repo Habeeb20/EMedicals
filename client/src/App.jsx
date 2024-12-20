@@ -106,6 +106,9 @@ import LabDashboard from "./pages/Lab/LabDashboard";
 import LabsForDoctors from "./pages/Doctor/LabsForDoctors";
 import SingleLabProfileForDoctor from "./pages/Doctor/singleLabProfileForDoctor";
 import FormLabAppointment from "./pages/Lab/FormLabAppointment";
+import UserLabDashboard from "./pages/Lab/UserLabDashboard";
+import SingleLab from "./pages/Lab/SingleLab";
+import PatientLabFormAppointment from "./pages/Lab/patientLabFormAppointment";
 
 
 
@@ -307,7 +310,10 @@ const App = () => {
           <Route path="/alllabs" element={<LabsForDoctors />} />
           <Route path="/labdashboard" element={<LabDashboard />} />
           <Route path="/labdetails/:id" element={<SingleLabProfileForDoctor />} />
+          <Route path="/singlelabdetails/:id" element={<SingleLab />} />
+          <Route path="/userlabdashboard" element={<UserLabDashboard />} />
           <Route path="/lab/labbookappointment/:labId" element={<FormLabAppointment />} />
+          <Route path="/lab/labbookappointmentforpatient/:labId" element={<PatientLabFormAppointment />} />
 
           {/* <Route path="/lab" element={<LabAppointment />} /> */}
 

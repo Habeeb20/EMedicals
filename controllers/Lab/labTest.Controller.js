@@ -3,7 +3,7 @@ import LabUser from "../../models/Lab/Lab.Model.js";
 import Doctor from "../../models/Doctors/doctor.model.js";
 import Patient from "../../models/Doctors/patient.model.js";
 import mongoose from "mongoose";
-
+import {User} from "../../models/user.models.js"
 export const LabBookAppointment = async(req, res) => {
   const {testName,  patientName, patientContact} = req.body
   const labId = req.params.labId || req.body.labId;
@@ -59,7 +59,7 @@ export  const LabBookAppointmentforPatient = async(req, res) =>{
 
     console.log(Lab)
 
-    const patient = await Patient.findById(req.user.id)
+    const patient = await User.findById(req.user.id)
     if(!patient){
       console.log("patient not found")
       return res.status(404).json({message: "doctor not found"})

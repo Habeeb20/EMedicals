@@ -5,37 +5,39 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../../components/Navbar";
 import { useParams } from "react-router-dom";
 
-const FormLabAppointment = () => {
-  const { labId } = useParams();
-  const [patientId, setPatientId] = useState("");
-  const [doctorId, setDoctorId] = useState("");
-  const [testName, setTestName] = useState("");
-  const [price, setPrice] = useState("");
-  const [patientName, setPatientName] = useState("");
-  const [patientContact, setPatientContact] = useState("");
-  const [loading, setLoading] = useState(false);
+const PatientLabFormAppointment = () => {
+    const { labId } = useParams();
+    const [patientId, setPatientId] = useState("");
+    const [doctorId, setDoctorId] = useState("");
+    const [testName, setTestName] = useState("");
+    const [price, setPrice] = useState("");
+    const [patientName, setPatientName] = useState("");
+    const [patientContact, setPatientContact] = useState("");
+    const [loading, setLoading] = useState(false);
+    
+    const testOptions = [
+        "Genotype",
+        "checkUps",
+        "Blood Test",
+        "Urine Test",
+        "X-ray",
+        "Stool Test",
+        "Blood Group",
+        "HIV/AIDS",
+        "Malaria",
+        "Typhoid",
+        "Tuberculosis",
+      ];
 
-  const testOptions = [
-    "Genotype",
-    "checkUps",
-    "Blood Test",
-    "Urine Test",
-    "X-ray",
-    "Stool Test",
-    "Blood Group",
-    "HIV/AIDS",
-    "Malaria",
-    "Typhoid",
-    "Tuberculosis",
-  ];
 
+      
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Authentication token not found. Please log in.");
       return;
     }
-    setDoctorId(token);
+    setPatientId(token);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -50,32 +52,30 @@ const FormLabAppointment = () => {
       patientName,
       patientContact,
     };
-
     try {
-      const token = localStorage.getItem("token");
-      await axios.post(`${import.meta.env.VITE_API_L}/booklabappointment/${labId}`, appointmentData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      setLoading(false);
-      toast.success("Appointment booked successfully!");
-    } catch (error) {
-      console.error("Error booking appointment:", error);
-      setLoading(false);
-      toast.error("Failed to book appointment. Please try again.");
-    }
-  };
-
-  const handleTestChange = (selectedTestName) => {
-    setTestName(selectedTestName);
-  };
-
+        const token = localStorage.getItem("token");
+        await axios.post(`${import.meta.env.VITE_API_L}/booklabappointmentforpatient/${labId}`, appointmentData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setLoading(false);
+        toast.success("Appointment booked successfully!");
+      } catch (error) {
+        console.error("Error booking appointment:", error);
+        setLoading(false);
+        toast.error("Failed to book appointment. Please try again.");
+      }
+    };
+    const handleTestChange = (selectedTestName) => {
+        setTestName(selectedTestName);
+      };
+    
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen bg-blue-300 flex items-center justify-center">
+    <div>
+        <Navbar />
+        <div className="min-h-screen bg-green-300 flex items-center justify-center">
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
           <h2 className="text-2xl font-bold text-center mb-6">Book an Appointment</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -133,7 +133,7 @@ const FormLabAppointment = () => {
               <button
                 type="submit"
                 className={`w-full px-4 py-2 rounded-md text-white ${
-                  loading ? "bg-gray-500" : "bg-blue-600 hover:bg-blue-700"
+                  loading ? "bg-gray-500" : "bg-green-600 hover:bg-green-700"
                 } focus:outline-none`}
                 disabled={loading}
               >
@@ -144,8 +144,9 @@ const FormLabAppointment = () => {
           <ToastContainer />
         </div>
       </div>
-    </>
-  );
-};
+      
+    </div>
+  )
+}
 
-export default FormLabAppointment;
+export default PatientLabFormAppointment

@@ -12,12 +12,16 @@ import s4 from "../../assets/EMedicals/ss5.jpg"
 const LabDashboard= () => {
   const {labId} = useState();
   const [showPopup, setShowPopup] = useState(false)
+  const [selectedTest, setSelectedTest] = useState(null);
+
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] =useState('')
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [cancelPopup, setCancelPopup] = useState(false)
   const [userId, setUserId] = useState('')
+  const [filteredNames, setFilteredNames]  = useState([])
+  const [searchTerm, setSearchTerm] = useState('');
   const [appointments, setAppointments] = useState([]);
   const [userData, setUserData] = useState({
   
@@ -58,6 +62,7 @@ const LabDashboard= () => {
           },
         });
         setAppointments(response.data);
+        setFilteredNames(response.data);
         console.log(response.data) 
       } catch (err) {
         setError(err.message || 'Error fetching appointments');
@@ -163,8 +168,21 @@ const LabDashboard= () => {
   };
 
 
+  const handleTestClick = (testKey) => {
+    setSelectedTest(testKey);
+  };
 
-  
+  const filteredData = selectedTest ? userData[selectedTest] : userData;
+
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term)
+
+    const filtered = appointments.filter((appoint) => 
+    appoint.patientName?.toLowerCase().includes(term?.toLowerCase()))
+    setFilteredNames(filtered)
+  }
   
   if (loading) return <p className="text-center text-indigo-900">Loading profile...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -308,29 +326,50 @@ const LabDashboard= () => {
       </div>
 
       {/* Appointments Carousel */}
-      <div className="flex space-x-4 mt-4 overflow-x-auto">
-        {['Typhoid and Malaria', 'Checkup', 'Flu Shot'].map((item, index) => (
-          <div
-            key={index}
-            className="bg-gray-200 text-black rounded-lg p-3 w-44 flex flex-col items-center"
-          >
-            <div className="w-12 h-12 bg-gray-300 rounded-full mb-2"></div>
-            <p className="text-sm font-medium">{item}</p>
-            <button className="mt-2 text-green-700 font-semibold">View Appointment</button>
-          </div>
-        ))}
+      {userData ? (
+  <div className="flex space-x-4 mt-4 overflow-x-auto">
+    {['testA', 'testB', 'testC'].map((testKey, index) => (
+      <div
+        key={index}
+        className="bg-gray-200 text-black rounded-lg p-3 w-44 flex flex-col items-center"
+      >
+        <div className="w-12 h-12 bg-gray-300 rounded-full mb-2"></div>
+        <p className="text-sm font-medium">{userData[testKey]}</p>
+        <button 
+          key={testKey}
+          onClick={() => handleTestClick(testKey)}
+          className={`px-4 py-2 rounded ${
+              selectedTest === testKey ? "bg-green-700 text-white" : "bg-gray-300 text-black"
+            }`}
+            >
+               {testKey.toUpperCase()}
+            </button>
       </div>
+    ))}
+    {/* <button
+          onClick={() => setSelectedTest(null)}
+          className="px-4 py-2 bg-red-500 text-white rounded"
+        >
+          Reset Filter
+        </button> */}
+  </div>
+) : (
+  <p>Loading...</p>
+)}
+
 
       {/* Search Bar */}
       <div className="mt-4 flex items-center">
         <input
           type="text"
-          placeholder="Search Patients"
+          placeholder="Search Patient's name"
+          value={searchTerm}
+          onChange={handleSearchChange}
           className="flex-grow p-2 rounded-l-md bg-gray-100 text-black"
         />
-        <button className="bg-gray-200 text-green-700 px-4 rounded-r-md">
+        {/* <button className="bg-gray-200 text-green-700 px-4 rounded-r-md">
           &#128269;
-        </button>
+        </button> */}
       </div>
 
       {/* Tabs and Filter */}
@@ -364,10 +403,10 @@ const LabDashboard= () => {
       <div className="mt-6">
   <h2 className="text-xl font-bold text-white">New Appointment</h2>
   <div className="space-y-4 mt-4">
-    {appointments.length === 0 ? (
+    {filteredNames.length === 0  ? (
       <p>No appointments found for your lab yet.</p>
     ) : (
-      appointments.map((appointment) => (
+      filteredNames.map((appointment) => (
         <div key={appointment.id} className="flex items-center bg-white text-black">
           <img
             src={appointment.doctorId.profilePicture}
@@ -377,16 +416,16 @@ const LabDashboard= () => {
           <div>
             <p className="font-bold text-lg">Doctor {appointment.doctorId?.fullname}</p>
             <p className="text-sm">
-              {appointment.doctorId?.email} 
+             Doctor's email: <span className="text-green-600">{appointment.doctorId?.email} </span>
             </p>
             <p className="text-sm">
-              {appointment.patientName} 
+              Patient's Name: <span className="text-green-600">{appointment.patientName} </span>
             </p>
             <p className="text-sm">
-              {appointment.testName} 
+              Test to be carried out: <span className="text-green-600">{appointment.testName}</span> 
             </p>
             <p className="text-sm">
-              {appointment.patientContact} 
+              Patient's contact: <span className="text-green-600">{appointment.patientContact}</span> 
             </p>
             <p className="text-sm">
               {new Date(appointment.createdAt).toLocaleDateString()} 
@@ -396,10 +435,30 @@ const LabDashboard= () => {
         </div>
       ))
     )}
-    <div className="text-right">
+
+        {/* Render Appointments */}
+        {/* {filteredData ? (
+        <div className="flex space-x-4 mt-4 overflow-x-auto">
+          {['testA', 'testB', 'testC']
+            .filter((key) => !selectedTest || key === selectedTest)
+            .map((testKey, index) => (
+              <div
+                key={index}
+                className="bg-gray-200 text-black rounded-lg p-3 w-44 flex flex-col items-center"
+              >
+                <div className="w-12 h-12 bg-gray-300 rounded-full mb-2"></div>
+                <p className="text-sm font-medium">{userData[testKey]}</p>
+                <button className="mt-2 text-green-700 font-semibold">View Appointment</button>
+              </div>
+            ))}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )} */}
+    {/* <div className="text-right">
       <p className="font-bold">$230</p>
       <button className="text-green-700 font-semibold">Add payment</button>
-    </div>
+    </div> */}
   </div>
 </div>
 
@@ -412,6 +471,8 @@ const LabDashboard= () => {
 };
 
 export default LabDashboard;
+
+
 
 
 
