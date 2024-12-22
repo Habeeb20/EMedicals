@@ -12,6 +12,7 @@ import QuickActions from './QuickActions';
 import ImageCarousel from './ImageCarousel';
 import WellnessAdvert from './WellnessAdvert';
 import AllHospital from '../Hospital/AllHospital';
+import GetPatientLabAppointment from '../Lab/GetPatientLabAppointment';
 
 export default function UserLandingProfile() {
   const [user, setUser] = useState(null);
@@ -83,6 +84,9 @@ export default function UserLandingProfile() {
             <li className="text-blue-600 font-bold text-lg">
               <a href="/laboratory">Laboratory</a>
             </li>
+            {/* <li className="text-blue-600 font-bold text-lg">
+              <a href="/getpatientlabappointment">Laboratory history</a>
+            </li> */}
             <li className="text-blue-600 font-bold text-lg">
               <a href="/doctors">Doctors</a>
             </li>
@@ -203,6 +207,7 @@ export default function UserLandingProfile() {
             </Link>
 
           </div>
+          <GetPatientLabAppointment />
         </main>
       </div>
     </div>

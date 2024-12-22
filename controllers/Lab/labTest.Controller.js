@@ -141,7 +141,7 @@ export const getLabAppointmentForDoctor = async(req, res) => {
     }
 
 
-    const appointments = await LabUser.find({doctorId:new mongoose.Types.ObjectId(doctorId)}).populate('labId', 'name email');
+    const appointments = await LabTest.find({doctorId:new mongoose.Types.ObjectId(doctorId)}).populate('labId', 'name email');
     console.log("Appointments found:", appointments);
 
     return res.json(appointments);
@@ -165,13 +165,13 @@ export const getLabAppointmentForPatient = async(req, res) => {
     console.log("doctor Id:", patientId)
 
 
-    const doctorExists = await Patient.findById(new mongoose.Types.ObjectId(patientId))
+    const doctorExists = await User.findById(new mongoose.Types.ObjectId(patientId))
     if(!doctorExists){
       return res.status(404).json({message: "doctor not found"})
     }
 
 
-    const appointments = await LabUser.find({patientId:new mongoose.Types.ObjectId(patientId)}).populate('labId', 'name email');
+    const appointments = await LabTest.find({patientId:new mongoose.Types.ObjectId(patientId)}).populate('labId', 'name email');
     console.log("Appointments found:", appointments);
 
     return res.json(appointments);

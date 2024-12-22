@@ -9,7 +9,7 @@ import HideGmailPart from '../HideGmailPart';
 import im2 from "../../assets/EMedicals/building.png";
 import im3 from "../../assets/EMedicals/pexels-cedric-fauntleroy-4270371.png";
 import QuickActions from '../User/QuickActions';
-
+import toast from "react-hot-toast"
 import ImageCarousel from '../User/ImageCarousel';
 import WellnessAdvert from '../User/WellnessAdvert';
 import AllHospital from '../Hospital/AllHospital';

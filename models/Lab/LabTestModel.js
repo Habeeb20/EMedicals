@@ -16,6 +16,10 @@ const Labtestappointment = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Patient',
     },
+    userId: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+    },
 
     testName:{
         type:String,

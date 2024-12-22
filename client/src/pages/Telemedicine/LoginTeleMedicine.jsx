@@ -50,7 +50,7 @@ const LoginTeleMedicine = () => {
         toast.success("login successful");
         navigate("/teledashboard");
       }
-    } catch (error) {
+    } catch (err) {
       setError(err.response?.data?.message || "an error occured");
 
       console.log(err);

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import { FaMapMarkerAlt, FaSearch } from 'react-icons/fa';
+import GetLabAppointmentForDoctor from '../Lab/GetLabAppointmentForDoctor';
 const LabsForDoctors = () => {
   const [filteredLabs, setFilteredLabs] = useState([])
   const [searchTerm, setSearchTerm] = useState('');
@@ -345,6 +346,7 @@ useEffect(() => {
           
       
         </div>
+        <GetLabAppointmentForDoctor />
 
         {/* Pagination */}
         <div className="mt-4 lg:mt-6 flex justify-center lg:justify-end space-x-2">

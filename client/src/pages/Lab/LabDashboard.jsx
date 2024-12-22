@@ -409,12 +409,12 @@ const LabDashboard= () => {
       filteredNames.map((appointment) => (
         <div key={appointment.id} className="flex items-center bg-white text-black">
           <img
-            src={appointment.doctorId.profilePicture}
+            src={appointment.doctorId?.profilePicture}
             alt="Avatar"
             className="w-12 h-12 rounded-full mr-3"
           />
           <div>
-            <p className="font-bold text-lg">Doctor {appointment.doctorId?.fullname}</p>
+            <p className="font-bold text-lg">Doctor {appointment.doctorId?.fullname || appointment.picture1}</p>
             <p className="text-sm">
              Doctor's email: <span className="text-green-600">{appointment.doctorId?.email} </span>
             </p>
