@@ -5,19 +5,19 @@ const features = [
   {
     title: "Secure Platform",
     description: "Secure online platform for scheduling tests and uploading results, ensuring data protection and confidentiality.",
-    icon: "\u2606", // Replace with appropriate icon
+    icon: "\u2606", 
     link: "/secure-platform",
   },
   {
     title: "Convenient Sampling",
     description: "Flexible sampling options, including home sample pickups and walk-in appointments, for patient convenience and comfort.",
-    icon: "\u2615", // Replace with appropriate icon
+    icon: "\u2615", 
     link: "/convenient-sampling",
   },
   {
     title: "Extended Access",
     description: "Expands your reach and connects with a broader patient base and healthcare providers across the region.",
-    icon: "\u2695", // Replace with appropriate icon
+    icon: "\u2695", 
     link: "/extended-access",
   },
   {

@@ -35,7 +35,7 @@ export const LabBookAppointment = async(req, res) => {
     })
 
     await newAppointment.save();
-    console.log("new appointment creadted with a lab", newAppointment)
+    console.log("new appointment created with a lab", newAppointment)
 
     res.status(201).json(newAppointment);
   } catch (error) {
@@ -180,3 +180,42 @@ export const getLabAppointmentForPatient = async(req, res) => {
     return res.status(500).json({ message: 'Server error', error: error.message }); 
   }
 }
+
+
+export const editLabTest = async (req, res) => {
+  const labTestId = req.params.id;
+  const { testName, patientName, patientContact, testResult, status, AmountPaid, MedicalAdvice, drugPrescription } = req.body;
+
+
+  if (!mongoose.Types.ObjectId.isValid(labTestId)) {
+    return res.status(400).json({ message: 'Invalid Lab Test ID' });
+  }
+
+  try {
+   
+    const labTest = await LabTest.findById(labTestId);
+
+    if (!labTest) {
+      return res.status(404).json({ message: 'Lab Test not found' });
+    }
+
+
+    if (testName) labTest.testName = testName;
+    if (patientName) labTest.patientName = patientName;
+    if (patientContact) labTest.patientContact = patientContact;
+    if (testResult) labTest.testResult = testResult;
+    if (status) labTest.status = status
+    if (AmountPaid) labTest.AmountPaid = AmountPaid;
+    if (MedicalAdvice) labTest.MedicalAdvice = MedicalAdvice;
+    if (drugPrescription) labTest.drugPrescription = drugPrescription
+
+    // Save the updated lab test
+    const updatedLabTest = await labTest.save();
+
+    console.log('Lab Test updated:', updatedLabTest);
+    res.status(200).json(updatedLabTest);
+  } catch (error) {
+    console.error('Error updating lab test:', error.message);
+    res.status(500).json({ message: 'Failed to update lab test', error: error.message });
+  }
+};

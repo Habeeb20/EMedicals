@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../../middleware/verifyToken.js";
-import { getAppointmentofDoctorsForLab, getAppointmentofPatientsForLab, getLabAppointmentForDoctor, getLabAppointmentForPatient, LabBookAppointment, LabBookAppointmentforPatient } from "../../controllers/Lab/labTest.Controller.js";
+import { editLabTest, getAppointmentofDoctorsForLab, getAppointmentofPatientsForLab, getLabAppointmentForDoctor, getLabAppointmentForPatient, LabBookAppointment, LabBookAppointmentforPatient } from "../../controllers/Lab/labTest.Controller.js";
 
 
 const router = express.Router();
@@ -11,6 +11,7 @@ router.get("/labappointmentofdoctors", verifyToken, getAppointmentofDoctorsForLa
 router.get("/labappointmentofpatient", verifyToken, getAppointmentofPatientsForLab)
 router.get("/patientlabappointment",  verifyToken, getLabAppointmentForPatient)
 router.get('/doctorlabappointment', verifyToken, getLabAppointmentForDoctor)
+router.put("/editlabTest/:id", editLabTest)
 
 
 

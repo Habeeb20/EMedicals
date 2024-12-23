@@ -131,6 +131,8 @@ import { Link } from 'react-router-dom';
 import LPage from '../components/Landing/LPage';
 import LPage2 from '../components/Landing/LPage2';
 import LPage3 from '../components/Landing/LPage3';
+import LandingImageCarousel from '../components/Landing/LandingImageCarousel';
+import LandingQuickActions from '../components/Landing/LandingQuickAction';
 
 const LandingHome = () => {
   const { ref: headingRef, inView: headingInView } = useInView({ triggerOnce: true });
@@ -207,7 +209,10 @@ const LandingHome = () => {
         </div>
       </section>
       <LPage />
+      <LandingImageCarousel />
+      <LandingQuickActions />
       <LPage2 />
+     
       <LPage3 />
 
     

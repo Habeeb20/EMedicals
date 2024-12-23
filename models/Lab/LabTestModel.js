@@ -34,6 +34,22 @@ const Labtestappointment = new mongoose.Schema({
     patientContact:{
         type:String,
         required: true
+    },
+    testResult: {
+        type:String,
+
+    },
+    status:{
+        type:String
+    },
+    AmountPaid:{
+        type:String
+    },
+    MedicalAdvice:{
+        type:String
+    },
+    drugPrescription:{
+        type:String
     }
     
 }, {

@@ -50,6 +50,19 @@ const LabDashboard= () => {
     testJPrice:''
   })
 
+  const [editTest, setEditTest] = useState(null);
+  const [formData, setFormData] = useState({
+    testName: '',
+    patientName: '',
+    patientContact: '',
+    testResult: '',
+    status: '',
+    AmountPaid: '',
+    MedicalAdvice: '',
+    drugPrescription:'',
+
+  });
+
   useEffect(() => {
     const fetchAppointments = async() => {
       try {
@@ -182,6 +195,32 @@ const LabDashboard= () => {
     const filtered = appointments.filter((appoint) => 
     appoint.patientName?.toLowerCase().includes(term?.toLowerCase()))
     setFilteredNames(filtered)
+  }
+
+
+
+
+  const handleEditSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${import.meta.env.VITE_API_L}/editlabTest/${editTest}`, formData)
+      setEditTest(null);
+      setFormData({
+        testName: '',
+        patientName: '',
+        patientContact: '',
+        testResult: '',
+        status: '',
+        AmountPaid: '',
+        MedicalAdvice: '',
+        drugPrescription:'',
+      })
+      toast.success("successfully done")
+    
+    } catch (error) {
+      console.error('Error updating test:', error.message);
+      toast.error("an error occurred with the network while trying to update the data")
+    }
   }
   
   if (loading) return <p className="text-center text-indigo-900">Loading profile...</p>;
@@ -427,12 +466,113 @@ const LabDashboard= () => {
             <p className="text-sm">
               Patient's contact: <span className="text-green-600">{appointment.patientContact}</span> 
             </p>
+            <p>{appointment.testResult}</p>
             <p className="text-sm">
               {new Date(appointment.createdAt).toLocaleDateString()} 
             </p>
 
+            <button className="px-1 py-2 mr-5 bg-#007BFF text-#fff cursor-pointer" onClick={() => {
+              setEditTest(appointment._id);
+              setFormData({
+                testName: appointment.testName,
+                        patientName: appointment.patientName,
+                        patientContact: appointment.patientContact,
+                        testResult: appointment.testResult ,
+                        status:appointment.status,
+                        AmountPaid: appointment.AmountPaid,
+                        MedicalAdvice:appointment.MedicalAdvice, 
+                        drugPrescription: appointment.drugPrescription|| '',
+              })
+            }}>
+              Send result
+            </button>
+
           </div>
+          {editTest && (
+        <div>
+          <h3>Edit Test</h3>
+          <form
+            onSubmit={handleEditSubmit}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              maxWidth: '400px',
+              margin: '0 auto',
+            }}
+          >
+            <label>
+              Test Result:
+              <input
+                type="text"
+                name="testResult"
+                value={formData.testResult}
+                onChange={handleChange}
+                style={{ margin: '10px 0', padding: '5px' }}
+              />
+            </label>
+            <label>
+              Amount Paid:
+              <input
+                type="text"
+                name="AmountPaid"
+                value={formData.AmountPaid}
+                onChange={handleChange}
+                style={{ margin: '10px 0', padding: '5px' }}
+              />
+            </label>
+            <label>
+    Status:
+    <select
+      name="status"
+      value={formData.status}
+      onChange={handleChange}
+      style={{ margin: '10px 0', padding: '5px', width: '100%' }}
+    >
+      <option value="">Select Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Completed">Completed</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Cancelled">Cancelled</option>
+    </select>
+  </label>
+            <label>
+              Medical Advice:
+              <textarea
+                name="MedicalAdvice"
+                value={formData.MedicalAdvice}
+                onChange={handleChange}
+                style={{ margin: '10px 0', padding: '5px' }}
+              />
+            </label>
+
+            <label>
+              Drug Prescription:
+              <textarea
+                name="drugPrescription"
+                value={formData.drugPrescription}
+                onChange={handleChange}
+                style={{ margin: '10px 0', padding: '5px' }}
+              />
+            </label>
+            <button
+              type="submit"
+              style={{
+                padding: '10px',
+                backgroundColor: '#28a745',
+                color: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Save Changes
+            </button>
+          </form>
         </div>
+      )}
+
+        </div>
+
+        
       ))
     )}
 
