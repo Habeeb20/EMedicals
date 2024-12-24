@@ -75,7 +75,7 @@ const GetPatientLabAppointment = () => {
             className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200"
           >
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              {appointment.testName}
+              Test : {appointment.testName}
             </h3>
             <div className="text-sm text-gray-600">
               <p className="mb-1">

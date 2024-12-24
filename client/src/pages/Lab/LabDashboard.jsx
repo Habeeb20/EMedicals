@@ -51,17 +51,8 @@ const LabDashboard= () => {
   })
 
   const [editTest, setEditTest] = useState(null);
-  const [formData, setFormData] = useState({
-    testName: '',
-    patientName: '',
-    patientContact: '',
-    testResult: '',
-    status: '',
-    AmountPaid: '',
-    MedicalAdvice: '',
-    drugPrescription:'',
-
-  });
+  const [editId, setEditId] = useState('')
+  const [formData, setFormData] = useState([]);
 
   useEffect(() => {
     const fetchAppointments = async() => {
@@ -203,20 +194,15 @@ const LabDashboard= () => {
   const handleEditSubmit = async(e) => {
     e.preventDefault();
     try {
-      await axios.put(`${import.meta.env.VITE_API_L}/editlabTest/${editTest}`, formData)
-      setEditTest(null);
-      setFormData({
-        testName: '',
-        patientName: '',
-        patientContact: '',
-        testResult: '',
-        status: '',
-        AmountPaid: '',
-        MedicalAdvice: '',
-        drugPrescription:'',
-      })
+      const token = localStorage.getItem("token");
+      await axios.put(`${import.meta.env.VITE_API_L}/editlabTest/${userId}`, formData,
+     
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
       toast.success("successfully done")
-    
+      console.log(userId)
     } catch (error) {
       console.error('Error updating test:', error.message);
       toast.error("an error occurred with the network while trying to update the data")
@@ -473,59 +459,77 @@ const LabDashboard= () => {
 
             <button className="px-1 py-2 mr-5 bg-#007BFF text-#fff cursor-pointer" onClick={() => {
               setEditTest(appointment._id);
-              setFormData({
-                testName: appointment.testName,
-                        patientName: appointment.patientName,
-                        patientContact: appointment.patientContact,
-                        testResult: appointment.testResult ,
-                        status:appointment.status,
-                        AmountPaid: appointment.AmountPaid,
-                        MedicalAdvice:appointment.MedicalAdvice, 
-                        drugPrescription: appointment.drugPrescription|| '',
-              })
+              // setFormData({
+              //   testName: appointment.testName,
+              //           patientName: appointment.patientName,
+              //           patientContact: appointment.patientContact,
+              //           testResult: appointment.testResult ,
+              //           status:appointment.status,
+              //           AmountPaid: appointment.AmountPaid,
+              //           MedicalAdvice:appointment.MedicalAdvice, 
+              //           drugPrescription: appointment.drugPrescription|| '',
+              // })
             }}>
               Send result
             </button>
 
           </div>
           {editTest && (
-        <div>
-          <h3>Edit Test</h3>
-          <form
-            onSubmit={handleEditSubmit}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              maxWidth: '400px',
-              margin: '0 auto',
-            }}
-          >
-            <label>
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">send the result</h2>
+            <form onSubmit={handleEditSubmit} className="space-y-6">
+            <button
+        onClick={() => setEditTest(false)}
+        className="absolute top-2 right-2 bg-red-500 text-black rounded-full p-2 hover:bg-red-600 transition"
+      >
+        ✕
+      </button>
+              {Object.keys(userData).map((key) =>
+             
+                key !== "picture1" &&
+                   key !== "picture2" &&
+                      key !== "picture3"
+              )}
+    
+     
+          
+              <div className="flex flex-col">
+            <label  className="block text-sm font-medium text-gray-600 mb-1">
               Test Result:
               <input
                 type="text"
                 name="testResult"
                 value={formData.testResult}
                 onChange={handleChange}
+                                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 style={{ margin: '10px 0', padding: '5px' }}
               />
             </label>
-            <label>
+            </div>
+            <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
               Amount Paid:
               <input
                 type="text"
                 name="AmountPaid"
                 value={formData.AmountPaid}
                 onChange={handleChange}
+                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 style={{ margin: '10px 0', padding: '5px' }}
               />
             </label>
-            <label>
+            </div>
+            <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+
+      
     Status:
     <select
       name="status"
       value={formData.status}
       onChange={handleChange}
+       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
       style={{ margin: '10px 0', padding: '5px', width: '100%' }}
     >
       <option value="">Select Status</option>
@@ -535,25 +539,33 @@ const LabDashboard= () => {
       <option value="Cancelled">Cancelled</option>
     </select>
   </label>
-            <label>
+  </div>
+
+  <div className="flex flex-col">
+  <label className="block text-sm font-medium text-gray-600 mb-1">
               Medical Advice:
               <textarea
                 name="MedicalAdvice"
+                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 value={formData.MedicalAdvice}
                 onChange={handleChange}
                 style={{ margin: '10px 0', padding: '5px' }}
               />
             </label>
+            </div>
 
-            <label>
+            <div className="flex flex-col">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
               Drug Prescription:
               <textarea
                 name="drugPrescription"
                 value={formData.drugPrescription}
                 onChange={handleChange}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 style={{ margin: '10px 0', padding: '5px' }}
               />
             </label>
+            </div>
             <button
               type="submit"
               style={{
@@ -568,6 +580,8 @@ const LabDashboard= () => {
             </button>
           </form>
         </div>
+        </div>
+
       )}
 
         </div>

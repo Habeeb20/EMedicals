@@ -11,7 +11,7 @@ router.get("/labappointmentofdoctors", verifyToken, getAppointmentofDoctorsForLa
 router.get("/labappointmentofpatient", verifyToken, getAppointmentofPatientsForLab)
 router.get("/patientlabappointment",  verifyToken, getLabAppointmentForPatient)
 router.get('/doctorlabappointment', verifyToken, getLabAppointmentForDoctor)
-router.put("/editlabTest/:id", editLabTest)
+router.put("/editlabTest/:id", verifyToken, editLabTest)
 
 
 
