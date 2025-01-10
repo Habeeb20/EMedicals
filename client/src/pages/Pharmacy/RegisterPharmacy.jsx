@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import im from "../../assets/EMedicals/floatingLogo.png";
 const RegisterPharmacy = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', phone: '', address: '', state: '' });
   const [loading, setLoading] = useState(false);
@@ -34,8 +34,13 @@ const RegisterPharmacy = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer />
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4 text-purple-600">Register</h2>
+      <div className="w-full max-w-xs mx-auto ">
+        <div className="flex justify-center mb-0">
+          <img src={im} alt="logo" className="rounded-full" />
+        </div>
+
+        <div className="bg-white shadow-md rounded px-8 pt-1 pb-10 mt-1">
+          <h2 className="text-2xl font-semibold mb-6 text-purple-600 text-center">pharmacy Sign up</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Name of pharmacy</label>
@@ -44,7 +49,7 @@ const RegisterPharmacy = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -55,7 +60,7 @@ const RegisterPharmacy = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -66,7 +71,7 @@ const RegisterPharmacy = () => {
               name="state"
               value={formData.state}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -77,7 +82,18 @@ const RegisterPharmacy = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Phone number</label>
+            <input
+              type="text"
+              name="LGA"
+              value={formData.LGA}
+              onChange={handleChange}
+             className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -88,7 +104,7 @@ const RegisterPharmacy = () => {
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -99,7 +115,7 @@ const RegisterPharmacy = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+               className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -123,6 +139,9 @@ const RegisterPharmacy = () => {
         </form>
       </div>
     </div>
+    </div>
+    
+
   );
 };
 

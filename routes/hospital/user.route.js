@@ -3,21 +3,82 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import User from "../../models/hospitals/userSchema.js"
 
+import crypto from 'crypto'
+import nodemailer from "nodemailer"
+import cloudinary from "cloudinary"
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret:process.env.CLOUDINARY_API_SECRET,
+})
+
+
+const transporter = nodemailer.createTransport(({
+  service:'gmail',
+  auth: {
+      user:"essentialng23@gmail.com",
+      pass:"awpqyxoujmcgoemh"
+    },
+}));
+
+
+
+const sendOTPEmail = async(email, otp) => {
+  const mailOptions = {
+      from:process.env.EMAIL_USER,
+      to:email,
+      subject: 'Verify your email',
+      text: `Your verification code is: ${otp}`,
+
+  };
+  
+await transporter.sendMail(mailOptions);
+}
 
 const router = express.Router();
 
 // Register Admin
-router.post("/register", async (req, res) => {
+router.post("/userregister", async (req, res) => {
+  
   try {
-    const { hospitalName, email, password, location } = req.body;
+   
+    const { name, email, password, role } = req.body;
 
+    console.log(req.body)
+    const missingFields = [];
+    if (!name) missingFields.push('name');
+    if (!email) missingFields.push('email');
+    if (!password) missingFields.push('password');
+    if (!role) missingFields.push('role');
+    
+    if (missingFields.length > 0) {
+      console.log(`The following fields are required: ${missingFields.join(', ')}`)
+      return res.status(400).json({
+        
+        message: `The following fields are required: ${missingFields.join(', ')}`,
+      });
+    }
+   
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ role: "admin", hospitalName, email, password: hashedPassword, location });
-    await newUser.save();
+    const verificationToken = Math.floor(100000 + Math.random() * 900000).toString(); // OTP generation
+    const uniqueNumber = `RL-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    const verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
+
+    const result = await cloudinary.v2.uploader.upload(req.file.path);
+    const profilePicture = result.secure_url;
+
+    const newUser = new User({ name, email, password: hashedPassword, role,  profilePicture, uniqueNumber,
+      verificationToken,
+      verificationTokenExpiresAt,
+   });
+    await newUser.save();
+    await sendOTPEmail(newUser.email, verificationToken);
     res.status(201).json({ message: "Admin registered successfully!" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log(err)
+    res.status(500).json({ message: err.message });
   }
 });
 

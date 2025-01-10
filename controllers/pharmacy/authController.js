@@ -4,7 +4,7 @@ import User from '../../models/pharmacy/puser.model.js';
 import {generateToken} from '../../utils/generateTokenAndSetCookie.js';
 import jwt from "jsonwebtoken"
 export const registerUser = async (req, res) => {
-  const { name, email, password, phone,address, state  } = req.body;
+  const { name, email, password, phone,address, state, LGA  } = req.body;
 
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -19,6 +19,7 @@ export const registerUser = async (req, res) => {
       email: user.email,
       phone: user.phone,
       address: user.address,
+      LGA:user.LGA,
       state: user.state,
       isAdmin: user.isAdmin,
       token: generateToken(user._id),

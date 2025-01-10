@@ -126,7 +126,7 @@ const AdminHome = () => {
         
 
 
-          <Link to='/morticianlogin'>
+          <Link to='/cemeterylogin'>
           
           <div className="bg-gray-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaBookDead className="text-4xl text-gray-500" />

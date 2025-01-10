@@ -67,7 +67,7 @@ const AdminDashboard = () => {
       
 
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_HO}/h/dashboard`,
+          `${import.meta.env.VITE_API_HO}/dashboard`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);

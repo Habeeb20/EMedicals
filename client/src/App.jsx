@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-
+import axios from "axios";
 import LandingHome from "./pages/LandingHome";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -109,16 +109,46 @@ import FormLabAppointment from "./pages/Lab/FormLabAppointment";
 import UserLabDashboard from "./pages/Lab/UserLabDashboard";
 import SingleLab from "./pages/Lab/SingleLab";
 import PatientLabFormAppointment from "./pages/Lab/patientLabFormAppointment";
+import HospitalLandingPage from "./pages/Hospital/HospitalLandingPage";
 
 
 
+//newPharmacy
+import Home from "./pages/Home/Home"
+import NPLogin from "./pages/auth/Login"
+import NPRegister from  "./pages/auth/Register"
+import Forgot from "./pages/auth/Forgot";
+import Reset from "./pages/auth/Reset";
+import NPDashboard from "./pages/dashboard/Dashboard";
+import Sidebar from "./components/sidebar/Sidebar";
+import Layout from "./components/layout/Layout";
+import { useDispatch } from "react-redux";
+import { getLoginStatus } from "./services/authService";
+import { SET_LOGIN } from "./redux/features/auth/authSlice";
+import AddProduct from "./pages/addProduct/AddProduct";
+import ProductDetail from "./components/product/productDetail/ProductDetail";
+import EditProduct from "./pages/editProduct/EditProduct";
+import Profile from "./pages/profile/Profile";
+import EditProfile from "./pages/profile/EditProfile";
 
-
-
+import Contact from "./pages/contact/Contact";
 // const socket = io("http://localhost:8000");
+
+axios.defaults.withCredentials = true;
+
+
 const App = () => {
+  const dispatch = useDispatch();
   const { authUser } = useAuthContext();
   console.log(authUser);
+
+  useEffect(() => {
+    async function loginStatus() {
+      const status = await getLoginStatus();
+      dispatch(SET_LOGIN(status));
+    }
+    loginStatus();
+  }, [dispatch]);
 
 
   return (
@@ -283,6 +313,8 @@ const App = () => {
           <Route path="/testing" element={<Testing />} />
 
           //quickAction
+
+
           <Route path="/consultadoctor" element={<ConsultDoctor />} />
           <Route path="/consultadoctorlist" element={<ConsultADoctorList />} />
           <Route path="/gethomecare" element={<HomeCarePopup />} /> 
@@ -321,12 +353,102 @@ const App = () => {
       
 
 
+          
 
 
+          //newPharmacy
+          <Route path="/newpharmcy" element={<Home />} />
+          <Route path="/login" element={<NPLogin />} />
+          <Route path="/register" element={<NPRegister />} />
+          <Route path="/forgot" element={<Forgot />} />
+          <Route path="/resetpassword/:resetToken" element={<Reset />} />
+
+
+          <Route
+          path="/dashboard"
+          element={
+            <Sidebar>
+              <Layout>
+                <NPDashboard />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+<Route
+          path="/add-product"
+          element={
+            <Sidebar>
+              <Layout>
+                <AddProduct />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+
+<Route
+          path="/product-detail/:id"
+          element={
+            <Sidebar>
+              <Layout>
+                <ProductDetail />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+<Route
+          path="/edit-product/:id"
+          element={
+            <Sidebar>
+              <Layout>
+                <EditProduct />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+
+<Route
+          path="/profile"
+          element={
+            <Sidebar>
+              <Layout>
+                <Profile />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+
+<Route
+          path="/edit-profile"
+          element={
+            <Sidebar>
+              <Layout>
+                <EditProfile />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+
+<Route
+          path="/contact-us"
+          element={
+            <Sidebar>
+              <Layout>
+                <Contact />
+              </Layout>
+            </Sidebar>
+          }
+        />
 
 
         ///HRMS
         <Route path="/hrms/*" element={<HomePage />} />
+        <Route path="/hhh" element={<HospitalLandingPage />} />
       
 
         

@@ -21,7 +21,9 @@ const LabDashboard= () => {
   const [cancelPopup, setCancelPopup] = useState(false)
   const [userId, setUserId] = useState('')
   const [filteredNames, setFilteredNames]  = useState([])
+  const [filteredDoctorNames, setFilteredDoctorNames] = useState([])
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm1, setSearchTerm1] = useState('');
   const [appointments, setAppointments] = useState([]);
   const [userData, setUserData] = useState({
   
@@ -179,15 +181,54 @@ const LabDashboard= () => {
   const filteredData = selectedTest ? userData[selectedTest] : userData;
 
 
+  // const handleSearchChange = (e) => {
+  //   const term = e.target.value;
+  //   setSearchTerm(term)
+
+  //   const filtered = appointments.filter((appoint) => 
+  //   appoint.patientName?.toLowerCase().includes(term?.toLowerCase()))
+  //   setFilteredNames(filtered)
+
+  //   const filteredDoctor = appointments.filter((appoint) =>
+  //     appoint.doctorId?.fullname?.toLowerCase().includes(term?.toLowerCase())
+  //   );
+  //   setFilteredDoctorNames(filteredDoctor);
+  //   console.log("Search term:", term);
+  //   console.log("Filtered doctors:", filteredDoctor);
+
+    
+  // }
+
+
+  // const handleSearchChange2 = (e) => {
+  //   const term2 = e.target.value;
+  //   setSearchTerm1(term2);
+  
+  //   const filteredDoctor = appointments.filter((appoint) =>
+  //     appoint.doctorId?.fullname?.toLowerCase().includes(term2?.toLowerCase())
+  //   );
+  //   setFilteredDoctorNames(filteredDoctor);
+  //   console.log("Search term:", term2);
+  //   console.log("Filtered doctors:", filteredDoctorNames);
+
+  // };
+  
   const handleSearchChange = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term)
-
-    const filtered = appointments.filter((appoint) => 
-    appoint.patientName?.toLowerCase().includes(term?.toLowerCase()))
-    setFilteredNames(filtered)
-  }
-
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+  
+    const filtered = appointments.filter((appoint) => {
+      const patientName = appoint.patientName?.toLowerCase();
+      const doctorName = appoint.doctorId?.fullname?.toLowerCase();
+      return (
+        patientName?.includes(term) || 
+        doctorName?.includes(term)
+      );
+    });
+  
+    setFilteredNames(filtered);
+  };
+  
 
 
 
@@ -387,11 +428,24 @@ const LabDashboard= () => {
       <div className="mt-4 flex items-center">
         <input
           type="text"
-          placeholder="Search Patient's name"
+          placeholder="Search Patient's name or doctor's name"
           value={searchTerm}
           onChange={handleSearchChange}
           className="flex-grow p-2 rounded-l-md bg-gray-100 text-black"
         />
+        {/* <button className="bg-gray-200 text-green-700 px-4 rounded-r-md">
+          &#128269;
+        </button> */}
+      </div>
+
+      <div className="mt-4 flex items-center">
+        {/* <input
+          type="text"
+          placeholder="Search Doctor's name"
+          value={searchTerm1}
+          onChange={handleSearchChange2}
+          className="flex-grow p-2 rounded-l-md bg-gray-100 text-black"
+        /> */}
         {/* <button className="bg-gray-200 text-green-700 px-4 rounded-r-md">
           &#128269;
         </button> */}

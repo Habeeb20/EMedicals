@@ -29,7 +29,7 @@ const LoginHospitalAdmin = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_HO}/h/login`,
+        `${import.meta.env.VITE_API_HO}/login`,
         formData,
         {
           headers: { 'Content-Type': 'application/json' },

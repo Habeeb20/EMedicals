@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import im from "../../assets/EMedicals/floatingLogo.png";
 const LoginPharmacy = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
@@ -37,8 +37,13 @@ const LoginPharmacy = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer />
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4 text-purple-600">Login</h2>
+      <div className="w-full max-w-xs mx-auto ">
+        <div className="flex justify-center mb-0">
+          <img src={im} alt="logo" className="rounded-full" />
+        </div>
+
+        <div className="bg-white shadow-md rounded px-8 pt-1 pb-10 mt-1">
+          <h2 className="text-2xl font-semibold mb-6 text-center">pharmacy Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
@@ -47,7 +52,7 @@ const LoginPharmacy = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -58,7 +63,7 @@ const LoginPharmacy = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-purple-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -80,6 +85,7 @@ const LoginPharmacy = () => {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 };

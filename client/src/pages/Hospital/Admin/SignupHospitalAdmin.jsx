@@ -10,12 +10,11 @@ const SignupHospitalAdmin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullname: '',
+    name: '',
     email: '',
     password: '',
     role: '',
-    specialization: '',
- 
+    profilePicture: null,
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +24,8 @@ const SignupHospitalAdmin = () => {
   };
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleFileChange = (e) => {
@@ -35,8 +35,16 @@ const SignupHospitalAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_HO}/hregister`);
+      const payload = new FormData();
+      Object.keys(formData).forEach((key) => {
+        payload.append(key, formData[key]);
+      });
+
+      const response = await axios.post(`${import.meta.env.VITE_API_HO}/userregister`, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
       if (response.data) {
         navigate('/loginhospitaladmin');
@@ -75,17 +83,18 @@ const SignupHospitalAdmin = () => {
           {error && <p className="text-red-500">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="fullname">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="hospitalName">
                 Hospital Name
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
-                name="fullname"
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 required
                 disabled={isLoading}
-                placeholder="John Doe"
+                placeholder="Enter Hospital Name"
               />
             </div>
 
@@ -97,6 +106,7 @@ const SignupHospitalAdmin = () => {
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="email"
                 name="email"
+                value={formData.email}
                 onChange={handleInputChange}
                 required
                 disabled={isLoading}
@@ -111,6 +121,7 @@ const SignupHospitalAdmin = () => {
               <select
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 name="role"
+                value={formData.role}
                 onChange={handleInputChange}
                 required
                 disabled={isLoading}
@@ -121,7 +132,7 @@ const SignupHospitalAdmin = () => {
                 <option value="patient">Patient</option>
               </select>
             </div>
-
+{/* 
             {formData.role === 'doctor' && (
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="specialization">
@@ -130,6 +141,7 @@ const SignupHospitalAdmin = () => {
                 <select
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   name="specialization"
+                  value={formData.specialization}
                   onChange={handleInputChange}
                   required
                   disabled={isLoading}
@@ -142,21 +154,22 @@ const SignupHospitalAdmin = () => {
                   ))}
                 </select>
               </div>
-            )}
+            )} */}
 
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                Password 
+                Password
               </label>
               <div className="relative">
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                   name="password"
+                  value={formData.password}
                   onChange={handleInputChange}
                   required
                   disabled={isLoading}
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="123piano"
+                  placeholder="Enter Password"
                 />
                 <button
                   type="button"
@@ -168,7 +181,18 @@ const SignupHospitalAdmin = () => {
               </div>
             </div>
 
-         
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="profilePicture">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                name="profilePicture"
+                required
+                onChange={handleFileChange}
+                disabled={isLoading}
+              />
+            </div>
 
             <div className="flex items-center justify-center">
               <motion.button

@@ -16,8 +16,8 @@ pharmacyDrugRoute.get("/getdrug", getDrugs)
 pharmacyDrugRoute.get("/getdrugforapharmacist", protect, getDrugsForAPharmacist)
 
 pharmacyDrugRoute.get("/getadrug/:id", getAdrug )
-pharmacyDrugRoute.put("/updatedrug", protect,  admin, updateDrug)
-pharmacyDrugRoute.delete("/deletedrug", protect, admin, deleteDrug)
+pharmacyDrugRoute.put("/updatedrug/:id", protect,   updateDrug)
+pharmacyDrugRoute.delete("/deletedrug", protect,  deleteDrug)
 
 
 

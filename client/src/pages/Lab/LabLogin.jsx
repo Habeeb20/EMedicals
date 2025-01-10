@@ -42,7 +42,7 @@ const LabLogin = () => {
         console.log(response.data)
         navigate('/labdashboard')
         } catch (error) {
-            const errorMessage  = error.response?.data?.message;
+            const errorMessage  = error.response?.data?.message || "an error occurred while logging in";
             setError(errorMessage);
             toast.error(errorMessage)
             console.log(error)

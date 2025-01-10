@@ -79,7 +79,7 @@ const FormLabAppointment = () => {
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
           <h2 className="text-2xl font-bold text-center mb-6">Book an Appointment</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            {/* <div>
               <label htmlFor="testName" className="block text-sm font-medium text-gray-700">
                 Name of Test
               </label>
@@ -99,7 +99,33 @@ const FormLabAppointment = () => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
+
+            <label className="block text-sm font-medium text-gray-700">
+                Name of Test
+              </label>
+              <div className="mt-2 flex flex-wrap gap-4">
+                {testOptions.map((test, index) => (
+                  <div key={index} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={`test-${index}`}
+                      name="testName"
+                      value={test}
+                      checked={testName === test}
+                      onChange={(e) => setTestName(e.target.value)}
+                      required
+                      className="h-4 w-4 text-blue-600 focus:ring focus:ring-blue-200"
+                    />
+                    <label
+                      htmlFor={`test-${index}`}
+                      className="ml-2 text-sm text-gray-700"
+                    >
+                      {test}
+                    </label>
+                  </div>
+                ))}
+              </div>
 
             <div>
               <label htmlFor="patientName" className="block text-sm font-medium text-gray-700">

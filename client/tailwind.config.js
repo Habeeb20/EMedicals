@@ -18,6 +18,8 @@ module.exports = {
           800: '#1565c0',
           900: '#0d47a1',
         },
+        primary: "#6b46c1", // Purple
+        secondary: "#ffffff", // White
       },
     },
   },

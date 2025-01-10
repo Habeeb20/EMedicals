@@ -1,12 +1,14 @@
 import jwt from 'jsonwebtoken';
 import Admin from '../models/cemetary/Admin.js';
-import User from '../models/Doctors/chat/user.model.js';
+import User from '../models/newPharmacy/userModel.js';
 import { createError } from '../utils/error.js';
 import Wellness from '../models/wellness.js';
 import asyncHandler from "express-async-handler"
 import Hospital from '../models/hospitals/hospitalSchema.js';
 import TeleUser from '../models/Telemedicine/tUserModel.js';
 import LabUser from '../models/Lab/Lab.Model.js';
+
+
 export const protect = async (req, res, next) => {
   let token;
 
@@ -229,3 +231,31 @@ export const protect8 = async (req, res, next) => {
     return res.status(401).json({ message: "No token provided" });
   }
 };
+
+
+
+
+export const protect15 = asyncHandler(async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      res.status(401);
+      throw new Error("Not authorized, please login");
+    }
+
+    // Verify Token
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    // Get user id from token
+    const user = await User.findById(verified.id).select("-password");
+
+    if (!user) {
+      res.status(401);
+      throw new Error("User not found");
+    }
+    req.user = user;
+    next();
+  } catch (error) {
+    res.status(401);
+    throw new Error("Not authorized, please login");
+  }
+});

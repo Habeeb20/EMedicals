@@ -32,14 +32,11 @@ const transporter = nodemailer.createTransport(({
 
 export const register = async (req, res) => {
   try {
-    const { fullname, email, password, role, specialization } = req.body;
-    if (role === 'doctor' && !specialization) {
-      return res.status(400).json({ message: 'Specialization is required for doctors' });
-    }
+    const { fullname, email, password, role } = req.body;
+ 
 
 
-
-    const user = new User({ fullname, email, password, role, specialization });
+    const user = new User({ fullname, email, password, role });
     await user.save();
 
     res.status(201).json({ message: `${role} registered successfully` });

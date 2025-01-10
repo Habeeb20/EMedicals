@@ -10,7 +10,7 @@ const ProfilePharmacy = () => {
   const [profileData, setProfileData] = useState({});
   const [drugs, setDrugs] = useState([]);
   const [getDrugs, setGetDrugs] = useState([])
-  const [drugDetails, setDrugDetails] = useState({ name: '', description: '', image: null });
+  const [drugDetails, setDrugDetails] = useState({ name: '', description: '', price: '', stock: '', image: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -47,17 +47,20 @@ const ProfilePharmacy = () => {
 
   useEffect(() => {
     const fetchDrugsData = async () => {
+    
       try {
+       
         const token = localStorage.getItem("authToken")
+
         const response = await axios.get(`${import.meta.env.VITE_API_PH}/getdrugforapharmacist`, {
           headers:{
             Authorization:`Bearer ${token}`,
-            'Content-Type':'application/json'
+         
           },
           withCredentials:true
   
         });
-        console.log(response)
+        console.log("your response!!",response.data)
         setGetDrugs(response.data.drugs);
       } catch (error) {
         console.log(error)
@@ -85,10 +88,10 @@ const ProfilePharmacy = () => {
     const formData = new FormData();
     formData.append('name', drugDetails.name);
     formData.append('description', drugDetails.description);
-    formData.append('profilePicture', drugDetails.profilePicture);
+    formData.append('image', drugDetails.image);
     formData.append('price', drugDetails.price);
     formData.append('stock', drugDetails.stock);
-    formData.append('category', drugDetails.category);
+ 
   
 
     try {
@@ -100,7 +103,7 @@ const ProfilePharmacy = () => {
         },
       });
       toast.success("Drug added successfully!");
-      fetchDrugsData();
+    
     } catch (error) {
       console.log(error)
       toast.error("Failed to upload drug.");
@@ -156,17 +159,7 @@ const ProfilePharmacy = () => {
                 required
               />
             </div>
-            <div>
-              <label className="block text-gray-700">category</label>
-              <input
-                type="text"
-                name="category"
-                value={drugDetails.category}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                required
-              />
-            </div>
+         
             <div>
               <label className="block text-gray-700">quantity available</label>
               <input
@@ -210,7 +203,7 @@ const ProfilePharmacy = () => {
                 <img src={drug.profilePicture} alt={drug.name} className="w-20 h-20 object-cover rounded-lg mb-2" />
                 <p className="font-semibold text-lg text-gray-700">Name of drug:{drug.name}</p>
                 <p className="text-gray-600">drug description: {drug.description}</p>
-                <p className="text-gray-600">drug category: {drug.category}</p>
+          
                 <p className="text-gray-600">Number in stock:{drug.stock}</p>
                 <p className="text-gray-600">price of drug: {drug.price}</p>
               </li>

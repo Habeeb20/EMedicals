@@ -152,7 +152,7 @@ cloudinary.config({
       });
       if (!updatedHospital) {
         res.status(500);
-        throw new Error("Failed to update exam.");
+        throw new Error("Failed to update hospital.");
       }
       res.status(200).json({
         message: "Exam updated successfully.",
