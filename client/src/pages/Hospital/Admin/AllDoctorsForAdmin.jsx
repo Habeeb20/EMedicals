@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 ChartJS.register(BarElement, CategoryScale, LinearScale);
 
-const DashboardHospital = () => {
+const AllDoctorsForAdmin = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -217,7 +217,6 @@ const DashboardHospital = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
-
   const handleLogout = () => {
   
     localStorage.removeItem('token');
@@ -225,8 +224,6 @@ const DashboardHospital = () => {
 
     navigate('/loginhospitaladmin');
   }
-
-
   return (
     <div className="flex h-screen">
       {/*side bar*/}
@@ -244,7 +241,7 @@ const DashboardHospital = () => {
         <h1 className="text-2xl font-semibold mb-6">Menu</h1>
         <div className="space-y-3">
           <a
-            href="#"
+            href="/dashboardHospital"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdDashboard size={20} />
@@ -267,7 +264,7 @@ const DashboardHospital = () => {
           </a>
 
           <a
-            href="#"
+            href="/allpatientforadmin"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdPeople size={20} />
@@ -307,7 +304,8 @@ const DashboardHospital = () => {
           <div className="text-lg font-semibold text-gray-700">
             Welcome, {user.name}
           </div>
-          <button  onClick={handleLogout}
+          <button 
+            onClick={handleLogout}
           className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition duration-200">
             Logout
           </button>
@@ -629,10 +627,49 @@ const DashboardHospital = () => {
               </div>
             </div>
           </div>
-          {/* Graph Placeholder */}
-          <div className="bg-gray-100 rounded-lg shadow p-6 h-64 flex items-center justify-center text-gray-600 text-lg font-semibold">
-            Graph Placeholder
-          </div>
+      
+          <section>
+  <h2 className="text-xl text-center font-semibold mb-4 text-green-600">Your Doctors</h2>
+  <div className="bg-white shadow rounded-lg p-4">
+  <ul className="list-disc pl-6 space-y-2">
+  {/* Add a heading section */}
+  <li className="font-bold">
+    <div className="grid grid-cols-6 gap-4">
+    <span>picture</span>
+      <span>Full Name</span>
+      <span>Email</span>
+      <span>Phone Number</span>
+      <span>Location</span>
+      <span>Date Added</span>
+    </div>
+  </li>
+
+  {/* Map through the nurses data */}
+  {doctor && Array.isArray(doctor) &&
+    doctor?.map((doctor) => (
+      <li key={doctor._id} className="grid grid-cols-6 gap-4 items-center">
+       <img 
+      src={doctor.picture1} 
+      alt="User" 
+      className="rounded-full w-12 h-12 object-cover"
+    />
+        <span>{doctor.name}</span>
+        <span className="text-gray-500">{doctor.email}</span>
+        <span className="text-gray-500">{doctor.phone}</span>
+        <span className="text-gray-500">{doctor.location || doctor.state || doctor.LGA}</span>
+        <span className="text-gray-500">{new Date(doctor.createdAt).toLocaleTimeString()}</span>
+
+        {/* <button
+          onClick={() => setShowPopup(true)}
+          className="mt-5 py-3 px-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          Edit Profile
+        </button> */}
+      </li>
+    ))}
+</ul>
+  </div>
+</section>
 
       
         </div>
@@ -641,4 +678,4 @@ const DashboardHospital = () => {
   );
 };
 
-export default DashboardHospital;
+export default AllDoctorsForAdmin;

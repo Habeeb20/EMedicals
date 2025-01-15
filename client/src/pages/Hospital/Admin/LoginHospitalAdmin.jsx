@@ -28,11 +28,16 @@ const LoginHospitalAdmin = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      const form = new FormData();
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key]);
+      });
       const response = await axios.post(
         `${import.meta.env.VITE_API_HO}/userlogin`,
         formData,
         {
           headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
         }
       );
 
@@ -40,7 +45,7 @@ const LoginHospitalAdmin = () => {
       const { token } = response.data;
       localStorage.setItem('token', token);
       toast.success('Successfully logged in');
-      navigate('/dashboardhospitaladmin');
+      navigate('/dashboardHospital');
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'A network error occurred';
       setError(errorMessage);

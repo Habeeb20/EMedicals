@@ -125,13 +125,6 @@ const WellDashboard = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-64"
         } md:translate-x-0`}
       >
-
-<button
-        onClick={() => setSidebarOpen(false)}
-        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
-      >
-        ✕
-      </button>
         <h1 className="text-2xl font-semibold mb-6">Menu</h1>
         <div className="space-y-3">
           <a

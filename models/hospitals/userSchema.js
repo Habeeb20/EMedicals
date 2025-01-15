@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   verificationTokenExpiresAt: Date,
 
 
- 
+ adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },
 });
 
 export default mongoose.model("HUser", userSchema);

@@ -5,7 +5,8 @@ import User from "../../models/hospitals/userSchema.js"
 import crypto from 'crypto'
 import nodemailer from "nodemailer"
 import cloudinary from "cloudinary"
-import { protect2 } from "../../middleware/protect.js"
+import { isAdmin, protect2 } from "../../middleware/protect.js"
+import { restrictTo } from "../../middleware/authMiddleware.js"
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -118,7 +119,7 @@ router.post("/userlogin", async (req, res) => {
       const isMatch = await bcryptjs.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
   
-      const token = jwt.sign({ id: user._id, role: user.role }, "secretkey", { expiresIn: "1h" });
+      const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
       res.status(200).json({ token, user });
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -139,7 +140,7 @@ router.post("/userlogin", async (req, res) => {
   })
 
 
-  router.put("/editdashhospital", protect2, async(req, res) => {
+  router.put("/editdashhospital/:id", protect2, async(req, res) => {
     const {id} = req.params
 
     const dashboard = await User.findById(id)
@@ -180,5 +181,102 @@ router.post("/userlogin", async (req, res) => {
 
 
   })
+
+
+
+  
+// Get all users
+router.get("/getusers/:role", protect2, isAdmin, async (req, res) => {
+  try {
+
+    const { role } = req.params;
+    if (!['doctor', 'nurse', 'patient'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+    const users = await User.find({ role, adminId: req.user._id });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+//get all users by role
+router.get("/getusersByrole", async (req, res) => {
+  try {
+    const { role } = req.query;  
+    if (!role) {
+      return res.status(400).json({ error: "Role is required" });
+    }
+    const users = await User.find({ role });
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
+
+
+
+// Add a user
+router.post("/addusers", protect2, isAdmin, async (req, res) => {
+  const { name, email, password, role } = req.body;
+  try {
+
+    if (!['doctor', 'nurse', 'patient'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      console.log("User exists");
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcryptjs.hash(password, 10);
+
+
+    const verificationToken = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString(); // OTP generation
+    const uniqueNumber = `RL-${crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase()}`;
+    const verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+
+    const user = await User.create({ name, email, password:hashedPassword, role,  adminId: req.user._id, 
+      uniqueNumber,
+      verificationToken,
+      verificationTokenExpiresAt, });
+
+      await sendOTPEmail(user.email, verificationToken);
+    res.status(201).json(user);
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update a user
+router.put("/users/:id", protect2, restrictTo("Admin"), async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete a user
+router.delete("/users/:id", protect2,  restrictTo("Admin"), async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
 
   export default router;
