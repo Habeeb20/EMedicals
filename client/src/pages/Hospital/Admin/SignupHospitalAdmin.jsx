@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import im from '../../../assets/EMedicals/floatingLogo.png';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import im from "../../../assets/EMedicals/floatingLogo.png";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const SignupHospitalAdmin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: '',
-    profilePicture: null,
+    name: "",
+    email: "",
+    password: "",
+    role: "",
   });
-  const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -28,31 +28,74 @@ const SignupHospitalAdmin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, profilePicture: e.target.files[0] });
-  };
+  // const handleFileChange = (e) => {
+  //   setFormData({ ...formData, profilePicture: e.target.files[0] });
+  // };
+
+  // const handleFileChange = (e) => {
+  //   setImageFile(e.target.files[0]); 
+  // };
+
+
+  // const uploadImageToCloudinary = async (file) => {
+  //   console.log("heloo!!!!")
+  //   const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload";
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("upload_preset",  "essential" );
+
+  //   try {
+  //     const response = await axios.post(cloudinaryUrl, formData, {
+  //       headers:{
+  //         'Content-Type':"multipart/form-data"
+  //       }
+  //     });
+  //     return response.data.secure_url; 
+  //   } catch (error) {
+  //     console.error("Cloudinary Upload Error:", error);
+  //     throw new Error("Image upload failed");
+  //   }
+  // };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const payload = new FormData();
-      Object.keys(formData).forEach((key) => {
-        payload.append(key, formData[key]);
-      });
+      // Upload the profile picture to Cloudinary
+      // let profilePictureUrl = null;
+      // if (imageFile) {
+      //   profilePictureUrl = await uploadImageToCloudinary(imageFile);
+      //   console.log("this is image file",)
+      // }
 
-      const response = await axios.post(`${import.meta.env.VITE_API_HO}/userregister`, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // Prepare payload
+      // const payload = {
+      //   ...formData,
+      //   profilePicture: profilePictureUrl,
+      // };
+      const form = new FormData();
+      Object.keys(formData).forEach((key) => {
+        form.append(key, formData[key]);
       });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_HO}/userregister`,
+        formData,
+        {
+            withCredentials:true,
+        }
+      );
 
       if (response.data) {
-        navigate('/loginhospitaladmin');
-        toast.success('Successfully registered');
+     
+        toast.success("Successfully registered");
+        navigate("/loginhospitaladmin");
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 'A network error occurred';
-      console.log(err)
+      const errorMessage =
+        err.response?.data?.message || "A network error occurred";
+      console.log(err);
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -60,16 +103,16 @@ const SignupHospitalAdmin = () => {
     }
   };
 
-  const doctorSpecializations = [
-    'Cardiology',
-    'Dermatology',
-    'Neurology',
-    'Orthopedics',
-    'Pediatrics',
-    'Psychiatry',
-    'Surgery',
-    'Urology',
-  ];
+  // const doctorSpecializations = [
+  //   "Cardiology",
+  //   "Dermatology",
+  //   "Neurology",
+  //   "Orthopedics",
+  //   "Pediatrics",
+  //   "Psychiatry",
+  //   "Surgery",
+  //   "Urology",
+  // ];
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
@@ -79,11 +122,16 @@ const SignupHospitalAdmin = () => {
         </div>
 
         <div className="bg-white shadow-md rounded px-8 pt-1 pb-10 mt-1">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Admin Sign up</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">
+            Admin Sign up
+          </h2>
           {error && <p className="text-red-500">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="hospitalName">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="hospitalName"
+              >
                 Hospital Name
               </label>
               <input
@@ -99,7 +147,10 @@ const SignupHospitalAdmin = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="email"
+              >
                 Email Address
               </label>
               <input
@@ -115,7 +166,10 @@ const SignupHospitalAdmin = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="role"
+              >
                 Role
               </label>
               <select
@@ -132,7 +186,7 @@ const SignupHospitalAdmin = () => {
                 <option value="patient">Patient</option>
               </select>
             </div>
-{/* 
+            {/* 
             {formData.role === 'doctor' && (
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="specialization">
@@ -157,7 +211,10 @@ const SignupHospitalAdmin = () => {
             )} */}
 
             <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="password"
+              >
                 Password
               </label>
               <div className="relative">
@@ -168,7 +225,7 @@ const SignupHospitalAdmin = () => {
                   onChange={handleInputChange}
                   required
                   disabled={isLoading}
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
                 />
                 <button
@@ -176,13 +233,16 @@ const SignupHospitalAdmin = () => {
                   onClick={togglePasswordVisibility}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
                 >
-                  {showPassword ? 'Hide' : 'Show'}
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="profilePicture">
+            {/* <div className="mb-6">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="profilePicture"
+              >
                 Profile Picture
               </label>
               <input
@@ -192,7 +252,7 @@ const SignupHospitalAdmin = () => {
                 onChange={handleFileChange}
                 disabled={isLoading}
               />
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-center">
               <motion.button
@@ -208,13 +268,16 @@ const SignupHospitalAdmin = () => {
                     Signing Up
                   </span>
                 ) : (
-                  'Sign Up'
+                  "Sign Up"
                 )}
               </motion.button>
             </div>
             <p className="mt-4 text-center text-gray-500 text-sm">
-              Already have an account?{' '}
-              <a href="/loginhospitaladmin" className="text-blue-500 font-semibold">
+              Already have an account?{" "}
+              <a
+                href="/loginhospitaladmin"
+                className="text-blue-500 font-semibold"
+              >
                 Login.
               </a>
             </p>
@@ -226,3 +289,44 @@ const SignupHospitalAdmin = () => {
 };
 
 export default SignupHospitalAdmin;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

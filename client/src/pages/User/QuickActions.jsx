@@ -16,7 +16,7 @@ const QuickActions = () => {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-4 text-black">
       {/* Title */}
       <h1 className="text-xl font-bold mb-4 text-center">Quick Action</h1>
 

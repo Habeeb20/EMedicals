@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:8000/newpharmacy";
+const BACKEND_URL = "https://medapi.eschoolconnect.ng/newpharmacy";
 
 const API_URL = `${BACKEND_URL}/products/`;
 

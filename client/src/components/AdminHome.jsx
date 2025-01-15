@@ -48,7 +48,7 @@ const AdminHome = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div>
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 text-black">
         {/* Profile Section */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">

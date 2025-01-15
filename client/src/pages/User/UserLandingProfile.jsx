@@ -144,7 +144,7 @@ export default function UserLandingProfile() {
           <AllHospital />
 
           {/* Grid Boxes */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 text-black lg:grid-cols-3 gap-6">
   
             <Link to='/loginpatienthospital'>
               <div className="bg-blue-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
@@ -190,8 +190,8 @@ export default function UserLandingProfile() {
               <div className="bg-pink-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
                 <FaUserMd className="text-4xl text-pink-500" />
                 <div>
-                  <h3 className="text-xl font-bold">Doctors</h3>
-                  <p className="text-gray-500">Find specialized doctors</p>
+                  <h3 className="text-xl text-black font-bold">Doctors</h3>
+                  <p className="text-black">Find specialized doctors</p>
                 </div>
               </div>
             </Link>

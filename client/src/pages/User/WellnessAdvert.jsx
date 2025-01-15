@@ -32,7 +32,7 @@ const WellnessAdvert = () => {
 
   return (
     <div>
-      <h1 className="text-center font-bold text-2xl my-4">
+      <h1 className="text-center font-bold text-2xl my-4 text-black">
         Wellness Centers Around You
       </h1>
 

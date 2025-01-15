@@ -1,5 +1,3 @@
-
-
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
@@ -67,7 +65,7 @@ const AdminDashboard = () => {
       
 
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_HO}/dashboard`,
+          `${import.meta.env.VITE_API_HO}/dashboardhospital`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);

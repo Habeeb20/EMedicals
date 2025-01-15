@@ -2,12 +2,11 @@ import express from "express";
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import Hospital from "../../models/hospitals/hospitalSchema.js";
-import asyncHandler from "express-async-handler";
-import pkg from "cloudinary";
 
+import pkg from "cloudinary";
+import User from "../../models/hospitals/hospitalSchema.js";
 import mongoose from "mongoose";
+import { protect20, restrictTo } from "../../middleware/authMiddleware.js";
 import { protect5 } from "../../middleware/authMiddleware.js";
 const { v2: cloudinary } = pkg;
 
@@ -26,176 +25,86 @@ cloudinary.config({
     params: { folder: "schools" },
   });
 
-
-  router.post("/hregister", async (req, res) => {
-      const { fullname, email, password, role } = req.body;
+ 
   
-      if (!fullname || !email || !password || !role) {
-        res.status(400);
-        throw new Error("all fields are required.");
-      }
+
+  const JWT_SECRET = "jwt_secret"; 
   
-      const existinghospital = await Hospital.findOne({ email });
-      if (existinghospital) {
-        res.status(400);
-        throw new Error("User with this email already exists.");
-      }
-  
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      const exam = new Hospital({
-        fullname,
-        email,
-        role,
-        password: hashedPassword,
-      });
-  
-      await exam.save();
-  
-      res.status(201).json({
-        message: "User registered successfully.",
-        exam,
-      });
-    });
-
-
-
-  router.post("/h/login", asyncHandler(async(req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        res.status(400);
-        throw new Error("email and password are required.");
-      }
-      const user = await Hospital.findOne({ email });
-      if (!user) {
-        res.status(404).json({ message: "Invalid username " });
-      }
-
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        res.status(404);
-        throw new Error("Invalid  password.");
-      }
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
-
-      res.status(200).json({
-        message:"Login successful",
-        token, user})
-  
-  }))
-
-
-
-
-
-
-  router.get('/h/dashboard', protect5,  asyncHandler(async(req, res) => {
-    const userId = req.user.id;
-
-    const user = await Hospital.findById(userId);
-    if (!user) {
-      res.status(404);
-      throw new Error("User not found.");
-    }
-
-    res.status(200).json(user);
-
-  }))
-
-
-  
-  router.put("/h/:id", protect5, asyncHandler(async(req, res) => {
-    const {id} = req.params
-
-    const hospital = await Hospital.findById(id);
-    if (!hospital) {
-      res.status(404);
-      throw new Error("hospital  not found.");
-    }
-
-    if (hospital._id.toString() !== req.user.id) {
-        res.status(403);
-        throw new Error("Not authorized to update this school.");
-      }
-      const updates = { ...req.body };
-
-      const uploadFile = async (file) => {
-        const result = await cloudinary.uploader.upload(file.tempFilePath, {
-          folder: "schools",
-        });
-        return result.secure_url;
-      };
-
-      if (req.files) {
-        if (req.files.picture1) {
-          updates.picture1 = await uploadFile(req.files.picture1);
-        }
-        if (req.files.picture2) {
-          updates.picture2 = await uploadFile(req.files.picture2);
-        }
-        if (req.files.picture3) {
-          updates.picture3 = await uploadFile(req.files.picture3);
-        }
-        if (req.files.picture4) {
-          updates.picture4 = await uploadFile(req.files.picture4);
-        }
-        if (req.files.profilePicture) {
-            updates.profilePicture = await uploadFile(req.files.profilePicture);
-        }
-    }
-
-    const updatedHospital = await Hospital.findByIdAndUpdate(id, updates, {
-        new: true,
-      });
-      if (!updatedHospital) {
-        res.status(500);
-        throw new Error("Failed to update hospital.");
-      }
-      res.status(200).json({
-        message: "Exam updated successfully.",
-        updatedHospital,
-      });
-
-
-  }))
-
-
-   
-  router.get("/anhospital/:id", async (req, res) => {
-    console.log("Request parameters:", req.params);
+  // Register a user
+  router.post("/register", async (req, res) => {
+    const { name, email, password, role } = req.body;
     try {
-      const { id } = req.params;
-      console.log(req.params);
+      const userExists = await User.findOne({ email });
+      if (userExists) return res.status(400).json({ message: "User already exists" });
   
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        console.log("id not found");
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid user ID" });
-      }
-  
-      const exam = await Hospital.findById(id);
-  
-      if (!exam) {
-        console.log("hospital not found");
-        return res
-          .status(404)
-          .json({ success: false, message: "hospital not found" });
-      }
-  
-      res.status(200).json({
-        success: true,
-       exam
-      });
+      const user = await User.create({ name, email, password, role });
+      res.status(201).json({ message: "User registered successfully", user });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "Something went wrong" });
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
+  // Login a user
+  router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const user = await User.findOne({ email });
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      const isPasswordMatch = await user.matchPassword(password);
+      if (!isPasswordMatch) return res.status(401).json({ message: "Invalid credentials" });
+  
+      const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: "1d" });
+      res.json({ token, user });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   });
 
 
+// Get all users
+router.get("/", protect20, restrictTo("Admin"), async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-export default router
+// Add a user
+router.post("/", protect20, restrictTo("Admin"), async (req, res) => {
+  const { name, email, password, role } = req.body;
+  try {
+    const user = await User.create({ name, email, password, role });
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update a user
+router.put("/:id", protect20, restrictTo("Admin"), async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete a user
+router.delete("/:id", protect20, restrictTo("Admin"), async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
+
+  
+  export default router;
+  

@@ -10,6 +10,8 @@ import cookieParser from "cookie-parser";
 import cloudinary from "cloudinary";
 import multer from "multer";
 import { ExpressPeerServer } from "peer";
+
+    
 import router from "./routes/User/user.route.js";
 import doctorRouter from "./routes/Doctors/doctor.route.js";
 import patientRouter from "./routes/Doctors/patient.route.js";
@@ -30,9 +32,13 @@ import pharmacyOrderRoute from "./routes/pharmacy/OrderRoute.js";
 import phamrcyAdminrouter from "./routes/pharmacy/Admin.route.js";
 // import pharmacyReviewRoute from "./routes/pharmacy/PReview.route.js";
 import pharmacyRoute from "./routes/pharmacy/authRoute.js";
-import hospitaladminrouter from "./routes/hospital/admin.route.js";
-import hospitaldoctorrouter from "./routes/hospital/doctor.route.js";
-import hospitalpatientrouter from "./routes/hospital/patient.route.js";
+
+import hospitalRoute from "./routes/hospital/hospitalRoute.js"
+
+import doctorhospitalRoute from "./routes/hospital/doctor.route.js"
+
+
+
 import wellnessrouter from "./routes/wellRoute.js";
 import HRouter from "./routes/hospital/hospitalRoute.js"
 import cdoctorRoute from "./routes/QuickAction/consultdoctorRoute.js";
@@ -42,8 +48,6 @@ import teleDoctorRouter from "./routes/Telemedicine/teleDoctor.Route.js";
 
 
 import userRoute from "./routes/hospital/user.route.js"
-import userAdminroute from "./routes/hospital/admin.route.js"
-import userPatientroute from "./routes/hospital/userPatient.js"
 
 
 
@@ -59,7 +63,9 @@ import newPharmacyproductRoute from "./routes/newPharmacy/productRoute.js"
 import newPharmacycontactRoute from "./routes/newPharmacy/contactRoute.js"
 import errorHandler from "./middleware/errorMiddleware.js";
 import contactUs from "./controllers/newPharmacy/contactController.js";
+
 dotenv.config();
+
 
 const __dirname = path.resolve();
 
@@ -68,31 +74,26 @@ const peerServer = ExpressPeerServer(server, {
   allow_discovery: true,
 });
 
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:5173",
-//       "http://localhost:5174",
-//       "http://localhost:3000",
-//       "http://localhost:5175",
-//     ],
-//     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin:["http://localhost:5173", "http://localhost:5174"],   
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 
 // CORS setup: Enable CORS for the specific origin and with credentials
-const corsOptions = {
-  origin: "https://med.eschoolconnect.ng", // Specific origin
-  credentials: true,  // Allow cookies and authentication headers
-  methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific methods
-  allowedHeaders: ["Content-Type", "Authorization"],  // Allow specific headers
-};
+// const corsOptions = {
+//   origin: "https://med.eschoolconnect.ng", // Specific origin
+//   credentials: true,  // Allow cookies and authentication headers
+//   methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific methods
+//   allowedHeaders: ["Content-Type", "Authorization"],  // Allow specific headers
+// };
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
+// // Apply CORS middleware
+// app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -100,6 +101,41 @@ app.use(express.static("public"));
 
 app.use("/uploads", express.static(path.join(__dirname, "/client/dist")));
 app.use(morgan("dev"));
+
+
+import twilio from 'twilio';
+import  MessagingResponse  from 'twilio';
+
+
+const  twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+
+
+// Route to handle incoming WhatsApp messages
+app.post('/whatsapp', (req, res) => {
+  const incomingMessage = req.body.Body.toLowerCase(); // Incoming message from the user
+  const fromNumber = req.body.From; // Sender's phone number
+
+  const twiml = new MessagingResponse();
+
+  // Automatically ask a question based on the incoming message
+  if (incomingMessage === 'hi' || incomingMessage === 'hello') {
+    twiml.message('Hello! I’m here to help you book an appointment. What is your full name?');
+  } else if (incomingMessage.includes('name')) {
+    twiml.message('Thanks! What date would you prefer for your appointment?');
+  } else if (incomingMessage.includes('date')) {
+    twiml.message('Got it! What time works best for you?');
+  } else if (incomingMessage.includes('time')) {
+    twiml.message('Thank you for the details! Your appointment is now booked.');
+  } else {
+    twiml.message('Sorry, I didn’t understand that. Can you please try again?');
+  }
+
+  // Send back the response to Twilio
+  res.type('text/xml');
+  res.send(twiml.toString());
+});
+
+
 
 //user
 app.use("/api/users", router);
@@ -141,9 +177,9 @@ app.use("/api/pharmacy", pharmacyRoute)
 
 
 //hospital
-// app.use("/api/hospital", hospitaladminrouter)
-// app.use("/api/hospital", hospitaldoctorrouter)
-// app.use("/api/hospital", hospitalpatientrouter)
+app.use("/api/hospital", hospitalRoute)
+app.use("/api/hospital", doctorhospitalRoute)
+
 
 
 app.use("/api/hospital", userRoute )

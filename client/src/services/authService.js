@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const BACKEND_URL = "http://localhost:8000/newpharmacy";
+export const BACKEND_URL = "https://medapi.eschoolconnect.ng/newpharmacy";
 
 export const validateEmail = (email) => {
   return email.match(
