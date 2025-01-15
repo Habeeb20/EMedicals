@@ -103,38 +103,6 @@ app.use("/uploads", express.static(path.join(__dirname, "/client/dist")));
 app.use(morgan("dev"));
 
 
-import twilio from 'twilio';
-import  MessagingResponse  from 'twilio';
-
-
-const  twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
-
-
-// Route to handle incoming WhatsApp messages
-app.post('/whatsapp', (req, res) => {
-  const incomingMessage = req.body.Body.toLowerCase(); // Incoming message from the user
-  const fromNumber = req.body.From; // Sender's phone number
-
-  const twiml = new MessagingResponse();
-
-  // Automatically ask a question based on the incoming message
-  if (incomingMessage === 'hi' || incomingMessage === 'hello') {
-    twiml.message('Hello! I’m here to help you book an appointment. What is your full name?');
-  } else if (incomingMessage.includes('name')) {
-    twiml.message('Thanks! What date would you prefer for your appointment?');
-  } else if (incomingMessage.includes('date')) {
-    twiml.message('Got it! What time works best for you?');
-  } else if (incomingMessage.includes('time')) {
-    twiml.message('Thank you for the details! Your appointment is now booked.');
-  } else {
-    twiml.message('Sorry, I didn’t understand that. Can you please try again?');
-  }
-
-  // Send back the response to Twilio
-  res.type('text/xml');
-  res.send(twiml.toString());
-});
-
 
 
 //user
