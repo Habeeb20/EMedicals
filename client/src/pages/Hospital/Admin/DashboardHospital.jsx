@@ -27,6 +27,7 @@ const DashboardHospital = () => {
     profilePicture: "",
   });
   const [sicknessStats, setSicknessStats] = useState([]);
+  const [appointment, setAppointment] = useState([])
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -299,6 +300,8 @@ useEffect(() => {
       );
   
       const appointments = response.data.appointments;
+      setAppointment(response.data.appointments)
+
       console.log(appointments)
       // Calculate sickness percentages
       const sicknessCounts = {};
@@ -729,6 +732,7 @@ const options1 = {
               <div className="text-right">
                 {/* <h3 className="text-2xl font-bold">{appointments.length}</h3> */}
                 <p className="text-gray-500">Appointments</p>
+                <p className="text-blue-500 font-bold">{appointment?.length}</p>
               </div>
             </div>
             {/* Stats Card 3 */}
