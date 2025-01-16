@@ -63,14 +63,14 @@ cloudinary.config({
 
 
 // Get all users
-router.get("/", protect20, restrictTo("Admin"), async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+// router.get("/", protect20, restrictTo("Admin"), async (req, res) => {
+//   try {
+//     const users = await User.find();
+//     res.json(users);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 // Add a user
 router.post("/", protect20, restrictTo("Admin"), async (req, res) => {

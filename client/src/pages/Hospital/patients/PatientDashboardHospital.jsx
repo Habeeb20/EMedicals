@@ -1,73 +1,64 @@
-import React, { useState } from "react";
-import {
-  Bar,
-  Doughnut,
-} from "react-chartjs-2"; // For the charts
-import {
-  HomeIcon,
-  CalendarIcon,
-  UserIcon,
-  CogIcon,
-} from "@heroicons/react/outline";
+import React from "react";
 import axios from 'axios';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {toast} from "react-hot-toast";
+import { FiMenu } from "react-icons/fi";
+import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
+import { MdHome, MdEvent, MdReport, MdPerson } from "react-icons/md";
+import m from "../../../assets/EMedicals/doctor2.jpeg"
+import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
+
+
+
 
 
 const PatientDashboardHospital = () => {
-  const [appointments, setAppointments] = useState([]);
+  const {id} = useParams()
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSection, setSelectedSection] = useState("overview");
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [doctorId, setDoctorId] = useState('')
   const [userId, setUserId] = useState('');
   const [showPopup, setShowPopup] = useState(false);
-  const [activeSection, setActiveSection] = useState("Dashboard");
+  const [appointments, setAppointments] = useState([]);
+  const [username, setUsername] = useState('');
+  const [user, setUser] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [doctor, setDoctor] = useState([]);
+  const [nurse, setNurse] = useState([]);
+  const [patient, setPatient] = useState([]);
+  
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    phone: "",
+    role: "",
+    specialization: "",
+    state: "",
+    doctorTime:'',
+    LGA: "",
+    location: "",
+    profilePicture: "",
+  });
 
-  const barData = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-    datasets: [
-      {
-        label: "Patients",
-        data: [50, 75, 60, 90, 120],
-        backgroundColor: "rgba(34, 197, 94, 0.7)", // Tailwind green
-      },
-    ],
-  };
-
-  const doughnutData = {
-    labels: ["Male", "Female"],
-    datasets: [
-      {
-        label: "Patient Visit by Gender",
-        data: [70, 30],
-        backgroundColor: ["#3B82F6", "#F87171"], // Blue and red
-      },
-    ],
-  };
-
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const token = localStorage.getItem("token")
-        const response = await axios.get(`${import.meta.env.VITE_API_HO}/appointments/patient/${userId}`, {
-          headers:{Authorization:`Bearer ${token}`}
-        })
-        setAppointments(response.data);
-        setLoading(false)
-      } catch (error) {
-        console.error("Error fetching patient appointments:", error);
-        setLoading(false);
-      }
-    }
-
-    fetchAppointments();
-  }, [])
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -77,11 +68,13 @@ const PatientDashboardHospital = () => {
       
 
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_HO}/getpatientdashboard3`,
+          `${import.meta.env.VITE_API_HO}/dashboardhospital`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);
+        setDoctorId(data._id)
         setUserId(data._id)
+        toast.success("you are successfully logged in")
       } catch (error) {
         console.log(error)
         toast.error("Failed to fetch user data");
@@ -98,6 +91,7 @@ const PatientDashboardHospital = () => {
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -105,7 +99,7 @@ const PatientDashboardHospital = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `${import.meta.env.VITE_API_HO}/editpatient/${userId}`,
+        `${import.meta.env.VITE_API_HO}/editdashhospital/${userId}`,
         userData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -123,16 +117,20 @@ const PatientDashboardHospital = () => {
     }
   };
 
+
   const handleFileChange = async (e, field) => {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await axios.post('https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload', formData, {
+      const response = await axios.post('https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload', 
+        formData, 
+        {
         params: {
           upload_preset: 'essential',
         },
-      });
+      }
+    );
       setUserData((prevData) => ({
         ...prevData,
         [field]: response.data.secure_url, 
@@ -143,71 +141,246 @@ const PatientDashboardHospital = () => {
   };
 
 
+  const handleModalOpen = (role) => {
+    setFormType(role);
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: "",
+        phone:'',
+        role,
+        specialization: '',
+        state: '',
+        LGA: '',
+        location: '',
+        doctorTime:''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+
+  const fetchUsersByRole = async (role) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_HO}/getusersByrole`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { role },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      toast.error(`Failed to fetch ${role}s`);
+      console.error(error);
+      return [];
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    const doctorsData = await fetchUsersByRole("doctor");
+    const nursesData = await fetchUsersByRole("nurse");
+    const patientsData = await fetchUsersByRole("patient");
+
+    setDoctor(doctorsData);
+    console.log(doctorsData);
+    setNurse(nursesData);
+    console.log(nursesData);
+    setPatient(patientsData);
+  };
+
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+  
+    localStorage.removeItem('token');
+
+
+    navigate('/logindoctoradmin');
+  }
+
+
+  const handleShowpopupClose = () => {
+    setShowPopup(false)
+  }
+
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", marginTop: "20px" }}>Loading...</div>
+    );
+  }
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${import.meta.env.VITE_API_HO}/appointments/doctor/${id}`, {
+          headers:{Authorization: `Bearer ${token}`}
+        })
+
+        setAppointments(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching doctor appointments:", error);
+        setLoading(false); 
+      }
+    }
+
+    fetchAppointments();
+  }, [])
+
+  const updateAppointmentStatus = async (appointmentId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `${import.meta.env.VITE_API_HO}/appointments/doctor/${doctorId}/${appointmentId}`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment._id === appointmentId
+            ? { ...appointment, status }
+            : appointment
+        )
+      );
+    } catch (error) {
+      console.error("Error updating appointment status:", error);
+    }
+  };
+
+
+const Sidebar = ({ isSidebarOpen, setSidebarOpen, setSelectedSection }) => {
+  return (
+    <div
+      className={`bg-blue-600 text-white w-64 space-y-6 py-7 px-4 absolute md:relative transition-all duration-300 ${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-64"
+      } md:translate-x-0`}
+    >
+      {/* Close Button */}
+      <button
+        onClick={() => setSidebarOpen(false)}
+        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
+      >
+        ✕
+      </button>
+
+      {/* Sidebar Title */}
+      <h1 className="text-2xl font-semibold mb-6">Menu</h1>
+
+      {/* Menu Items */}
+      <ul className="space-y-3">
+        {[
+          { name: "Home", key: "home", icon: <MdHome size={20} /> },
+          { name: "Book Appointment", key: "yourPatients", icon: <MdPeople size={20} /> },
+          { name: "Appointments", key: "appointments", icon: <MdEvent size={20} /> },
+          { name: "Reports", key: "reports", icon: <MdReport size={20} /> },
+          { name: "Profile", key: "profiles", icon: <MdPerson size={20} /> },
+        ].map((item, index) => (
+          <li
+            key={index}
+            className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200 cursor-pointer"
+            onClick={() => setSelectedSection(item.key)}
+          >
+            {item.icon}
+            <span>{item.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+
+
+
   const renderContent = () => {
-    switch (activeSection) {
-      case "Dashboard":
+    switch (selectedSection) {
+      case "home":
         return (
-          <>
-          <Navbar />
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold">Good Morning {userData.email}</h1>
-              <button className="bg-green-600 text-white px-4 py-2 rounded-lg">
-                Create Appointment
-              </button>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-              {[
-                { title: "Appointments", value: 250, color: "bg-green-600" },
-                { title: "New Patients", value: 140, color: "bg-blue-500" },
-                { title: "Operations", value: 56, color: "bg-red-500" },
-              ].map((stat, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded-lg shadow ${stat.color} text-white`}
-                >
-                  <h3 className="text-lg">{stat.title}</h3>
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-              <div className="p-6 bg-white shadow rounded-lg">
-                <h2 className="font-bold mb-4">Patient Visit by Gender</h2>
-                <Doughnut data={doughnutData} />
-              </div>
-              <div className="p-6 bg-white shadow rounded-lg">
-                <h2 className="font-bold mb-4">Patient Visit Trends</h2>
-                <Bar data={barData} />
-              </div>
-            </div>
-          </>
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">Home</h3>
+            <p>Welcome to the Home section.</p>
+          </div>
         );
-      case "Appointments":
-        return ( <>
-        <h2 className="text-2xl font-bold">Appointments Section</h2>
-        {appointments.length > 0 ? (
+      case "yourPatients":
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
+              Your Patients
+            </h3>
+            <p>Details about your patients will appear here.</p>
+          </div>
+        );
+      case "appointments":
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
+              Appointments
+            </h3>
+            <p>Manage your appointments here.</p>
+            {appointments.length > 0 ? (
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="border px-4 py-2">Doctor</th>
+              <th className="border px-4 py-2">Patient</th>
               <th className="border px-4 py-2">Sickness</th>
               <th className="border px-4 py-2">Appointment Date</th>
               <th className="border px-4 py-2">Status</th>
+              <th className="border px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {appointments.map((appointment) => (
               <tr key={appointment._id}>
-                <td className="border px-4 py-2">{appointment.doctorName}</td>
+                <td className="border px-4 py-2">{appointment.patientName}</td>
                 <td className="border px-4 py-2">{appointment.sickness}</td>
                 <td className="border px-4 py-2">
                   {new Date(appointment.appointmentDate).toLocaleDateString()}
                 </td>
                 <td className="border px-4 py-2">{appointment.status}</td>
+                <td className="border px-4 py-2">
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "accepted")
+                    }
+                    className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "rejected")
+                    }
+                    className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateAppointmentStatus(appointment._id, "rescheduled")
+                    }
+                    className="bg-yellow-500 text-white px-2 py-1 rounded"
+                  >
+                    Reschedule
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -215,40 +388,50 @@ const PatientDashboardHospital = () => {
       ) : (
         <p>No appointments found.</p>
       )}
-        </>);
-      case "Patients":
-        return <h2 className="text-2xl font-bold">Patients Section</h2>;
-      case "Settings":
-        return (<>
-        <h2 className="text-2xl font-bold">Settings Section</h2>
-        <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+          </div>
+        );
+      case "reports":
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
+              Reports
+            </h3>
+            <p>Your reports will appear here.</p>
+          </div>
+        );
+      case "nurses":
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
+              Nurses
+            </h3>
+            <p>Details about nurses will appear here.</p>
+          </div>
+        );
+      case "profiles":
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Your profile
             </h3>
+
+            <a href="/consultadoctor" className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg">
+            <span>patients can consult you?</span>
+          </a>
             <p>Manage your settings here.</p>
           
           <h4 className="">  Your email: <span className="font-bold"> {userData.email}</span></h4>
-          <h4 className="">  Your fullname: <span className="font-bold"> {userData.fullname}</span></h4>
-
+          <h4 className="">  Your fullname: <span className="font-bold"> {userData.name}</span></h4>
+          <h4 className="">  Your specialization: <span className="font-bold"> {userData.specialization}</span></h4>
           <h4 className="">  Your phone number: <span className="font-bold"> {userData.phone}</span></h4>
           <h4 className="">  Your state of Origin: <span className="font-bold"> {userData.state}</span></h4>
           <h4 className="">  Your LGA: <span className="font-bold"> {userData.LGA}</span></h4>
           <h4 className="">  Your Home Address: <span className="font-bold"> {userData.location}</span></h4>
-          <h4 className="">  Your Available time: <span className="font-bold"> {userData.fullname}</span></h4>
-          <h4 className=""> Your height: <span className="font-bold">{userData.height}</span></h4>
-          <h4 className=""> Your weight: <span className="font-bold">{userData.weight}</span></h4>
-          <h4 className=""> Your marital Status: <span className="font-bold">{userData.maritalStatus}</span></h4>
-          <h4 className=""> Your next of kin: <span className="font-bold">{userData.NextOfKin}</span></h4>
-          <h4 className=""> Your profession: <span className="font-bold">{userData.profession}</span></h4>
-          <h4 className=""> Your place of work: <span className="font-bold">{userData.placeOfWork}</span></h4>
-          <h4 className=""> Your place Of Work Address: <span className="font-bold">{userData.placeOfWorkAddress}</span></h4>
-          <h4 className=""> Your employer phone number: <span className="font-bold">{userData.EmployerPhone}</span></h4>
-
-
-
-    
+          <h4 className="">  Your Available time: <span className="font-bold"> {userData.doctorTime}</span></h4>
+          <h4 className="">  Hospital Name: <span className="font-bold"> {userData.adminId?.name}</span></h4>
+          <h4 className="">  Hospital Email: <span className="font-bold"> {userData.adminId?.email}</span></h4>
           <img 
-  src={userData.picture1} 
+  src={userData?.profilePicture || m} 
   alt="User" 
   className="rounded-full w-32 h-32 object-cover"
 />
@@ -260,7 +443,7 @@ const PatientDashboardHospital = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {Object.keys(userData).map((key) =>
              
-                key !== "picture1"
+                key !== "profilePicture"
               )}
     
               {/* New input fields */}
@@ -270,8 +453,8 @@ const PatientDashboardHospital = () => {
                 </label>
                 <input
                   type="text"
-                  name="fullname"
-                  value={userData.fullname}
+                  name="name"
+                  value={userData.name}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -301,7 +484,33 @@ const PatientDashboardHospital = () => {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
- 
+              <div className="flex flex-col">
+  <label className="block text-sm font-medium text-gray-600 mb-1">
+    Specialization
+  </label>
+  <select
+    name="specialization"
+    value={userData.specialization}
+    onChange={handleChange}
+    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+  >
+    <option value="" disabled>Select Specialization</option>
+    <option value="Cardiology">Cardiology</option>
+    <option value="Dermatology">Dermatology</option>
+    <option value="Endocrinology">Endocrinology</option>
+    <option value="Gastroenterology">Gastroenterology</option>
+    <option value="General Practice">General Practice</option>
+    <option value="Neurology">Neurology</option>
+    <option value="Obstetrics and Gynecology">Obstetrics and Gynecology</option>
+    <option value="Oncology">Oncology</option>
+    <option value="Orthopedics">Orthopedics</option>
+    <option value="Pediatrics">Pediatrics</option>
+    <option value="Psychiatry">Psychiatry</option>
+    <option value="Radiology">Radiology</option>
+    <option value="Surgery">Surgery</option>
+    <option value="Urology">Urology</option>
+  </select>
+</div>
 
 
               <div className="flex flex-col">
@@ -318,23 +527,16 @@ const PatientDashboardHospital = () => {
               </div>
           
 
-         
+      
 
-            
-
-
-          
-              
-
-        
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                 category(private or public)
+                 what time will you be Available(e.g 4:00pm - 8:00pm) everyday/ specify the day
                 </label>
                 <input
-                  type="text"
-                  name="category"
-                  value={userData.category}
+                  type="time"
+                  name="doctorTime"
+                  value={userData.doctorTime}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -345,12 +547,12 @@ const PatientDashboardHospital = () => {
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                  Marital status(married/single/divorce/ engaged)
+                  State
                 </label>
                 <input
                   type="text"
-                  name="maritalStatus"
-                  value={userData.maritalStatus}
+                  name="state"
+                  value={userData.state}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -360,93 +562,16 @@ const PatientDashboardHospital = () => {
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
-                Next of kin name
+                  LGA
                 </label>
                 <input
                   type="text"
-                  name="NextOfKin"
-                  value={userData.NextOfKin}
+                  name="LGA"
+                  value={userData.LGA}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-
-              
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                Next of kin phone number
-                </label>
-                <input
-                  type="text"
-                  name="NextOfKinPhone"
-                  value={userData.NextOfKinPhone}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                Your profession
-                </label>
-                <input
-                  type="text"
-                  name="profession"
-                  value={userData.profession}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                Name of your place of work 
-                </label>
-                <input
-                  type="text"
-                  name="placeOfWork"
-                  value={userData.placeOfWork}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                Address of your place of work 
-                </label>
-                <input
-                  type="text"
-                  name="placeOfWorkAddress"
-                  value={userData.placeOfWorkAddress}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                Employer phone number
-                </label>
-                <input
-                  type="text"
-                  name="EmployerPhone"
-                  value={userData.EmployerPhone}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-
-
-
-
-       
-        
-    
-         
-    
-         
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -463,14 +588,22 @@ const PatientDashboardHospital = () => {
           
            
 
-         
-    
+         <div className="flex justify-end gap-2">
+         <button
+                        type="button"
+                        onClick={handleShowpopupClose}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
               <button
                 type="submit"
                 className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
               >
                 Update Profile
               </button>
+         </div>
+           
             </form>
           </div>
         </div>
@@ -486,64 +619,147 @@ const PatientDashboardHospital = () => {
         <div className="text-green-500 mt-5">{successMessage}</div>
       )}
           </div>
-
-        </>);
+        );
       default:
-        return null;
+        return (
+          <div>
+            <h3 className="text-xl font-semibold mb-4 text-green-700">
+              Overview
+            </h3>
+            <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center">
+              <div>
+                <p className="text-gray-500 text-sm mb-4">
+                  Pie Chart Placeholder
+                </p>
+                <div className="w-40 h-40 rounded-full border-4 border-green-500 mx-auto"></div>
+              </div>
+            </div>
+          </div>
+        );
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-full lg:w-1/4 bg-white border-r">
-        <div className="p-4 text-2xl font-bold text-green-600">{userData.hospitalName}</div>
-        <nav className="mt-6">
-          <ul>
-            <li
-              onClick={() => setActiveSection("Dashboard")}
-              className={`p-4 flex items-center cursor-pointer ${
-                activeSection === "Dashboard" ? "text-green-600 bg-gray-100" : ""
-              }`}
-            >
-              <HomeIcon className="w-5 h-5 mr-2" />
-              Dashboard
-            </li>
-            <li
-              onClick={() => setActiveSection("Appointments")}
-              className={`p-4 flex items-center cursor-pointer ${
-                activeSection === "Appointments" ? "text-green-600 bg-gray-100" : ""
-              }`}
-            >
-              <CalendarIcon className="w-5 h-5 mr-2" />
-              Appointments
-            </li>
-            <li
-              onClick={() => setActiveSection("Patients")}
-              className={`p-4 flex items-center cursor-pointer ${
-                activeSection === "Patients" ? "text-green-600 bg-gray-100" : ""
-              }`}
-            >
-              <UserIcon className="w-5 h-5 mr-2" />
-              Patients
-            </li>
-            <li
-              onClick={() => setActiveSection("Settings")}
-              className={`p-4 flex items-center cursor-pointer ${
-                activeSection === "Settings" ? "text-green-600 bg-gray-100" : ""
-              }`}
-            >
-              <CogIcon className="w-5 h-5 mr-2" />
-              Settings
-            </li>
-          </ul>
-        </nav>
-      </aside>
+    <>
+    <Navbar />
+    <div className="flex-h-screen">
+    <div className="bg-gray-50 min-h-screen  md:p-8">
+      <h2 className=" text-blue-900 font-bold w-21">{userData.email}'s Dashboard</h2>
+      <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-blue-600">
+        Dashboard for  {userData.name} @ {userData.adminId?.name}
+      </h1>
 
-      {/* Main Content */}
-      <main className="flex-1 p-6">{renderContent()}</main>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-2">
+            {/* Stats Card 1 */}
+            <div className="bg-blue-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaUser className="text-4xl text-blue-600" />
+              <div className="text-right">
+                <h3 className="text-2xl font-bold">{patient.length}</h3>
+                <p className="text-gray-500">Registered Patients</p>
+              
+              </div>
+            </div>
+            {/* Stats Card 2 */}
+            <div className="bg-green-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaCalendarAlt className="text-4xl text-green-600" />
+              <div className="text-right">
+                <h3 className="text-2xl font-bold">{doctor.length}</h3>
+                <p className="text-gray-500">Doctors</p>
+              </div>
+            </div>
+            {/* Stats Card 3 */}
+            <div className="bg-yellow-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaHeartbeat className="text-4xl text-red-600" />
+              <div className="text-right">
+                <h3 className="text-2xl font-bold">{nurse.length}</h3>
+                <p className="text-gray-500">Nurses</p>
+               
+              </div>
+            </div>
+
+
+          </div>
+      
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Left Sidebar */}
+        <button
+        onClick={() => setSidebarOpen(!isSidebarOpen)}
+        className="md:hidden bg-blue-600 text-white p-3 rounded-full m-2 fixed z-50 "
+      >
+        ☰
+      </button>
+
+      {/* Sidebar Component */}
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        setSelectedSection={setSelectedSection}
+      />
+        {/* Middle Section */}
+        <div className="bg-white shadow-lg rounded-lg p-4 col-span-2 w-200 ">
+    
+          {renderContent()}
+        </div>
+      </div>
+
+      
+    {/* Schedule Section */}
+    {/* <div className="mt-8">
+    <h3 className="text-lg font-semibold mb-4 text-green-700">
+      Daily Patient Management
+    </h3>
+    <table className="table-auto w-full border-collapse border border-gray-300 text-center">
+      <thead>
+        <tr className="bg-green-100">
+          <th className="border border-gray-300 px-4 py-2">Day</th>
+          <th className="border border-gray-300 px-4 py-2">Patient_Name</th>
+          <th className="border border-gray-300 px-4 py-2">phone_Number</th>
+          <th className="border border-gray-300 px-4 py-2">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {[
+          { day: "Monday", Patient_Name: "12", Number: "8", Time: "4" },
+          { day: "Tuesday", Patient_Name: "10", Number: "6", Time: "4" },
+          { day: "Wednesday", Patient_Name: "14", Number: "10", Time: "4" },
+          { day: "Thursday", Patient_Name: "9", Number: "5", Time: "4" },
+          { day: "Friday", Patient_Name: "15", Number: "11", Time: "4" },
+        ].map((row, index) => (
+          <tr key={index}>
+            <td className="border border-gray-300 px-4 py-2">{row.day}</td>
+            <td className="border border-gray-300 px-4 py-2 text-green-500">
+              {row.admissions}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-red-500">
+              {row.discharges}
+            </td>
+            <td className="border border-gray-300 px-4 py-2 text-gray-500">
+              {row.pending}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div> */}
     </div>
+
+    </div>
+  
+
+    </>
+ 
   );
 };
 
 export default PatientDashboardHospital;
+
+
+
+
+
+
+
+
+

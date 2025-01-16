@@ -11,6 +11,7 @@ const AllHospital = () => {
         const response = await fetch(`${import.meta.env.VITE_API_HO}`);
         const data = await response.json();
         setCardDetails(data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching wellness centers:", error);
       }
@@ -19,7 +20,7 @@ const AllHospital = () => {
     fetchWellness();
   }, []);
 
-  const filteredCards = cardDetails.filter((card) => {
+  const filteredCards =cardDetails && cardDetails?.filter((card) => {
     return card.fullname?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 

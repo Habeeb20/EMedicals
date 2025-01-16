@@ -72,7 +72,7 @@ import DashboardHomePage from "./pages/HRMS/DashboardHomePage";
 import HomePage from "./pages/HRMS/HomePage";
 import LoginHospitalAdmin from "./pages/Hospital/Admin/LoginHospitalAdmin";
 import SignupHospitalAdmin from "./pages/Hospital/Admin/SignupHospitalAdmin";
-import AdminDashboard from "./pages/Hospital/Admin/DashboardHospitalAdmin";
+
 import LoginDoctorHospital from "./pages/Hospital/Doctors/LoginDoctorhospital";
 import LoginPatientHospital from "./pages/Hospital/patients/LoginPatientHospital";
 import DoctorDashboardHospital from "./pages/Hospital/Doctors/DoctorDashboardHospital";
@@ -290,11 +290,6 @@ const App = () => {
         //hospital
         <Route path="/loginhospitaladmin" element={<LoginHospitalAdmin />} />
         <Route path="/signuphospitaladmin" element={<SignupHospitalAdmin />} />
-
-
-        <Route path="/dashboardhospitaladmin" element={<AdminDashboard />} />
-
-
         <Route path="/alldoctorsforadmin" element={<AllDoctorsForAdmin />} />
         <Route path="/allnursesforadmin" element={<AllNursesForAdmin />} />
         <Route path="/allpatientforadmin" element={<AllPatientForAdmin />} />

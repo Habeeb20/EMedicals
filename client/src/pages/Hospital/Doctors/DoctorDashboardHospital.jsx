@@ -5,12 +5,30 @@ import Navbar from "../../../components/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {toast} from "react-hot-toast";
+import { FiMenu } from "react-icons/fi";
+import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
+import { MdHome, MdEvent, MdReport, MdPerson } from "react-icons/md";
+import m from "../../../assets/EMedicals/doctor2.jpeg"
+import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
+
 
 
 
 
 const DoctorDashboardHospital = () => {
   const {id} = useParams()
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedSection, setSelectedSection] = useState("overview");
@@ -22,6 +40,24 @@ const DoctorDashboardHospital = () => {
   const [appointments, setAppointments] = useState([]);
   const [username, setUsername] = useState('');
   const [user, setUser] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [doctor, setDoctor] = useState([]);
+  const [nurse, setNurse] = useState([]);
+  const [patient, setPatient] = useState([]);
+  
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+    phone: "",
+    role: "",
+    specialization: "",
+    state: "",
+    doctorTime:'',
+    LGA: "",
+    location: "",
+    profilePicture: "",
+  });
 
 
   useEffect(() => {
@@ -32,12 +68,13 @@ const DoctorDashboardHospital = () => {
       
 
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_HO}/getdoctordashboard3`,
+          `${import.meta.env.VITE_API_HO}/dashboardhospital`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserData(data);
         setDoctorId(data._id)
         setUserId(data._id)
+        toast.success("you are successfully logged in")
       } catch (error) {
         console.log(error)
         toast.error("Failed to fetch user data");
@@ -62,7 +99,7 @@ const DoctorDashboardHospital = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `${import.meta.env.VITE_API_HO}/editdoctor/${userId}`,
+        `${import.meta.env.VITE_API_HO}/editdashhospital/${userId}`,
         userData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -86,11 +123,14 @@ const DoctorDashboardHospital = () => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await axios.post('https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload', formData, {
+      const response = await axios.post('https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload', 
+        formData, 
+        {
         params: {
           upload_preset: 'essential',
         },
-      });
+      }
+    );
       setUserData((prevData) => ({
         ...prevData,
         [field]: response.data.secure_url, 
@@ -99,6 +139,83 @@ const DoctorDashboardHospital = () => {
       console.error('Error uploading file to Cloudinary', err);
     }
   };
+
+
+  const handleModalOpen = (role) => {
+    setFormType(role);
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: "",
+        phone:'',
+        role,
+        specialization: '',
+        state: '',
+        LGA: '',
+        location: '',
+        doctorTime:''
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+
+  const fetchUsersByRole = async (role) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_HO}/getusersByrole`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { role },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      toast.error(`Failed to fetch ${role}s`);
+      console.error(error);
+      return [];
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    const doctorsData = await fetchUsersByRole("doctor");
+    const nursesData = await fetchUsersByRole("nurse");
+    const patientsData = await fetchUsersByRole("patient");
+
+    setDoctor(doctorsData);
+    console.log(doctorsData);
+    setNurse(nursesData);
+    console.log(nursesData);
+    setPatient(patientsData);
+  };
+
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+  
+    localStorage.removeItem('token');
+
+
+    navigate('/logindoctoradmin');
+  }
+
+
+  const handleShowpopupClose = () => {
+    setShowPopup(false)
+  }
 
 
   if (loading) {
@@ -149,6 +266,48 @@ const DoctorDashboardHospital = () => {
   };
 
 
+const Sidebar = ({ isSidebarOpen, setSidebarOpen, setSelectedSection }) => {
+  return (
+    <div
+      className={`bg-blue-600 text-white w-64 space-y-6 py-7 px-4 absolute md:relative transition-all duration-300 ${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-64"
+      } md:translate-x-0`}
+    >
+      {/* Close Button */}
+      <button
+        onClick={() => setSidebarOpen(false)}
+        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition"
+      >
+        ✕
+      </button>
+
+      {/* Sidebar Title */}
+      <h1 className="text-2xl font-semibold mb-6">Menu</h1>
+
+      {/* Menu Items */}
+      <ul className="space-y-3">
+        {[
+          { name: "Home", key: "home", icon: <MdHome size={20} /> },
+          { name: "Your Patients", key: "yourPatients", icon: <MdPeople size={20} /> },
+          { name: "Appointments", key: "appointments", icon: <MdEvent size={20} /> },
+          { name: "Reports", key: "reports", icon: <MdReport size={20} /> },
+          { name: "Profile", key: "profiles", icon: <MdPerson size={20} /> },
+        ].map((item, index) => (
+          <li
+            key={index}
+            className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200 cursor-pointer"
+            onClick={() => setSelectedSection(item.key)}
+          >
+            {item.icon}
+            <span>{item.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+
 
 
   const renderContent = () => {
@@ -156,14 +315,14 @@ const DoctorDashboardHospital = () => {
       case "home":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">Home</h3>
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">Home</h3>
             <p>Welcome to the Home section.</p>
           </div>
         );
       case "yourPatients":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Your Patients
             </h3>
             <p>Details about your patients will appear here.</p>
@@ -172,7 +331,7 @@ const DoctorDashboardHospital = () => {
       case "appointments":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Appointments
             </h3>
             <p>Manage your appointments here.</p>
@@ -234,7 +393,7 @@ const DoctorDashboardHospital = () => {
       case "reports":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Reports
             </h3>
             <p>Your reports will appear here.</p>
@@ -243,7 +402,7 @@ const DoctorDashboardHospital = () => {
       case "nurses":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Nurses
             </h3>
             <p>Details about nurses will appear here.</p>
@@ -252,7 +411,7 @@ const DoctorDashboardHospital = () => {
       case "profiles":
         return (
           <div>
-            <h3 className="text-xl font-semibold mb-4 text-green-700">
+            <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Your profile
             </h3>
 
@@ -262,15 +421,17 @@ const DoctorDashboardHospital = () => {
             <p>Manage your settings here.</p>
           
           <h4 className="">  Your email: <span className="font-bold"> {userData.email}</span></h4>
-          <h4 className="">  Your fullname: <span className="font-bold"> {userData.fullname}</span></h4>
+          <h4 className="">  Your fullname: <span className="font-bold"> {userData.name}</span></h4>
           <h4 className="">  Your specialization: <span className="font-bold"> {userData.specialization}</span></h4>
           <h4 className="">  Your phone number: <span className="font-bold"> {userData.phone}</span></h4>
           <h4 className="">  Your state of Origin: <span className="font-bold"> {userData.state}</span></h4>
           <h4 className="">  Your LGA: <span className="font-bold"> {userData.LGA}</span></h4>
           <h4 className="">  Your Home Address: <span className="font-bold"> {userData.location}</span></h4>
           <h4 className="">  Your Available time: <span className="font-bold"> {userData.doctorTime}</span></h4>
+          <h4 className="">  Hospital Name: <span className="font-bold"> {userData.adminId?.name}</span></h4>
+          <h4 className="">  Hospital Email: <span className="font-bold"> {userData.adminId?.email}</span></h4>
           <img 
-  src={userData.picture1} 
+  src={userData?.profilePicture || m} 
   alt="User" 
   className="rounded-full w-32 h-32 object-cover"
 />
@@ -282,7 +443,7 @@ const DoctorDashboardHospital = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {Object.keys(userData).map((key) =>
              
-                key !== "picture1"
+                key !== "profilePicture"
               )}
     
               {/* New input fields */}
@@ -292,8 +453,8 @@ const DoctorDashboardHospital = () => {
                 </label>
                 <input
                   type="text"
-                  name="fullname"
-                  value={userData.fullname}
+                  name="name"
+                  value={userData.name}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -366,34 +527,14 @@ const DoctorDashboardHospital = () => {
               </div>
           
 
-         
-
-            
-
-
-          
-              
-
-        
-              <div className="flex flex-col">
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                 category(private or public)
-                </label>
-                <input
-                  type="text"
-                  name="category"
-                  value={userData.category}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
+      
 
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
                  what time will you be Available(e.g 4:00pm - 8:00pm) everyday/ specify the day
                 </label>
                 <input
-                  type="text"
+                  type="time"
                   name="doctorTime"
                   value={userData.doctorTime}
                   onChange={handleChange}
@@ -432,15 +573,6 @@ const DoctorDashboardHospital = () => {
                 />
               </div>
 
-
-
-       
-        
-    
-         
-    
-         
-
               <div className="flex flex-col">
                 <label className="block text-sm font-medium text-gray-600 mb-1">
                   profile Picture
@@ -456,14 +588,22 @@ const DoctorDashboardHospital = () => {
           
            
 
-         
-    
+         <div className="flex justify-end gap-2">
+         <button
+                        type="button"
+                        onClick={handleShowpopupClose}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
               <button
                 type="submit"
                 className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
               >
                 Update Profile
               </button>
+         </div>
+           
             </form>
           </div>
         </div>
@@ -502,47 +642,71 @@ const DoctorDashboardHospital = () => {
   return (
     <>
     <Navbar />
-       <div className="bg-gray-50 min-h-screen p-4 md:p-8">
-      <h2 className=" text-green-900 font-bold w-21">{userData.email}'s Dashboard</h2>
-      <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-green-700">
-        Dashboard for Managing Patients
+    <div className="flex-h-screen">
+    <div className="bg-gray-50 min-h-screen  md:p-8">
+      <h2 className=" text-blue-900 font-bold w-21">{userData.email}'s Dashboard</h2>
+      <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-blue-600">
+        Dashboard for Doctor {userData.name}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Sidebar */}
-        <div className="bg-white shadow-lg rounded-lg p-4 col-span-1">
-          <h3 className="text-lg font-semibold mb-4 text-green-700">
-            Navigation
-          </h3>
-          <ul className="space-y-3">
-            {[
-              { name: "Home", key: "home" },
-              { name: "Your Patients", key: "yourPatients" },
-              { name: "Appointments", key: "appointments" },
-              { name: "Reports", key: "reports" },
-              { name: "Nurses", key: "nurses" },
-              { name: "Profile", key: "profiles" },
-            ].map((item, index) => (
-              <li
-                key={index}
-                className="p-3 bg-green-100 rounded-md border-l-4 border-green-500 text-green-800 cursor-pointer"
-                onClick={() => setSelectedSection(item.key)}
-              >
-                <Link className="hover:underline">{item.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-2">
+            {/* Stats Card 1 */}
+            <div className="bg-blue-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaUser className="text-4xl text-blue-600" />
+              <div className="text-right">
+                {/* <h3 className="text-2xl font-bold">{patients.length}</h3> */}
+                <p className="text-gray-500">Registered Patients</p>
+                <p className="text-blue-500 font-bold">{patient.length}</p>
+              </div>
+            </div>
+            {/* Stats Card 2 */}
+            <div className="bg-green-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaCalendarAlt className="text-4xl text-green-600" />
+              <div className="text-right">
+                {/* <h3 className="text-2xl font-bold">{appointments.length}</h3> */}
+                <p className="text-gray-500">Appointments</p>
+              </div>
+            </div>
+            {/* Stats Card 3 */}
+            <div className="bg-yellow-100 rounded-lg shadow p-4 flex items-center justify-between">
+              <FaHeartbeat className="text-4xl text-red-600" />
+              <div className="text-right">
+                {/* <h3 className="text-2xl font-bold">{nurses.length}</h3> */}
+                <p className="text-gray-500">Nurses</p>
+                <p className="text-blue-500 font-bold">{nurse.length}</p>
+              </div>
+            </div>
+
+
+          </div>
+      
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Left Sidebar */}
+        <button
+        onClick={() => setSidebarOpen(!isSidebarOpen)}
+        className="md:hidden bg-blue-600 text-white p-3 rounded-full m-2 fixed z-50 "
+      >
+        ☰
+      </button>
+
+      {/* Sidebar Component */}
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        setSelectedSection={setSelectedSection}
+      />
         {/* Middle Section */}
-        <div className="bg-white shadow-lg rounded-lg p-4 col-span-2">
+        <div className="bg-white shadow-lg rounded-lg p-4 col-span-2 w-200 ">
+    
           {renderContent()}
         </div>
       </div>
 
       
     {/* Schedule Section */}
-    <div className="mt-8">
+    {/* <div className="mt-8">
     <h3 className="text-lg font-semibold mb-4 text-green-700">
       Daily Patient Management
     </h3>
@@ -578,8 +742,11 @@ const DoctorDashboardHospital = () => {
         ))}
       </tbody>
     </table>
-  </div>
+  </div> */}
     </div>
+
+    </div>
+  
 
     </>
  

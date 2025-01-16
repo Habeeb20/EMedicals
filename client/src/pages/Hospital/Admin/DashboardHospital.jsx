@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { FiMenu } from "react-icons/fi";
+import { Pie } from "react-chartjs-2";
 import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
 import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
 import { Bar } from "react-chartjs-2";
@@ -10,8 +11,11 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
 } from "chart.js";
-ChartJS.register(BarElement, CategoryScale, LinearScale);
+ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
 const DashboardHospital = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -33,6 +37,9 @@ const DashboardHospital = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [doctor, setDoctor] = useState([]);
+  const [doctorCount, setDoctorCount] = useState(0);
+  const [nurseCount, setNurseCount] = useState(0);
+  const [patientCount, setPatientCount] = useState(0);
 
   const [nurse, setNurse] = useState([]);
   const [patient, setPatient] = useState([]);
@@ -202,11 +209,61 @@ const DashboardHospital = () => {
     setNurse(nursesData);
     console.log(nursesData);
     setPatient(patientsData);
+    setDoctorCount(doctorsData.length);
+    setNurseCount(nursesData.length);
+    setPatientCount(patientsData.length);
   };
 
   useEffect(() => {
     fetchAllUsers();
   }, []);
+
+   // Calculate total and percentages
+   const totalUsers = doctorCount + nurseCount + patientCount;
+   const doctorPercentage = ((doctorCount / totalUsers) * 100).toFixed(2);
+   const nursePercentage = ((nurseCount / totalUsers) * 100).toFixed(2);
+   const patientPercentage = ((patientCount / totalUsers) * 100).toFixed(2);
+ 
+
+
+   const data = {
+    labels: [
+      `Doctors (${doctorPercentage}%)`,
+      `Nurses (${nursePercentage}%)`,
+      `Patients (${patientPercentage}%)`,
+    ],
+    datasets: [
+      {
+        label: "User Distribution",
+        data: [doctorCount, nurseCount, patientCount],
+        backgroundColor: ["#1E90FF", "#FF4500", "#FFD700"], // Blue, Red, Yellow
+        borderColor: ["#1E90FF", "#FF4500", "#FFD700"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+
+
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const dataset = tooltipItem.dataset;
+            const index = tooltipItem.dataIndex;
+            const count = dataset.data[index];
+            return `${dataset.labels[index]}: ${count}`;
+          },
+        },
+      },
+    },
+  };
 
   if (loading) {
     return (
@@ -629,10 +686,18 @@ const DashboardHospital = () => {
               </div>
             </div>
           </div>
-          {/* Graph Placeholder */}
-          <div className="bg-gray-100 rounded-lg shadow p-6 h-64 flex items-center justify-center text-gray-600 text-lg font-semibold">
-            Graph Placeholder
-          </div>
+          <div className="p-6 bg-gray-100 min-h-screen flex justify-center items-center">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4">
+        <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+          User Distribution
+        </h2>
+        {totalUsers > 0 ? (
+          <Pie data={data} options={options} />
+        ) : (
+          <p className="text-center text-gray-500">Loading chart data...</p>
+        )}
+      </div>
+    </div>
 
       
         </div>
@@ -642,3 +707,65 @@ const DashboardHospital = () => {
 };
 
 export default DashboardHospital;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

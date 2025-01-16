@@ -39,6 +39,27 @@ await transporter.sendMail(mailOptions);
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find({}); // Fetch all users
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found." });
+    }
+    console.log(users)
+    res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching users.",
+    });
+  }
+});
+
+
 router.post("/userregister", async (req, res) => {
   try {
     const { name, email, password, role } = req.body; // Include profilePicture from the request body
@@ -130,7 +151,7 @@ router.post("/userlogin", async (req, res) => {
   router.get("/dashboardhospital", protect2, async(req, res) => {
     const userId = req.user.id;
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId).populate('adminId', 'name email')
     if(!user){
       res.status(404);
       throw new Error("user not found")
