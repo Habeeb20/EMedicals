@@ -273,7 +273,7 @@ const AllNursesForAdmin = () => {
             <span>Patients</span>
           </a>
           <a
-            href="#"
+            href="/dashboardAnalytics"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdBarChart size={20} />

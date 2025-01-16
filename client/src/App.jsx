@@ -136,6 +136,7 @@ import DashboardHospital from "./pages/Hospital/Admin/DashboardHospital";
 import AllDoctorsForAdmin from "./pages/Hospital/Admin/AllDoctorsForAdmin";
 import AllNursesForAdmin from "./pages/Hospital/Admin/AllNursesForAdmin";
 import AllPatientForAdmin from "./pages/Hospital/Admin/AllPatientForAdmin";
+import DashboardAnalytics from "./pages/Hospital/Admin/DashboardAnalytics";
 // const socket = io("http://localhost:8000");
 
 axios.defaults.withCredentials = true;
@@ -293,6 +294,7 @@ const App = () => {
         <Route path="/alldoctorsforadmin" element={<AllDoctorsForAdmin />} />
         <Route path="/allnursesforadmin" element={<AllNursesForAdmin />} />
         <Route path="/allpatientforadmin" element={<AllPatientForAdmin />} />
+        <Route path="/dashboardAnalytics" element={<DashboardAnalytics />} />
         <Route path="/dashboardHospital" element={<DashboardHospital/>} />
 
 

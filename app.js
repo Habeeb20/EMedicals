@@ -63,6 +63,7 @@ import newPharmacyproductRoute from "./routes/newPharmacy/productRoute.js"
 import newPharmacycontactRoute from "./routes/newPharmacy/contactRoute.js"
 import errorHandler from "./middleware/errorMiddleware.js";
 import contactUs from "./controllers/newPharmacy/contactController.js";
+import hospitalrouter from "./routes/hospital/appointment.js";
 
 dotenv.config();
 
@@ -151,6 +152,7 @@ app.use("/api/hospital", doctorhospitalRoute)
 
 
 app.use("/api/hospital", userRoute )
+app.use("/api/hospital", hospitalrouter )
 
 app.use("/api/quickaction", cdoctorRoute)
 

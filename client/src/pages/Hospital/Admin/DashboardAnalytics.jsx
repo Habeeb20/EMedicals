@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { FiMenu } from "react-icons/fi";
+import { Pie } from "react-chartjs-2";
 import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
 import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
 import { Bar } from "react-chartjs-2";
@@ -10,10 +11,13 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
 } from "chart.js";
-ChartJS.register(BarElement, CategoryScale, LinearScale);
+ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
-const AllPatientForAdmin = () => {
+const DashboardAnalytics = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -33,6 +37,10 @@ const AllPatientForAdmin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formType, setFormType] = useState("");
   const [doctor, setDoctor] = useState([]);
+  const [doctorCount, setDoctorCount] = useState(0);
+  const [nurseCount, setNurseCount] = useState(0);
+  const [patientCount, setPatientCount] = useState(0);
+  const [appointments, setAppointments] = useState([]);
 
   const [nurse, setNurse] = useState([]);
   const [patient, setPatient] = useState([]);
@@ -202,11 +210,61 @@ const AllPatientForAdmin = () => {
     setNurse(nursesData);
     console.log(nursesData);
     setPatient(patientsData);
+    setDoctorCount(doctorsData.length);
+    setNurseCount(nursesData.length);
+    setPatientCount(patientsData.length);
   };
 
   useEffect(() => {
     fetchAllUsers();
   }, []);
+
+   // Calculate total and percentages
+   const totalUsers = doctorCount + nurseCount + patientCount;
+   const doctorPercentage = ((doctorCount / totalUsers) * 100).toFixed(2);
+   const nursePercentage = ((nurseCount / totalUsers) * 100).toFixed(2);
+   const patientPercentage = ((patientCount / totalUsers) * 100).toFixed(2);
+ 
+
+
+   const data = {
+    labels: [
+      `Doctors (${doctorPercentage}%)`,
+      `Nurses (${nursePercentage}%)`,
+      `Patients (${patientPercentage}%)`,
+    ],
+    datasets: [
+      {
+        label: "User Distribution",
+        data: [doctorCount, nurseCount, patientCount],
+        backgroundColor: ["#1E90FF", "#FF4500", "#FFD700"], // Blue, Red, Yellow
+        borderColor: ["#1E90FF", "#FF4500", "#FFD700"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+
+
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const dataset = tooltipItem.dataset;
+            const index = tooltipItem.dataIndex;
+            const count = dataset.data[index];
+            return `${dataset.labels[index]}: ${count}`;
+          },
+        },
+      },
+    },
+  };
 
   if (loading) {
     return (
@@ -218,7 +276,6 @@ const AllPatientForAdmin = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-
   const handleLogout = () => {
   
     localStorage.removeItem('token');
@@ -226,6 +283,31 @@ const AllPatientForAdmin = () => {
 
     navigate('/loginhospitaladmin');
   }
+
+
+
+    useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_HO}/appointments`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setAppointments(response.data.appointments);
+      } catch (error) {
+        console.error(error);
+        toast.error('Error fetching appointments');
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
 
   return (
     <div className="flex h-screen">
@@ -244,7 +326,7 @@ const AllPatientForAdmin = () => {
         <h1 className="text-2xl font-semibold mb-6">Menu</h1>
         <div className="space-y-3">
           <a
-            href="/dashboardHospital"
+            href="/dashboardhospital"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdDashboard size={20} />
@@ -267,14 +349,14 @@ const AllPatientForAdmin = () => {
           </a>
 
           <a
-            href="/allpatientforadmin"
+            href="#"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdPeople size={20} />
             <span>Patients</span>
           </a>
           <a
-            href="/dashboardAnalytics"
+            href="#"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdBarChart size={20} />
@@ -307,8 +389,7 @@ const AllPatientForAdmin = () => {
           <div className="text-lg font-semibold text-gray-700">
             Welcome, {user.name}
           </div>
-          <button 
-          onClick={handleLogout}
+          <button  onClick={handleLogout}
           className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition duration-200">
             Logout
           </button>
@@ -630,48 +711,43 @@ const AllPatientForAdmin = () => {
               </div>
             </div>
           </div>
-      
-          <section>
-  <h2 className="text-xl text-center font-semibold mb-4 text-green-600">Your Patients</h2>
-  <div className="bg-white shadow rounded-lg p-4">
-  <ul className="list-disc pl-6 space-y-2">
-  {/* Add a heading section */}
-  <li className="font-bold">
-    <div className="grid grid-cols-6 gap-4">
-    <span>picture</span>
-      <span>Full Name</span>
-      <span>Email</span>
-      <span>Phone Number</span>
-      <span>Location</span>
-      <span>Date Added</span>
+          <div className="p-6 bg-gray-100  flex justify-center items-center">
+          <div className="">
+      <h1 className="text-3xl font-bold mb-4">Appointments</h1>
+     <table className="min-w-full table-auto border-collapse">
+     <thead>
+          <tr>
+             <th className="border px-4 py-2">Patient Name</th>
+             <th className="border px-4 py-2">Appointment Date</th>
+             <th className="border px-4 py-2">Appointment Time</th>
+             <th className="border px-4 py-2">Sickness</th>
+             <th className="border px-4 py-2">Location</th>
+             <th className="border px-4 py-2">Action</th>
+           </tr>
+         </thead>
+         <tbody>
+           {appointments.map((appointment, index) => (
+             <tr key={index}>
+               <td className="border px-4 py-2">{appointment.patientId.name}</td>
+               <td className="border px-4 py-2">{new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+               <td className="border px-4 py-2">{appointment.appointmentTime}</td>
+               <td className="border px-4 py-2">{appointment.sickness}</td>
+               <td className="border px-4 py-2">{appointment.patientDetails.location}</td>
+               <td className="border px-4 py-2">
+                 <button
+                   className="bg-green-500 text-white p-2 rounded-md"
+                   onClick={() => alert(`Appointment details for ${appointment.patientId.name}`)}
+                 >
+                   View
+                 </button>
+               </td>
+             </tr>
+           ))}
+         </tbody>
+</table>
+</div>
     </div>
-  </li>
 
-  {/* Map through the nurses data */}
-  {patient &&
-    patient.map((patient) => (
-      <li key={patient._id} className="grid grid-cols-6 gap-4 items-center">
-      <img 
-      src={patient.picture1} 
-      alt="User" 
-      className="rounded-full w-12 h-12 object-cover"
-    />
-        <span>{patient.fullname}</span>
-        <span className="text-gray-500">{patient.email}</span>
-        <span className="text-gray-500">{patient.phone}</span>
-        <span className="text-gray-500">{patient.location || patient.state || patient.LGA}</span>
-        <span className="text-gray-500">{new Date(patient.createdAt).toLocaleDateString()}</span>
-        {/* <button
-          onClick={() => setShowPopup(true)}
-          className="mt-5 py-3 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-        >
-          Edit Profile
-        </button> */}
-      </li>
-    ))}
-</ul>
-  </div>
-</section>
 
       
         </div>
@@ -680,4 +756,4 @@ const AllPatientForAdmin = () => {
   );
 };
 
-export default AllPatientForAdmin;
+export default DashboardAnalytics;

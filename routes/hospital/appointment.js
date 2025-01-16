@@ -1,42 +1,67 @@
 import express from 'express';
-import { bookAppointment, getDoctorAppointments, updateAppointmentStatus, getPatientAppointments } from '../../controllers/hospital/appointment.js';
-import { authorizeRoles } from '../middleware/roleMiddleware.js';
-import { protect3 } from '../../middleware/protect.js';
-import Appointment from "../hospital/user.route.js"
+import Appointment from '../../models/hospitals/appointmentSchema.js';
+import HUser from '../../models/hospitals/userSchema.js';
 import { verifyToken } from '../../middleware/verifyToken.js';
-const router = express.Router();
-
-// router.post('/appointments/book', verifyToken, async (req, res) => {
-//   if (req.user.role !== 'patient') return res.status(403).json({ message: 'Access denied' });
-
-//   const { doctorId, date } = req.body;
-//   try {
-//     const appointment = new Appointment({
-//       patientId: req.user.id,
-//       doctorId,
-//       date,
-//     });
-//     await appointment.save();
-//     res.status(201).json({ message: 'Appointment booked successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error booking appointment' });
-//   }
-// });
-
-router.post('/appointments/book', protect3, authorizeRoles('patient'), bookAppointment);
 
 
-router.get('/appointments/doctor/:id', protect3, authorizeRoles('doctor'), getDoctorAppointments);
+const hospitalrouter = express.Router();
 
 
-router.patch(
-  '/appointments/doctor/:doctorId/:appointmentId',
-  protect3,
-  authorizeRoles('doctor'),
-  updateAppointmentStatus
-);
+hospitalrouter.post('/book', verifyToken, async (req, res) => {
+  try {
+    const { adminId, appointmentDate, sickness, appointmentTime, reasonForAppointment, patientDetails } = req.body;
+
+   
+    if (!adminId || !appointmentDate || !appointmentTime || !reasonForAppointment || !sickness) {
+      console.log('All required fields must be filled')
+      return res.status(400).json({ message: 'All required fields must be filled' });
+    }
+
+    const admin = await HUser.findById(adminId);
+    console.log(admin)
+    if (!admin || admin.role !== 'admin') {
+      console.log("hospital not found")
+      return res.status(404).json({ message: 'hospital not found' });
+    }
 
 
-router.get('/appointments/patient/:id', protect3, authorizeRoles('patient'), getPatientAppointments);
+    const appointment = new Appointment({
+      patientId: req.user.id, 
+      adminId,
+      appointmentDate,
+      appointmentTime,
+      reasonForAppointment,
+      sickness,
+      patientDetails,
+    });
 
-export default router;
+    await appointment.save();
+
+    res.status(201).json({ message: 'Appointment booked successfully', appointment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error booking appointment' });
+  }
+});
+
+// Route for admin to retrieve all appointments
+hospitalrouter.get('/appointments', verifyToken, async (req, res) => {
+  try {
+   
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+  
+    const appointments = await Appointment.find({ adminId: req.user.id })
+      .populate('patientId', 'name email phone') 
+      .sort({ createdAt: -1 }); 
+
+    res.status(200).json({ appointments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching appointments' });
+  }
+});
+
+export default hospitalrouter;

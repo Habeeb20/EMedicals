@@ -26,7 +26,7 @@ const DashboardHospital = () => {
     role: "",
     profilePicture: "",
   });
-
+  const [sicknessStats, setSicknessStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -284,6 +284,70 @@ const DashboardHospital = () => {
   }
 
 
+  //for getting appointment stats and details
+useEffect(() => {
+  const fetchAppointments = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_HO}/appointments`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      const appointments = response.data.appointments;
+      console.log(appointments)
+      // Calculate sickness percentages
+      const sicknessCounts = {};
+      appointments.forEach((appointment) => {
+        const sickness = appointment.sickness;
+        sicknessCounts[sickness] = (sicknessCounts[sickness] || 0) + 1;
+      });
+  
+      const totalPatients = appointments.length;
+      const sicknessData = Object.entries(sicknessCounts).map(([sickness, count]) => ({
+        sickness,
+        percentage: ((count / totalPatients) * 100).toFixed(2),
+      }));
+  
+
+      setSicknessStats(sicknessData); // Data for the pie chart
+    } catch (error) {
+      console.error(error);
+      toast.error('Error fetching appointments');
+    }
+  };
+  fetchAppointments()
+})
+
+const data1 = {
+  labels: sicknessStats.map((stat) => stat.sickness),
+  datasets: [
+    {
+      label: 'Sickness Distribution',
+      data: sicknessStats.map((stat) => stat.percentage),
+      backgroundColor: ['#4BC0C0', '#FFCE56', '#36A2EB', '#FF6384', '#9966FF'],
+      hoverOffset: 4,
+    },
+  ],
+};
+
+const options1 = {
+  plugins: {
+    tooltip: {
+      callbacks: {
+        label: (context) => `${context.label}: ${context.raw}%`,
+      },
+    },
+  },
+};
+
+ 
+  
+
   return (
     <div className="flex h-screen">
       {/*side bar*/}
@@ -324,14 +388,14 @@ const DashboardHospital = () => {
           </a>
 
           <a
-            href="#"
+            href="/allpatientforadmin"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdPeople size={20} />
             <span>Patients</span>
           </a>
           <a
-            href="#"
+            href="/dashboardAnalytics"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdBarChart size={20} />
@@ -686,18 +750,26 @@ const DashboardHospital = () => {
               </div>
             </div>
           </div>
-          <div className="p-6 bg-gray-100 min-h-screen flex justify-center items-center">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4">
-        <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
-          User Distribution
-        </h2>
-        {totalUsers > 0 ? (
-          <Pie data={data} options={options} />
-        ) : (
-          <p className="text-center text-gray-500">Loading chart data...</p>
-        )}
-      </div>
-    </div>
+          <div className="p-6 bg-gray-100 min-h-screen flex flex-col md:flex-row md:justify-center md:gap-8 items-center">
+  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
+    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+      User Distribution
+    </h2>
+    {totalUsers > 0 ? (
+      <Pie data={data} options={options} />
+    ) : (
+      <p className="text-center text-gray-500">Loading chart data...</p>
+    )}
+  </div>
+
+  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
+    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
+      Sickness Distribution
+    </h2>
+    <Pie data={data1} options={options1} />
+  </div>
+</div>
+
 
       
         </div>
@@ -707,11 +779,6 @@ const DashboardHospital = () => {
 };
 
 export default DashboardHospital;
-
-
-
-
-
 
 
 
