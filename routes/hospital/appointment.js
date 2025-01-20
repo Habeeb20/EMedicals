@@ -44,6 +44,41 @@ hospitalrouter.post('/book', verifyToken, async (req, res) => {
   }
 });
 
+
+
+
+//route for the patient to delete appointment from the database
+
+
+hospitalrouter.delete('/deleteAppointment/:id', verifyToken, async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    const patientId = req.user.id; 
+
+   
+    const appointment = await Appointment.findById(appointmentId);
+
+   
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+  
+    if (appointment.patientId.toString() !== patientId) {
+      return res.status(403).json({ message: 'Unauthorized to delete this appointment' });
+    }
+
+ 
+    await Appointment.findByIdAndDelete(appointmentId);
+
+    res.status(200).json({ message: 'Appointment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting appointment:', error);
+    res.status(500).json({ message: 'Error deleting appointment' });
+  }
+});
+
+
 // Route for admin to retrieve all appointments
 hospitalrouter.get('/appointments', verifyToken, async (req, res) => {
   try {
@@ -63,5 +98,23 @@ hospitalrouter.get('/appointments', verifyToken, async (req, res) => {
     res.status(500).json({ message: 'Error fetching appointments' });
   }
 });
+
+
+
+
+hospitalrouter.get('/get-appointments', verifyToken, async(req, res) => {
+  try {
+    if(req.user.role !== 'patient'){
+      return res.status(403).json({message: 'Access denied'})
+    }
+
+    const appointment = await Appointment.find({patientId:req.user.id}).populate('adminId', 'name email phone').sort({createdAt:-1})
+
+    res.status(200).json({appointment})
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching appointments' });
+  }
+})
 
 export default hospitalrouter;

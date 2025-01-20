@@ -80,8 +80,11 @@ const AfterDeathService = () => {
 
           <Link>
             <div className="bg-white p-4 rounded-lg shadow-lg flex-1 mx-1 flex flex-col items-center">
-              <FaMortarPestle className="text-red-500 text-2xl" />
-              <p className="text-sm mt-2">Undertakers</p>
+            <Link to="/undertakers">
+            <FaMortarPestle className="text-red-500 text-2xl" />
+            <p className="text-sm mt-2">Undertakers</p>
+            </Link>
+            
             </div>
           </Link>
         </div>

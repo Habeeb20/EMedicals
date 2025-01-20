@@ -7,6 +7,7 @@ import nodemailer from "nodemailer"
 import cloudinary from "cloudinary"
 import { isAdmin, protect2 } from "../../middleware/protect.js"
 import { restrictTo } from "../../middleware/authMiddleware.js"
+import { verifyToken, verifyToken2 } from "../../middleware/verifyToken.js"
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -143,6 +144,7 @@ router.post("/userlogin", async (req, res) => {
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
       res.status(200).json({ token, user });
     } catch (err) {
+      console.log(err)
       res.status(500).json({ error: err.message });
     }
   });
@@ -207,7 +209,7 @@ router.post("/userlogin", async (req, res) => {
 
   
 // Get all users
-router.get("/getusers/:role", protect2, isAdmin, async (req, res) => {
+router.get("/getusers/:role", verifyToken, isAdmin, async (req, res) => {
   try {
 
     const { role } = req.params;
@@ -220,21 +222,54 @@ router.get("/getusers/:role", protect2, isAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-//get all users by role
-router.get("/getusersByrole", async (req, res) => {
+//get all users for the Admin 
+router.get("/getusersByrole", verifyToken, isAdmin, async (req, res) => {
   try {
     const { role } = req.query;  
     if (!role) {
       return res.status(400).json({ error: "Role is required" });
     }
-    const users = await User.find({ role });
+    const users = await User.find({ adminId: req.user.id, role });
     res.status(200).json(users);
   } catch (error) {
-    console.log(error)
+
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
 
+
+
+router.get("/getUsersGroup", verifyToken2, async (req, res) => {
+  try {
+
+    const { adminId } = req.user
+   
+    const admin = await User.findById(adminId);
+    if (!admin) {
+      return res.status(400).json({ error: "Admin ID is missing or invalid" });
+    }
+
+    const { role } = req.query; 
+
+  
+    const query = { adminId }; 
+    if (role) {
+      query.role = role; 
+    }
+
+   
+    const users = await User.find(query);
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found under this admin" });
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+});
 
 
 // Add a user

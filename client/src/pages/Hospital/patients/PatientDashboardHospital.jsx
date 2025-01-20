@@ -11,6 +11,7 @@ import { MdHome, MdEvent, MdReport, MdPerson } from "react-icons/md";
 import m from "../../../assets/EMedicals/doctor2.jpeg";
 import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
 import { Bar } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
@@ -29,7 +30,7 @@ ChartJS.register(
   Legend
 );
 
-const PatientDashboardHospital = () => {
+const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
   const { id } = useParams();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -47,7 +48,11 @@ const PatientDashboardHospital = () => {
   const [doctor, setDoctor] = useState([]);
   const [nurse, setNurse] = useState([]);
   const [patient, setPatient] = useState([]);
-
+  const [report, setReport] = useState({})
+  const [chartData, setChartData] = useState(null);
+  const [myAppointment, setMyAppointment] = useState([]);
+  const [myAppointmentId, setMyAppointmentId] = useState([])
+  
   const [appointmentData, setAppointmentData] = useState({
     adminId: "",
     appointmentDate: "",
@@ -179,7 +184,7 @@ const PatientDashboardHospital = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${import.meta.env.VITE_API_HO}/getusersByrole`,
+        `${import.meta.env.VITE_API_HO}/getUsersGroup`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { role },
@@ -187,8 +192,8 @@ const PatientDashboardHospital = () => {
       );
       return response.data;
     } catch (error) {
-      toast.error(`Failed to fetch ${role}s`);
-      console.error(error);
+      // toast.error(`Failed to fetch ${role}s`);
+      // console.error(error);
       return [];
     }
   };
@@ -243,7 +248,7 @@ const PatientDashboardHospital = () => {
       setAppointmentData((prev) => ({ ...prev, [name]: value }));
     }
   };
-
+//book my appointment
   const handleAppointmentSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -253,7 +258,7 @@ const PatientDashboardHospital = () => {
         ...appointmentData,
         adminId: userData.adminId?._id,
       };
-      console.log("the admin id!!!",adminId)
+      console.log("the admin id!!!", adminId);
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_HO}/book`,
@@ -267,12 +272,148 @@ const PatientDashboardHospital = () => {
 
       toast.success("Appointment booked successfully");
 
-      navigate("/patientdashboardhospital"); 
+      navigate("/patientdashboardhospital");
     } catch (error) {
       console.error(error);
       toast.error(error.message);
     }
   };
+
+//sending a report 
+
+const handleSendReport = async(e) => {
+  e.preventDefault();
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const payload = {
+        ...report,
+        adminId: userData.adminId?._id
+      }
+
+      const response = await axios.post( `${import.meta.env.VITE_API_HO}/sendreport`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        
+      toast.success("report sent successfully");
+
+      navigate("/patientdashboardhospital");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
+  
+}
+  //delete appointment and getMyAppointment
+
+  useEffect(() => {
+    const fetchMyAppointment = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_HO}/get-appointments`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        toast.success("you can view your appointment");
+        const appointments = response.data.appointment;
+        if (appointments && appointments.length > 0) {
+         setMyAppointment(appointments);
+         const appointmentIds = appointments.map((appointment) => appointment._id);
+         console.log('Appointment IDs:', appointmentIds)
+        
+         setMyAppointmentId(appointments[0]?._id);
+        console.log(response.data.appointment);
+     
+        }
+
+        
+     
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMyAppointment();
+  }, []);
+
+
+
+
+
+  const handleDeleteAppointment = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (
+        !window.confirm("are you sure you want to delete this appointment?")
+      ) {
+        return;
+      }
+
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_HO}/deleteAppointment/${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("appointment successfully cancelled");
+      onDeleteSuccess(appointmentId);
+    } catch (error) {
+      console.log(error);
+      toast.error("an error deleting the appointment");
+    }
+  };
+
+
+  const handleDeleteSuccess = (deleteId) => {
+    setMyAppointment((prevAppointments) =>
+      prevAppointments.filter((appointment) => appointment._id !== deleteId)
+    );
+  };
+
+  useEffect(() => {
+    if (myAppointment.length > 0) {
+      const sicknessCounts = {};
+      myAppointment.forEach((appointment) => {
+        const sickness = appointment.sickness;
+        sicknessCounts[sickness] = (sicknessCounts[sickness] || 0) + 1;
+      });
+
+      const labels = Object.keys(sicknessCounts);
+      const data = Object.values(sicknessCounts);
+      const colors = labels.map(
+        (_, index) => `hsl(${(index * 360) / labels.length}, 70%, 60%)`
+      );
+
+      setChartData({
+        labels,
+        datasets: [
+          {
+            label: "Sickness Distribution",
+            data,
+            backgroundColor: colors,
+            borderWidth: 1,
+          },
+        ],
+      });
+    }
+  }, [myAppointment]);
+
+  if (!chartData) {
+    return <p>Loading...</p>;
+  }
 
   const Sidebar = ({ isSidebarOpen, setSidebarOpen, setSelectedSection }) => {
     return (
@@ -330,6 +471,20 @@ const PatientDashboardHospital = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4 text-blue-700">Home</h3>
             <p>Welcome to the Home section.</p>
+            <div style={{ maxWidth: "300px", margin: "0 auto" }}>
+              <h2 style={{ textAlign: "center" }}>Sickness Distribution</h2>
+              <Pie
+                data={chartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                  },
+                }}
+              />
+            </div>
           </div>
         );
       case "yourPatients":
@@ -529,23 +684,29 @@ const PatientDashboardHospital = () => {
               Appointments
             </h3>
             <p>Manage your appointments here.</p>
-            {appointments.length > 0 ? (
+            {myAppointment.length > 0 ? (
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                    <th className="border px-4 py-2">Patient</th>
+                    <th className="border px-4 py-2">Hospital Name</th>
+                    <th className="border px-4 py-2">Hospital Email</th>
                     <th className="border px-4 py-2">Sickness</th>
                     <th className="border px-4 py-2">Appointment Date</th>
                     <th className="border px-4 py-2">Status</th>
+                    <th className="border px-4 py-2">Actions or drugs taken</th>
                     <th className="border px-4 py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((appointment) => (
+                  {myAppointment.map((appointment) => (
                     <tr key={appointment._id}>
                       <td className="border px-4 py-2">
-                        {appointment.patientName}
+                        {appointment.adminId?.name}
                       </td>
+                      <td className="border px-4 py-2">
+                        {appointment.adminId?.email}
+                      </td>
+
                       <td className="border px-4 py-2">
                         {appointment.sickness}
                       </td>
@@ -555,33 +716,18 @@ const PatientDashboardHospital = () => {
                         ).toLocaleDateString()}
                       </td>
                       <td className="border px-4 py-2">{appointment.status}</td>
+                      <td className="border px-4 py-2">{appointment.reason}</td>
                       <td className="border px-4 py-2">
                         <button
                           onClick={() =>
-                            updateAppointmentStatus(appointment._id, "accepted")
-                          }
-                          className="bg-green-500 text-white px-2 py-1 rounded mr-2"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() =>
-                            updateAppointmentStatus(appointment._id, "rejected")
-                          }
-                          className="bg-red-500 text-white px-2 py-1 rounded mr-2"
-                        >
-                          Reject
-                        </button>
-                        <button
-                          onClick={() =>
-                            updateAppointmentStatus(
+                            handleDeleteAppointment(
                               appointment._id,
-                              "rescheduled"
+                              handleDeleteSuccess
                             )
                           }
-                          className="bg-yellow-500 text-white px-2 py-1 rounded"
+                          className="bg-red-500 text-white px-2 py-1 rounded "
                         >
-                          Reschedule
+                          Cancel
                         </button>
                       </td>
                     </tr>
@@ -599,7 +745,104 @@ const PatientDashboardHospital = () => {
             <h3 className="text-xl font-semibold mb-4 text-blue-700">
               Reports
             </h3>
-            <p>Your reports will appear here.</p>
+              <h4>send a report to the hospital admin</h4>
+              <form onSubmit={handleSendReport} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="adminId" className="font-semibold">
+                  Hospital Admin ID
+                </label>
+                <input
+                  type="text"
+                  id="adminId"
+                  name="adminId"
+                  value={userData.adminId?._id || ""}
+                  onChange={handleAppointmentChange}
+                  className="border p-2 w-full"
+                  required
+                  readOnly // Make the input field readonly
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="complaints" className="font-semibold">
+                  Your complaint
+                </label>
+                <input
+                  type="text"
+                  id="complaints"
+                  name="complaints"
+                  value={report.complaints}
+                  onChange={handleAppointmentChange}
+                  className="border p-2 w-full"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="doctorName" className="font-semibold">
+                  Doctor or Nurse name had an encounter with
+                </label>
+                <input
+                  type="text"
+                  id="doctorName"
+                  name="doctorName"
+                  value={report.doctorName}
+                  onChange={handleAppointmentChange}
+                  className="border p-2 w-full"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="observation" className="font-semibold">
+                  observation
+                </label>
+                <input
+                  type="text"
+                  id="observation"
+                  name="observation"
+                  value={report.observation}
+                  onChange={handleChange}
+                  className="border p-2 w-full"
+                  required
+                />
+              </div>
+
+           
+
+
+
+              <button
+                type="submit"
+                className="bg-blue-600 text-white p-3 w-full rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex justify-center items-center"
+              >
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 mr-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></circle>
+                    <path
+                      d="M4 12c0 4.418 3.582 8 8 8s8-3.582 8-8"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Submit Appointment"
+                )}
+              </button>
+            </form>
           </div>
         );
       case "nurses":
@@ -616,12 +859,12 @@ const PatientDashboardHospital = () => {
               Your profile
             </h3>
 
-            <a
+            {/* <a
               href="/consultadoctor"
               className="text-blue-700 flex items-center space-x-2 hover:bg-gray-200 p-2 rounded-lg"
             >
               <span>patients can consult you?</span>
-            </a>
+            </a> */}
             <p>Manage your settings here.</p>
 
             <h4 className="">
@@ -632,11 +875,7 @@ const PatientDashboardHospital = () => {
               {" "}
               Your fullname: <span className="font-bold"> {userData.name}</span>
             </h4>
-            <h4 className="">
-              {" "}
-              Your specialization:{" "}
-              <span className="font-bold"> {userData.specialization}</span>
-            </h4>
+
             <h4 className="">
               {" "}
               Your phone number:{" "}
@@ -656,11 +895,7 @@ const PatientDashboardHospital = () => {
               Your Home Address:{" "}
               <span className="font-bold"> {userData.location}</span>
             </h4>
-            <h4 className="">
-              {" "}
-              Your Available time:{" "}
-              <span className="font-bold"> {userData.doctorTime}</span>
-            </h4>
+
             <h4 className="">
               {" "}
               Hospital Name:{" "}
@@ -672,7 +907,7 @@ const PatientDashboardHospital = () => {
               <span className="font-bold"> {userData.adminId?.email}</span>
             </h4>
             <img
-              src={userData?.profilePicture || m}
+              src={userData.profilePicture || m}
               alt="User"
               className="rounded-full w-32 h-32 object-cover"
             />
@@ -726,7 +961,7 @@ const PatientDashboardHospital = () => {
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                       <label className="block text-sm font-medium text-gray-600 mb-1">
                         Specialization
                       </label>
@@ -760,7 +995,7 @@ const PatientDashboardHospital = () => {
                         <option value="Surgery">Surgery</option>
                         <option value="Urology">Urology</option>
                       </select>
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col">
                       <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -775,7 +1010,7 @@ const PatientDashboardHospital = () => {
                       />
                     </div>
 
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                       <label className="block text-sm font-medium text-gray-600 mb-1">
                         what time will you be Available(e.g 4:00pm - 8:00pm)
                         everyday/ specify the day
@@ -787,7 +1022,7 @@ const PatientDashboardHospital = () => {
                         onChange={handleChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
-                    </div>
+                    </div> */}
 
                     <div className="flex flex-col">
                       <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -868,7 +1103,20 @@ const PatientDashboardHospital = () => {
                 <p className="text-gray-500 text-sm mb-4">
                   Pie Chart Placeholder
                 </p>
-                <div className="w-40 h-40 rounded-full border-4 border-green-500 mx-auto"></div>
+                <div style={{ maxWidth: "300px", margin: "0 auto" }}>
+                  <h2 style={{ textAlign: "center" }}>Sickness Distribution</h2>
+                  <Pie
+                    data={chartData}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          position: "top",
+                        },
+                      },
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -885,7 +1133,7 @@ const PatientDashboardHospital = () => {
             {userData.email}'s Dashboard
           </h2>
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-blue-600">
-            Dashboard for {userData.name} @ {userData.adminId?.name}
+            Patient Dashboard for {userData.name} @ {userData.adminId?.name}
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-2">
@@ -935,45 +1183,6 @@ const PatientDashboardHospital = () => {
               {renderContent()}
             </div>
           </div>
-
-          {/* Schedule Section */}
-          {/* <div className="mt-8">
-    <h3 className="text-lg font-semibold mb-4 text-green-700">
-      Daily Patient Management
-    </h3>
-    <table className="table-auto w-full border-collapse border border-gray-300 text-center">
-      <thead>
-        <tr className="bg-green-100">
-          <th className="border border-gray-300 px-4 py-2">Day</th>
-          <th className="border border-gray-300 px-4 py-2">Patient_Name</th>
-          <th className="border border-gray-300 px-4 py-2">phone_Number</th>
-          <th className="border border-gray-300 px-4 py-2">Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {[
-          { day: "Monday", Patient_Name: "12", Number: "8", Time: "4" },
-          { day: "Tuesday", Patient_Name: "10", Number: "6", Time: "4" },
-          { day: "Wednesday", Patient_Name: "14", Number: "10", Time: "4" },
-          { day: "Thursday", Patient_Name: "9", Number: "5", Time: "4" },
-          { day: "Friday", Patient_Name: "15", Number: "11", Time: "4" },
-        ].map((row, index) => (
-          <tr key={index}>
-            <td className="border border-gray-300 px-4 py-2">{row.day}</td>
-            <td className="border border-gray-300 px-4 py-2 text-green-500">
-              {row.admissions}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-red-500">
-              {row.discharges}
-            </td>
-            <td className="border border-gray-300 px-4 py-2 text-gray-500">
-              {row.pending}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div> */}
         </div>
       </div>
     </>

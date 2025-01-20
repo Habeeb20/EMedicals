@@ -33,14 +33,12 @@ import phamrcyAdminrouter from "./routes/pharmacy/Admin.route.js";
 // import pharmacyReviewRoute from "./routes/pharmacy/PReview.route.js";
 import pharmacyRoute from "./routes/pharmacy/authRoute.js";
 
-import hospitalRoute from "./routes/hospital/hospitalRoute.js"
 
-import doctorhospitalRoute from "./routes/hospital/doctor.route.js"
 
 
 
 import wellnessrouter from "./routes/wellRoute.js";
-import HRouter from "./routes/hospital/hospitalRoute.js"
+
 import cdoctorRoute from "./routes/QuickAction/consultdoctorRoute.js";
 import teleRouter from "./routes/Telemedicine/teleuser.Route.js";
 import teleDoctorRouter from "./routes/Telemedicine/teleDoctor.Route.js";
@@ -64,6 +62,9 @@ import newPharmacycontactRoute from "./routes/newPharmacy/contactRoute.js"
 import errorHandler from "./middleware/errorMiddleware.js";
 import contactUs from "./controllers/newPharmacy/contactController.js";
 import hospitalrouter from "./routes/hospital/appointment.js";
+import HReportrouter from "./routes/hospital/HReport.route.js";
+import undertakerRouter from "./routes/undertakerRoute.js";
+import undertakerCommentRouter from "./routes/undertaker.route/commentUndertaker.route.js";
 
 dotenv.config();
 
@@ -146,20 +147,20 @@ app.use("/api/pharmacy", pharmacyRoute)
 
 
 //hospital
-app.use("/api/hospital", hospitalRoute)
-app.use("/api/hospital", doctorhospitalRoute)
-
-
 
 app.use("/api/hospital", userRoute )
 app.use("/api/hospital", hospitalrouter )
-
+app.use("/api/hospital", HReportrouter)
 app.use("/api/quickaction", cdoctorRoute)
 
 
 
 //wellness
 app.use("/api/wellness", wellnessrouter)
+
+//undertaker
+app.use("/api/undertaker", undertakerRouter)
+app.use("/api/undertaker", undertakerCommentRouter)
 
 
 //teleuser

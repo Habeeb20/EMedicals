@@ -141,7 +141,7 @@ export default function UserLandingProfile() {
           <ImageCarousel />
           <QuickActions />
           <WellnessAdvert />
-          <AllHospital />
+          {/* <AllHospital /> */}
 
           {/* Grid Boxes */}
           <div className="grid grid-cols-1 md:grid-cols-2 text-black lg:grid-cols-3 gap-6">

@@ -6,6 +6,8 @@ import im from "../assets/EMedicals/young-woman-doctor-white-coat-with-stethosco
 const Modal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -44,8 +46,48 @@ const Modal = ({ isOpen, onClose }) => {
   );
 };
 
+const Modal2 = ({isOpenModal, onCloseModal}) => {
+  if(!isOpenModal) return null
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 className="text-xl font-bold mb-4 text-center">Choose an Option</h2>
+        <div className="flex flex-col space-y-4">
+          <Link
+            to="/cemeterylogin" 
+            onClick={ onCloseModal}
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as cemetary Admin
+          </Link>
+          <Link
+            to="/mortuarysignup"
+            onClick={onCloseModal}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as mortician or mortuary owner
+          </Link>
+          <Link
+            to="/undertakerlogin"
+            onClick={onCloseModal}
+            className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-center"
+          >
+            Login as an undertaker 
+          </Link>
+        </div>
+        <button
+          onClick={onCloseModal}
+          className="mt-4 w-full bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
 const AdminHome = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
   return (
     <div>
       <main className="flex-1 p-6 text-black">
@@ -125,9 +167,13 @@ const AdminHome = () => {
 
         
 
-
-          <Link to='/cemeterylogin'>
-          
+        
+        <Link  to="#"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsModalOpen2(true);
+        }}
+        className="text-gray-500 underline">
           <div className="bg-gray-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaBookDead className="text-4xl text-gray-500" />
             <div>
@@ -160,6 +206,7 @@ const AdminHome = () => {
 
             </Link>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <Modal2 isOpenModal={isModalOpen2} onCloseModal={() => setIsModalOpen2(false)} />
          
         </div>
       </main>

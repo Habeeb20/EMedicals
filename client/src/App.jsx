@@ -137,7 +137,12 @@ import AllDoctorsForAdmin from "./pages/Hospital/Admin/AllDoctorsForAdmin";
 import AllNursesForAdmin from "./pages/Hospital/Admin/AllNursesForAdmin";
 import AllPatientForAdmin from "./pages/Hospital/Admin/AllPatientForAdmin";
 import DashboardAnalytics from "./pages/Hospital/Admin/DashboardAnalytics";
-// const socket = io("http://localhost:8000");
+import LoginUndertaker from "./pages/undertaker/LoginUndertaker";
+import SignupUndertaker from "./pages/undertaker/SignupUndertaker";
+
+import DashboardUndertaker from "./pages/undertaker/DashboardUndertaker";
+import UndertakerDetails from "./pages/undertaker/UndertakerDetails";
+import AllUndertaker from "./pages/undertaker/AllUndertaker";
 
 axios.defaults.withCredentials = true;
 
@@ -315,6 +320,16 @@ const App = () => {
         <Route path="/wellnessregister" element={<WellRegister />} />
         <Route path="/wellnessdashboard" element={<WellDashboard />} />
         <Route path="/wellness/:id" element={<WellnessDetails />} />
+
+        
+
+        
+        ///undertaker
+        <Route path="/undertakerlogin" element={<LoginUndertaker />} />
+        <Route path="/undertakerregister" element={<SignupUndertaker />} />
+        <Route path="/undertakerdashboard" element={<DashboardUndertaker />} />
+        <Route path="/undertakerdetails/:id" element={<UndertakerDetails />} />
+        <Route path = "/undertakers" element={<AllUndertaker />} />
 
 
 
