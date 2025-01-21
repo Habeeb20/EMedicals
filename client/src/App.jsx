@@ -302,7 +302,7 @@ const App = () => {
         <Route path="/allpatientforadmin" element={<AllPatientForAdmin />} />
         <Route path="/dashboardAnalytics" element={<DashboardAnalytics />} />
         <Route path="/dashboardHospital" element={<DashboardHospital/>} />
-        <Route path="/HospitalResult" element={<HospitalResult />} />
+        <Route path="/appointment/:patientId/sendresult" element={<HospitalResult />} />
 
 
         <Route path="/logindoctordashboardhospital" element={<LoginDoctorHospital />} />

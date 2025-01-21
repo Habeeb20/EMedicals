@@ -13,7 +13,7 @@ const hospitalResultSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    Observation:{
+    observation:{
         type:String,
         required: true
     },

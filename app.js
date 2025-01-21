@@ -63,6 +63,7 @@ import errorHandler from "./middleware/errorMiddleware.js";
 import contactUs from "./controllers/newPharmacy/contactController.js";
 import hospitalrouter from "./routes/hospital/appointment.js";
 import HReportrouter from "./routes/hospital/HReport.route.js";
+import hospitalresultRouter from "./routes/hospital/hospitalResult.js";
 import undertakerRouter from "./routes/undertakerRoute.js";
 import undertakerCommentRouter from "./routes/undertaker.route/commentUndertaker.route.js";
 
@@ -151,6 +152,7 @@ app.use("/api/pharmacy", pharmacyRoute)
 app.use("/api/hospital", userRoute )
 app.use("/api/hospital", hospitalrouter )
 app.use("/api/hospital", HReportrouter)
+app.use("/api/hospital", hospitalresultRouter)
 app.use("/api/quickaction", cdoctorRoute)
 
 

@@ -32,6 +32,7 @@ ChartJS.register(
 
 const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
   const { id } = useParams();
+  const [medicalResult, SetMedicalResult] = useState([])
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -81,7 +82,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
     location: "",
     profilePicture: "",
   });
-
+//fetch profile
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -112,6 +113,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+//edit function
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -134,7 +136,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
       setError("Failed to update profile.");
     }
   };
-
+//handling the picture
   const handleFileChange = async (e, field) => {
     const file = e.target.files[0];
     const formData = new FormData();
@@ -179,7 +181,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
-
+//fetching use role
   const fetchUsersByRole = async (role) => {
     try {
       const token = localStorage.getItem("token");
@@ -197,7 +199,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
       return [];
     }
   };
-
+//fetch users
   const fetchAllUsers = async () => {
     const doctorsData = await fetchUsersByRole("doctor");
     const nursesData = await fetchUsersByRole("nurse");
@@ -235,7 +237,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
   }
 
   const navigate = useNavigate();
-
+//handle input for appointment
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
     if (name.includes("patientDetails")) {
@@ -346,6 +348,32 @@ const handleSendReport = async(e) => {
   }, []);
 
 
+  //fetch result from the hospital
+
+  useEffect(() => {
+    const fetchResult = async() => {
+      try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          toast.error("token not found")
+        }
+        const response = await axios.get(`${import.meta.env.VITE_API_HO}/getresult`, {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        })
+        SetMedicalResult(response.data)
+        console.log(response.data)
+      } catch (error) {
+        toast.error("error fetching result")
+        console.log(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchResult()
+  }, [id])
+
 
 
 
@@ -446,6 +474,11 @@ const handleSendReport = async(e) => {
               name: "Appointments",
               key: "appointments",
               icon: <MdEvent size={20} />,
+            },
+            {
+              name: "medical Result",
+              key: "medicalResult",
+              icon: <MdPeople size={20} />,
             },
             { name: "Reports", key: "reports", icon: <MdReport size={20} /> },
             { name: "Profile", key: "profiles", icon: <MdPerson size={20} /> },
@@ -739,6 +772,53 @@ const handleSendReport = async(e) => {
             )}
           </div>
         );
+
+      case "medicalResult":
+        return(
+          <div>
+            see your medical result
+            {medicalResult.length > 0 ? (
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                 
+                    <th className="border px-4 py-2">Result</th>
+                    <th className="border px-4 py-2">Date</th>
+                    <th className="border px-4 py-2">Observation</th>
+                    <th className="border px-4 py-2">Recommendation</th>
+
+                  </tr>
+                </thead>
+                <tbody className="text-green-900">
+                  {medicalResult.map((medical) => (
+                    <tr key={medical._id}>
+                      {/* <td className="border px-4 py-2">
+                        {medical.adminId?.name}
+                      </td>
+                      <td className="border px-4 py-2">
+                        {medical.adminId?.email}
+                      </td> */}
+
+                      <td className="border px-4 py-2">
+                        {medical.result}
+                      </td>
+                      <td className="border px-4 py-2">
+                        {new Date(
+                          medical.createdAt
+                        ).toLocaleDateString()}
+                      </td>
+                      <td className="border px-4 py-2">{medical.observation}</td>
+                      <td className="border px-4 py-2">{medical.recommendation}</td>
+
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No appointments found.</p>
+            )}
+          </div>
+        )
       case "reports":
         return (
           <div>

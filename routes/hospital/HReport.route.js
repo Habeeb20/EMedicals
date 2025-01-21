@@ -9,7 +9,7 @@ HReportrouter.post("/sendreport", verifyToken, async(req, res) => {
     try {
         const {adminId, complaints, doctorName, observation} = req.body;
 
-        if(!adminId || !complaints || !doctorName || observation) {
+        if(!adminId || !complaints || !doctorName || !observation) {
             console.log('All required fields must be filled')
             return res.status(400).json({ message: 'All required fields must be filled' });
         }

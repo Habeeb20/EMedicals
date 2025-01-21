@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { Pie } from "react-chartjs-2";
 import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
@@ -18,7 +20,9 @@ import {
 ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
 const HospitalResult = () => {
-  const {patientId} = useParams();
+  const navigate= useNavigate()
+  const { patientId } = useParams();
+  const [adminId, setAdminId] = useState('')
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -58,6 +62,11 @@ const HospitalResult = () => {
     profilePicture: "",
   });
 
+  const [result, setResult] = useState('')
+  const [observation, setObservation] = useState('')
+  const [recommendation,setRecommendation] = useState('')
+
+  console.log("patient id !!!", patientId)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -218,37 +227,46 @@ const HospitalResult = () => {
 
 
   //SEND RESULT 
-  const handleResultSubmit = async(e) => {
+  const handleResultSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
-
-    const sendResult = {
-      
-      patientId,
-      adminId,
-      result,
-      recommendation,
-      observation,
-    }
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-      console.log("patientId is", patientId)
-
-      const response = await axios.post(`${import.meta.env.VITE_API_HO}/sendresult/${patientId}`, sendResult, {
-        headers:{
-          Authorization:`Bearer ${token}`,
-          'Content-Type': 'application/json'
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Token not found");
+            throw new Error("Token not found");
         }
-      });
-      setLoading(false);
-      toast.success("result is sent")
+
+    
+        const adminId = token; 
+
+        const sendResult = {
+            patientId,
+            adminId,
+            result,
+            recommendation,
+            observation,
+        };
+
+        console.log("Sending result:", sendResult);
+
+        await axios.post(`${import.meta.env.VITE_API_HO}/sendresult/${patientId}`, sendResult, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        setLoading(false);
+        toast.success("Result sent successfully");
+        navigate("/dashboardHospital")
     } catch (error) {
-      console.log(error)
-      setLoading(false);
-      toast.error("failed to send result, please try again")
+        console.error("Error sending result:", error);
+        setLoading(false);
+        toast.error("Failed to send result, please try again");
     }
-  }
+};
 
 
   useEffect(() => {
@@ -818,8 +836,11 @@ const options1 = {
               id="result"
               name="result"
               rows="4"
+              value={result}
+              onChange={(e) => setResult(e.target.value)}
               placeholder="Enter the result here..."
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
             ></textarea>
           </div>
 
@@ -835,8 +856,11 @@ const options1 = {
               id="observation"
               name="observation"
               rows="4"
+              value={observation}
+              onChange={(e) => setObservation(e.target.value)}
               placeholder="Enter your observation here..."
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
             ></textarea>
           </div>
 
@@ -851,9 +875,12 @@ const options1 = {
             <textarea
               id="recommendation"
               name="recommendation"
+              value={recommendation}
+              onChange={(e) => setRecommendation(e.target.value)}
               rows="4"
               placeholder="Enter your recommendation here..."
               className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
             ></textarea>
           </div>
 
@@ -865,7 +892,7 @@ const options1 = {
               disabled={loading}
             >
 
-              {loading ? 'Booking...' : 'send result'}
+              {loading ? 'sending result...' : 'send result'}
             </button>
           </div>
         </form>
