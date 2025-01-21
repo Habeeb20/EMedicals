@@ -17,7 +17,8 @@ import {
 } from "chart.js";
 ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
-const DashboardHospital = () => {
+const HospitalResult = () => {
+  const {patientId} = useParams();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -214,6 +215,41 @@ const DashboardHospital = () => {
     setNurseCount(nursesData.length);
     setPatientCount(patientsData.length);
   };
+
+
+  //SEND RESULT 
+  const handleResultSubmit = async(e) => {
+    e.preventDefault();
+    setLoading(true)
+
+    const sendResult = {
+      
+      patientId,
+      adminId,
+      result,
+      recommendation,
+      observation,
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      console.log("patientId is", patientId)
+
+      const response = await axios.post(`${import.meta.env.VITE_API_HO}/sendresult/${patientId}`, sendResult, {
+        headers:{
+          Authorization:`Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      setLoading(false);
+      toast.success("result is sent")
+    } catch (error) {
+      console.log(error)
+      setLoading(false);
+      toast.error("failed to send result, please try again")
+    }
+  }
+
 
   useEffect(() => {
     fetchAllUsers();
@@ -413,7 +449,7 @@ const options1 = {
           </a>
 
           <a
-            href="/HospitalResult"
+            href="#"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdSettings size={20} />
@@ -762,35 +798,88 @@ const options1 = {
               </div>
             </div>
           </div>
-          <div className="p-6 bg-gray-100 min-h-screen flex flex-col md:flex-row md:justify-center md:gap-8 items-center">
-  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
-    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
-      User Distribution
-    </h2>
-    {totalUsers > 0 ? (
-      <Pie data={data} options={options} />
-    ) : (
-      <p className="text-center text-gray-500">Loading chart data...</p>
-    )}
-  </div>
+          
+ 
+          <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="bg-white shadow-md rounded-lg w-full max-w-md p-6">
+        <h2 className="text-2xl font-bold text-gray-700 mb-4 text-center">
+            send the result of a patient
+        </h2>
+        <form onSubmit={handleResultSubmit} className="space-y-4">
+          {/* Result */}
+          <div>
+            <label
+              htmlFor="result"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
+              Result
+            </label>
+            <textarea
+              id="result"
+              name="result"
+              rows="4"
+              placeholder="Enter the result here..."
+              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            ></textarea>
+          </div>
 
-  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
-    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
-      Sickness Distribution
-    </h2>
-    <Pie data={data1} options={options1} />
-  </div>
-</div>
+          {/* Observation */}
+          <div>
+            <label
+              htmlFor="observation"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
+              Observation
+            </label>
+            <textarea
+              id="observation"
+              name="observation"
+              rows="4"
+              placeholder="Enter your observation here..."
+              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            ></textarea>
+          </div>
 
+          {/* Recommendation */}
+          <div>
+            <label
+              htmlFor="recommendation"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
+              Recommendation
+            </label>
+            <textarea
+              id="recommendation"
+              name="recommendation"
+              rows="4"
+              placeholder="Enter your recommendation here..."
+              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            ></textarea>
+          </div>
+
+          {/* Submit Button */}
+          <div className="text-center">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              disabled={loading}
+            >
+
+              {loading ? 'Booking...' : 'send result'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
       
         </div>
       </div>
     </div>
-  );
+  );        
 };
 
-export default DashboardHospital;
+export default HospitalResult;
 
 
 

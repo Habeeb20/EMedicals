@@ -143,6 +143,7 @@ import SignupUndertaker from "./pages/undertaker/SignupUndertaker";
 import DashboardUndertaker from "./pages/undertaker/DashboardUndertaker";
 import UndertakerDetails from "./pages/undertaker/UndertakerDetails";
 import AllUndertaker from "./pages/undertaker/AllUndertaker";
+import HospitalResult from "./pages/Hospital/Admin/HospitalResult";
 
 axios.defaults.withCredentials = true;
 
@@ -301,6 +302,7 @@ const App = () => {
         <Route path="/allpatientforadmin" element={<AllPatientForAdmin />} />
         <Route path="/dashboardAnalytics" element={<DashboardAnalytics />} />
         <Route path="/dashboardHospital" element={<DashboardHospital/>} />
+        <Route path="/HospitalResult" element={<HospitalResult />} />
 
 
         <Route path="/logindoctordashboardhospital" element={<LoginDoctorHospital />} />

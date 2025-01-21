@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Link } from "react-router-dom";
 ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
 const DashboardAnalytics = () => {
@@ -299,6 +300,7 @@ const DashboardAnalytics = () => {
           }
         );
         setAppointments(response.data.appointments);
+        console.log(response.data.appointments)
       } catch (error) {
         console.error(error);
         toast.error('Error fetching appointments');
@@ -734,12 +736,19 @@ const DashboardAnalytics = () => {
                <td className="border px-4 py-2">{appointment.sickness}</td>
                <td className="border px-4 py-2">{appointment.patientDetails.location}</td>
                <td className="border px-4 py-2">
-                 <button
+               {appointment && <Link to={`/appointment/${appointment.patientId}/sendresult`}>
+               <button
                    className="bg-green-500 text-white p-2 rounded-md"
-                   onClick={() => alert(`Appointment details for ${appointment.patientId.name}`)}
+
                  >
-                   View
+                   Send Result
                  </button>
+               </Link>
+
+               }
+             
+
+             
                </td>
              </tr>
            ))}
