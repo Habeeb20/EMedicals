@@ -736,7 +736,8 @@ const DashboardAnalytics = () => {
                <td className="border px-4 py-2">{appointment.sickness}</td>
                <td className="border px-4 py-2">{appointment.patientDetails.location}</td>
                <td className="border px-4 py-2">
-               {appointment && <Link to={`/appointment/${appointment?.patientId._id}/sendresult`}>
+               {appointment && <Link to={`/appointment/${appointment?.patientId._id}/sendresult`}
+                >
                <button
                    className="bg-green-500 text-white p-2 rounded-md"
 

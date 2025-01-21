@@ -9,9 +9,17 @@ const hospitalResultSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    appointmentId: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref: 'HAppointment'
+    },
     result:{
         type:String,
         required:true
+    },
+    sickness:{
+        type:String,
+        required: true
     },
     observation:{
         type:String,

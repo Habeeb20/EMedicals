@@ -363,6 +363,8 @@ const handleSendReport = async(e) => {
           }
         })
         SetMedicalResult(response.data)
+
+        console.log(response.data)
         console.log(response.data)
       } catch (error) {
         toast.error("error fetching result")
@@ -781,7 +783,8 @@ const handleSendReport = async(e) => {
               <table className="w-full border-collapse">
                 <thead>
                   <tr>
-                 
+                    
+                  <th className="border px-4 py-2">Sickness</th>
                     <th className="border px-4 py-2">Result</th>
                     <th className="border px-4 py-2">Date</th>
                     <th className="border px-4 py-2">Observation</th>
@@ -794,10 +797,10 @@ const handleSendReport = async(e) => {
                     <tr key={medical._id}>
                       {/* <td className="border px-4 py-2">
                         {medical.adminId?.name}
-                      </td>
-                      <td className="border px-4 py-2">
-                        {medical.adminId?.email}
                       </td> */}
+                      <td className="border px-4 py-2">
+                        {medical.sickness}
+                      </td>
 
                       <td className="border px-4 py-2">
                         {medical.result}
@@ -815,7 +818,7 @@ const handleSendReport = async(e) => {
                 </tbody>
               </table>
             ) : (
-              <p>No appointments found.</p>
+              <p>No medical result  found.</p>
             )}
           </div>
         )

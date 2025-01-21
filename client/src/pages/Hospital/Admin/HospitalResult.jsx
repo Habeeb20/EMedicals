@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { Pie } from "react-chartjs-2";
@@ -21,7 +22,9 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Le
 
 const HospitalResult = () => {
   const navigate= useNavigate()
+  const appointments = location.state
   const { patientId } = useParams();
+  const [sentResult, setSentResult] = useState([])
   const [adminId, setAdminId] = useState('')
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
@@ -63,6 +66,7 @@ const HospitalResult = () => {
   });
 
   const [result, setResult] = useState('')
+  const [sickness, setSickness] = useState('')
   const [observation, setObservation] = useState('')
   const [recommendation,setRecommendation] = useState('')
 
@@ -231,6 +235,7 @@ const HospitalResult = () => {
     e.preventDefault();
     setLoading(true);
 
+ 
     try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -244,6 +249,7 @@ const HospitalResult = () => {
         const sendResult = {
             patientId,
             adminId,
+            sickness,
             result,
             recommendation,
             observation,
@@ -259,14 +265,42 @@ const HospitalResult = () => {
         });
 
         setLoading(false);
-        toast.success("Result sent successfully");
         navigate("/dashboardHospital")
+        toast.success("Result sent successfully");
+     
     } catch (error) {
         console.error("Error sending result:", error);
         setLoading(false);
         toast.error("Failed to send result, please try again");
     }
 };
+
+//sent Result
+
+useEffect(() => {
+  const fetchSentResult = async() => {
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+          throw new Error("Token not found");
+        }
+        const response = await axios.get(`${import.meta.env.VITE_API_HO}/getresultforhospital`, {
+          headers:{
+              Authorization:`Bearer ${token}`
+          },
+          withCredentials: true
+        });
+        console.log(response)
+        setSentResult(response.data)
+    } catch (error) {
+      console.error("Error fetching patient result:", error);
+       setError("Failed to load appointments.");
+    }finally {
+      setLoading(false);
+  }
+  }
+  fetchSentResult()
+}, [])
 
 
   useEffect(() => {
@@ -825,6 +859,27 @@ const options1 = {
         </h2>
         <form onSubmit={handleResultSubmit} className="space-y-4">
           {/* Result */}
+          <p>
+        
+        </p>
+        <div>
+            <label
+              htmlFor="sickness"
+              className="block text-sm font-medium text-gray-600 mb-1"
+            >
+              sickness
+            </label>
+            <input
+              id="sickness"
+              name="sickness"
+              rows="4"
+              value={sickness}
+              onChange={(e) => setSickness(e.target.value)}
+              placeholder="Enter the result here..."
+              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              required
+            />
+          </div>
           <div>
             <label
               htmlFor="result"
@@ -898,6 +953,24 @@ const options1 = {
         </form>
       </div>
     </div>
+            <p className="text-center text-green-800">previous medical results sent</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {sentResult.length > 0 ? (
+      sentResult.map((result, index) => (
+            <div key={index} className="p-4 bg-white rounded-lg shadow">
+            <p><strong>Sickness:</strong> {result.sickness}</p>
+                <p><strong>Result:</strong> {result.result}</p>
+                <p><strong>Observation:</strong> {result.observation}</p>
+                <p><strong>Date:</strong> {new Date(result.createdAt).toLocaleDateString()}</p>
+
+               
+            </div>
+        ))
+    ) : (
+        <p>you havnt sent any medical result to any of your patients.</p>
+    )}
+</div>
+
 
       
         </div>

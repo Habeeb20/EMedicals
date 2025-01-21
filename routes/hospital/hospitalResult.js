@@ -13,7 +13,7 @@ const hospitalresultRouter = express.Router()
 
 
 hospitalresultRouter.post("/sendresult/:patientId", verifyToken, async(req, res) => {
-    const {result, recommendation, observation} = req.body
+    const {result,sickness, recommendation, observation} = req.body
     const patientId = req.params.patientId || req.body.patientId;
 
     try {
@@ -33,6 +33,7 @@ hospitalresultRouter.post("/sendresult/:patientId", verifyToken, async(req, res)
         const newresult = new HospitalResult({
             adminId:new mongoose.Types.ObjectId(req.user.id),
             patientId: new mongoose.Types.ObjectId(patientId),
+            sickness,
             result,
             recommendation,
             observation
@@ -68,7 +69,7 @@ hospitalresultRouter.get("/getresult", verifyToken, async(req, res) => {
 })
 
 
-//get result being sent to the patient for doctor
+//get result being sent to the patient for hospital
 
 hospitalresultRouter.get("/getresultforhospital", verifyToken, async(req, res) => {
     try {
@@ -85,7 +86,7 @@ hospitalresultRouter.get("/getresultforhospital", verifyToken, async(req, res) =
             return res.status(404).json({message:'Hospital admin not found'})
         }
 
-        const result = await HospitalResult.find({adminId:new mongoose.Types.ObjectId(patientId)}).populate('patientId', 'name email')
+        const result = await HospitalResult.find({adminId:new mongoose.Types.ObjectId(adminId)}).populate('patientId', 'name email')
 
         console.log("result found", result)
 
