@@ -781,9 +781,9 @@ const DashboardAnalytics = () => {
       </a>
     </div>
   )}
-  {appointment.responseType === "none" && <span>No response method</span>}
+  {appointment.responseType === "none" && <span>only on my dashboard</span>}
 </td>
-
+  
                <td className="border px-4 py-2">{appointment.sickness}</td>
                <td className="border px-4 py-2">{appointment.patientDetails.location}</td>
                <td className="border px-4 py-2">
