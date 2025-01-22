@@ -9,10 +9,10 @@ const hospitalrouter = express.Router();
 
 hospitalrouter.post('/book', verifyToken, async (req, res) => {
   try {
-    const { adminId, appointmentDate, sickness, appointmentTime, reasonForAppointment, patientDetails } = req.body;
+    const { adminId, appointmentDate, sickness, appointmentTime, reasonForAppointment, patientDetails,  responseType } = req.body;
 
    
-    if (!adminId || !appointmentDate || !appointmentTime || !reasonForAppointment || !sickness) {
+    if (!adminId || !appointmentDate || !appointmentTime || !reasonForAppointment || !sickness || !responseType) {
       console.log('All required fields must be filled')
       return res.status(400).json({ message: 'All required fields must be filled' });
     }
@@ -33,6 +33,7 @@ hospitalrouter.post('/book', verifyToken, async (req, res) => {
       reasonForAppointment,
       sickness,
       patientDetails,
+      responseType
     });
 
     await appointment.save();

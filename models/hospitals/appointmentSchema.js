@@ -28,6 +28,10 @@ const appointmentSchema = new mongoose.Schema({
     type:String,
     required: true
   },
+  responseType:{
+    type:String,
+    required:true
+  },
   status: {
     type: String,
     enum: ['Pending', 'Confirmed', 'Cancelled', 'Completed'],
@@ -41,9 +45,10 @@ const appointmentSchema = new mongoose.Schema({
     LGA: { type: String }, 
   },
   adminResponse: {
-    message: { type: String }, // Admin's optional response or comment
+    message: { type: String }, 
     respondedAt: { type: Date },
   },
+
   createdAt: {
     type: Date,
     default: Date.now,

@@ -60,6 +60,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
     appointmentTime: "",
     reasonForAppointment: "",
     sickness: "",
+    responseType:"",
     patientDetails: {
       weight: "",
       specializationNeeded: "",
@@ -67,6 +68,7 @@ const PatientDashboardHospital = ({ appointmentId, onDeleteSuccess }) => {
       state: "",
       LGA: "",
     },
+   
   });
 
   const [formData, setFormData] = useState({
@@ -677,6 +679,28 @@ const handleSendReport = async(e) => {
                   className="border p-2 w-full"
                 />
               </div>
+              <div className="space-y-2">
+  <label htmlFor="responseType" className="font-semibold">
+    Will you like your message to be sent through an email or WhatsApp message?
+  </label>
+  <select
+    id="responseType"
+    name="responseType"
+    value={appointmentData.responseType}
+    onChange={handleAppointmentChange}
+    className="border p-2 w-full"
+    required
+  >
+    <option value="" disabled>
+      Select an option
+    </option>
+    <option value="both email and whatsapp">Yes, both email and WhatsApp</option>
+    <option value="none">No, none of the two</option>
+    <option value="whatsapp">Only WhatsApp</option>
+    <option value="email">Only email</option>
+  </select>
+</div>
+
 
               <button
                 type="submit"

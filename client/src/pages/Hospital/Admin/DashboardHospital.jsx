@@ -259,7 +259,7 @@ const DashboardHospital = () => {
             const dataset = tooltipItem.dataset;
             const index = tooltipItem.dataIndex;
             const count = dataset.data[index];
-            return `${dataset.labels[index]}: ${count}`;
+            return `${dataset?.labels[index]}: ${count}`;
           },
         },
       },
@@ -411,14 +411,14 @@ const options1 = {
             <MdSettings size={20} />
             <span>Settings</span>
           </a>
-
+{/* 
           <a
             href="/HospitalResult"
             className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
           >
             <MdSettings size={20} />
             <span>send result</span>
-          </a>
+          </a> */}
         </div>
       </div>
 

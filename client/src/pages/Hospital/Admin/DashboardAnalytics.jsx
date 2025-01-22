@@ -4,6 +4,8 @@ import axios from "axios";
 import { FiMenu } from "react-icons/fi";
 import { Pie } from "react-chartjs-2";
 import { FaUser, FaCalendarAlt, FaHeartbeat } from "react-icons/fa";
+import { FaWhatsapp, FaEnvelope } from "react-icons/fa";
+
 import { MdDashboard, MdPeople, MdBarChart, MdSettings } from "react-icons/md";
 import { Bar } from "react-chartjs-2";
 import {
@@ -720,8 +722,11 @@ const DashboardAnalytics = () => {
      <thead>
           <tr>
              <th className="border px-4 py-2">Patient Name</th>
+     
+         
              <th className="border px-4 py-2">Appointment Date</th>
              <th className="border px-4 py-2">Appointment Time</th>
+             <th className="border px-4 py-2">also send result through</th>
              <th className="border px-4 py-2">Sickness</th>
              <th className="border px-4 py-2">Location</th>
              <th className="border px-4 py-2">Action</th>
@@ -731,8 +736,54 @@ const DashboardAnalytics = () => {
            {appointments.map((appointment, index) => (
              <tr key={index}>
                <td className="border px-4 py-2">{appointment.patientId.name}</td>
+             
+             
                <td className="border px-4 py-2">{new Date(appointment.appointmentDate).toLocaleDateString()}</td>
                <td className="border px-4 py-2">{appointment.appointmentTime}</td>
+               <td className="border px-4 py-2">
+  {appointment.responseType === "whatsapp" && (
+    <a
+      href={`https://wa.me/${appointment.patientId.phone}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-green-500 flex items-center space-x-2"
+    >
+      <FaWhatsapp /> {/* WhatsApp icon */}
+      <span>{appointment.patientId.phone}</span>
+    </a>
+  )}
+  {appointment.responseType === "email" && (
+    <a
+      href={`mailto:${appointment.patientId.email}`}
+      className="text-blue-500 flex items-center space-x-2"
+    >
+      <FaEnvelope /> {/* Email icon */}
+      <span>{appointment.patientId.email}</span>
+    </a>
+  )}
+  {appointment.responseType === "both email and whatsapp" && (
+    <div className="flex flex-col space-y-2">
+      <a
+        href={`https://wa.me/${appointment.patientId.phone}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-green-500 flex items-center space-x-2"
+      >
+        <FaWhatsapp /> {/* WhatsApp icon */}
+        <span>{appointment.patientId.phone}</span>
+      </a>
+      <a
+        href={`mailto:${appointment.patientId.email}`}
+        className="text-blue-500 flex items-center space-x-2"
+      >
+        <FaEnvelope /> {/* Email icon */}
+        <span>{appointment.patientId.email}</span>
+      </a>
+    </div>
+  )}
+  {appointment.responseType === "none" && <span>No response method</span>}
+</td>
+
                <td className="border px-4 py-2">{appointment.sickness}</td>
                <td className="border px-4 py-2">{appointment.patientDetails.location}</td>
                <td className="border px-4 py-2">
