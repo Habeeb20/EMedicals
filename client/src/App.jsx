@@ -145,6 +145,14 @@ import UndertakerDetails from "./pages/undertaker/UndertakerDetails";
 import AllUndertaker from "./pages/undertaker/AllUndertaker";
 import HospitalResult from "./pages/Hospital/Admin/HospitalResult";
 
+
+import MedicalphamarcyLogin from "./pages/medicalPharmacy/Login"
+import MedicalphamarcySignup from "./pages/medicalPharmacy/Signup"
+import MedicalDashboard from "./pages/medicalPharmacy/Dashboard"
+import HRMSLogin from "./pages/HRMS/HRMSLogin";
+import HRMSSignup from "./pages/HRMS/HRMSSignup";
+import HRMSDashboard from "./pages/HRMS/HRMSDashboard";
+
 axios.defaults.withCredentials = true;
 
 
@@ -472,9 +480,16 @@ const App = () => {
         />
 
 
+
+      //medical pharmacy
+          <Route path="/medicalpharmacylogin" element={<MedicalphamarcyLogin />} />
+          <Route path="/medicalpharmacysignup" element={<MedicalphamarcySignup />} />
+          <Route path="/medicaldashboard" element={<MedicalDashboard />} />
+
         ///HRMS
-        <Route path="/hrms/*" element={<HomePage />} />
-        <Route path="/hhh" element={<HospitalLandingPage />} />
+        <Route path="/hrmslogin/" element={<HRMSLogin />} />
+        <Route path="/hrmssignup" element={<HRMSSignup />} />
+        <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
       
 
         

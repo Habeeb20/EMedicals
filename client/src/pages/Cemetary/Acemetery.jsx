@@ -241,7 +241,7 @@ const Acemetery = () => {
 
         {/* Comments */}
         <div className="mt-6">
-          <h3 className="font-bold text-lg">Comments</h3>
+          <h3 className="font-bold text-lg">Reviews</h3>
           {comments.length > 0 ? (
             <div className="mt-4 space-y-4">
               {comments.map((comment) => (

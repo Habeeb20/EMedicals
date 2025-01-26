@@ -148,12 +148,12 @@ const UndertakerDetails = () => {
         </div>
 
         {/* Opening and Closing Times */}
-        <div className="flex justify-between mt-6">
-          <div className="bg-gray-200 text-gray-600 p-2 rounded-lg text-sm">
+        <div className="flex  mt-6">
+          <div className="bg-gray-200 text-gray-600 p-2 mr-4 rounded-lg text-sm">
             <p>Opening time</p>
             <p>{undertaker.openingTime}</p>
           </div>
-          <div className="bg-gray-200 text-gray-600 p-2 rounded-lg text-sm">
+          <div className="bg-gray-200 text-gray-600 p-2  rounded-lg text-sm">
             <p>Closing time</p>
             <p>{undertaker.closingTime}</p>
           </div>
@@ -200,7 +200,7 @@ const UndertakerDetails = () => {
 
         {/* Comments */}
         <div className="mt-6">
-          <h3 className="font-bold text-lg">Comments</h3>
+          <h3 className="font-bold text-lg">Reviews</h3>
           {comments.length > 0 ? (
             <div className="mt-4 space-y-4">
               {comments.map((comment) => (

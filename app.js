@@ -66,6 +66,14 @@ import HReportrouter from "./routes/hospital/HReport.route.js";
 import hospitalresultRouter from "./routes/hospital/hospitalResult.js";
 import undertakerRouter from "./routes/undertakerRoute.js";
 import undertakerCommentRouter from "./routes/undertaker.route/commentUndertaker.route.js";
+import medicalPhamarcysellerrouter from "./routes/MedicalPhamarcy.routes/medicalAuthRoute.js";
+import medicalPhamarcyproductrouter from "./routes/MedicalPhamarcy.routes/medicalProduct.js";
+import medicalPhamarcysalerouter from "./routes/MedicalPhamarcy.routes/medicalPharmacySales.route.js";
+import hrmsHolidayRouter from "./routes/HRMS.route/hrmsHoliday.route.js";
+import HRMSauthRouter from "./routes/HRMS.route/HRMSadmin.route.js";
+import hrmsemployeerouter from "./routes/HRMS.route/HrmsEmployee.route.js";
+import attendanceRouter from "./routes/HRMS.route/HRMSAttendance.route.js";
+import payrollRouter from "./routes/HRMS.route/hrmsPayroll.router.js";
 
 dotenv.config();
 
@@ -182,6 +190,20 @@ app.use("/api/lab", labcommentRouter)
 app.use("/newpharmacy/users", newPharmacyuserRoute)
 app.use("/newpharmacy/products", newPharmacyproductRoute)
 app.use("/newpharmacy/contactus", newPharmacycontactRoute)
+
+
+//medical pharmacy
+app.use("/api/medical/auth", medicalPhamarcysellerrouter)
+app.use("/api/medical/products", medicalPhamarcyproductrouter)
+app.use("/api/medical/sales", medicalPhamarcysalerouter)
+
+
+app.use("/api/hrms", hrmsHolidayRouter)
+app.use("/api/hrms", HRMSauthRouter)
+app.use("/api/hrms", hrmsemployeerouter)
+app.use("/api/hrms", attendanceRouter)
+app.use("/api/hrms", payrollRouter)
+
 app.use(errorHandler);
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

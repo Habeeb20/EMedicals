@@ -57,6 +57,7 @@ const DashboardHospital = () => {
     profilePicture: "",
   });
 
+  //get admin data
   useEffect(() => {
     const fetchData = async () => {
       try {

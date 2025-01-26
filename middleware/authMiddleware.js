@@ -7,7 +7,7 @@ import asyncHandler from "express-async-handler"
 import Undertaker from '../models/underTaker/undertaker.js';
 import TeleUser from '../models/Telemedicine/tUserModel.js';
 import LabUser from '../models/Lab/Lab.Model.js';
-
+import Seller from '../models/medicalPhamarcy/Seller.js';
 
 
 
@@ -323,3 +323,21 @@ export const protect15 = asyncHandler(async (req, res, next) => {
     throw new Error("Not authorized, please login");
   }
 });
+
+
+
+export const medicalPhamarcyProtect = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+      return res.status(401).json({ error: 'Not authorized, no token' });
+  }
+
+  try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.seller = await Seller.findById(decoded.id).select('-password');
+      next();
+  } catch (error) {
+      res.status(401).json({ error: 'Not authorized, token failed' });
+  }
+};
