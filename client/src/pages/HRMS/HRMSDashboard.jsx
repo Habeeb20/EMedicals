@@ -3,8 +3,23 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
+
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
+  const [chartData, setChartData] = useState(null);
   const [error, setError] = useState("");
   const [data, setData] = useState([]);
   const [employee, setEmployee] = useState([]);
@@ -13,6 +28,7 @@ const Dashboard = () => {
   const [jobRoles, setJobRoles] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
+  
   const [formType, setFormType] = useState("");
   const [employeeData, setEmployeeData] = useState({
     firstname: "",
@@ -116,6 +132,7 @@ const Dashboard = () => {
 
         setEmployee(response.data);
         console.log(response.data);
+        const { department, jobRole } = response.data;
         toast.success("successfully fetched");
 
         const uniqueJobRoles = [
@@ -126,6 +143,29 @@ const Dashboard = () => {
           ...new Set(response.data.map((dep) => dep.department)),
         ];
         setDepartments(unqiueDepartments);
+
+        const backgroundColors = [
+          "#4F46E5", // Purple
+          "#F59E0B", // Amber
+          "#10B981", // Green
+          "#EF4444", // Red
+          "#3B82F6", // Blue
+          "#8B5CF6", // Violet
+        ];
+
+        setChartData({
+          labels: department,
+          datasets: [
+            {
+              label: "Job Roles",
+              data: jobRole,
+              backgroundColor: department?.map(
+                (_, idx) => backgroundColors[idx % backgroundColors.length] // Cycle through colors
+              ),
+              borderWidth: 1,
+            },
+          ],
+        });
       } catch (error) {
         console.log(error);
         setError(error.response?.data?.message);
@@ -135,7 +175,7 @@ const Dashboard = () => {
     handleGetMystaffs();
   }, []);
 
-  //count unique job roles and departments
+
 
   //update with picture
   const handleFileChange = async (e, field) => {
@@ -166,6 +206,29 @@ const Dashboard = () => {
     setEmployeeData({ ...employeeData, [name]: value });
   };
 
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#374151", // Tailwind gray
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const value = context.raw;
+            return ` ${value} job roles`;
+          },
+        },
+      },
+    },
+  };
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
@@ -444,127 +507,149 @@ const Dashboard = () => {
             <p>Attendance Chart Placeholder</p>
           </div>
         </section>
+        <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+        Job Roles and Department Statistics
+      </h2>
+      {chartData ? (
+        <Pie data={chartData} options={options} />
+      ) : (
+        <p className="text-gray-500">Loading chart data...</p>
+      )}
+    </div>
       </main>
     </div>
   );
 };
 
 const AllEmployees = () => {
-    const [employee, setEmployee] = useState([])
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState('')
+  const [employee, setEmployee] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
 
+  useEffect(() => {
+    const handleGetMystaffs = async () => {
+      setError("");
 
-    useEffect(() => {
-        const handleGetMystaffs = async () => {
-          setError("");
-    
-          try {
-            const token = localStorage.getItem("token");
-            const response = await axios.get(
-              `${import.meta.env.VITE_API_HRMS}/getmystaffs`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-    
-            setEmployee(response.data);
-            console.log(response.data);
-            toast.success("successfully fetched");
-    
-            // const uniqueJobRoles = [
-            //   ...new Set(response.data.map((emp) => emp.jobRole)),
-            // ];
-            // setJobRoles(uniqueJobRoles);
-            // const unqiueDepartments = [
-            //   ...new Set(response.data.map((dep) => dep.department)),
-            // ];
-            // setDepartments(unqiueDepartments);
-          } catch (error) {
-            console.log(error);
-            setError(error.response?.data?.message);
-            toast.error(" couldnt get your staffs due to an error occured");
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_HRMS}/getmystaffs`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        };
-        handleGetMystaffs();
-      }, []);
-    
+        );
+
+        setEmployee(response.data);
+        console.log(response.data);
+        toast.success("successfully fetched");
+
+        // const uniqueJobRoles = [
+        //   ...new Set(response.data.map((emp) => emp.jobRole)),
+        // ];
+        // setJobRoles(uniqueJobRoles);
+        // const unqiueDepartments = [
+        //   ...new Set(response.data.map((dep) => dep.department)),
+        // ];
+        // setDepartments(unqiueDepartments);
+      } catch (error) {
+        console.log(error);
+        setError(error.response?.data?.message);
+        toast.error(" couldnt get your staffs due to an error occured");
+      }
+    };
+    handleGetMystaffs();
+  }, []);
+
   return (
     <>
-     <div className="text-black">Employees</div>
-     <div className="mt-4 bg-white text-black shadow-md rounded-md">
-          <table className="table-auto w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b">
-                <th className="p-4 text-sm text-gray-600">Employee ID</th>
-                <th className="p-4 text-sm text-gray-600">Employee Name</th>
-                <th className="p-4 text-sm text-gray-600">Department</th>
-                <th className="p-4 text-sm text-gray-600">Job Role</th>
-                <th className="p-4 text-sm text-gray-600">Action</th>
+      <div className="text-black">Employees</div>
+      <div className="mt-4 bg-white text-black shadow-md rounded-md">
+        <table className="table-auto w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b">
+              <th className="p-4 text-sm text-gray-600">Employee ID</th>
+              <th className="p-4 text-sm text-gray-600">Employee Name</th>
+              <th className="p-4 text-sm text-gray-600">Department</th>
+              <th className="p-4 text-sm text-gray-600">Job Role</th>
+              <th className="p-4 text-sm text-gray-600">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {employee && employee.length > 0 ? (
+              employee.map((emp, index) => (
+                <tr key={index} className="border-b hover:bg-gray-50">
+                  <td className="p-4 text-sm">{emp.uniqueNumber}</td>
+                  <td className="p-4 text-sm flex items-center space-x-2">
+                    <img
+                      src={
+                        emp.picture || `https://i.pravatar.cc/30?img=${index}`
+                      }
+                      alt="Employee"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span>
+                      {emp.firstname} {emp.lastname}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm">
+                    {emp.firstname}
+                    {emp.lastname}
+                  </td>
+                  <td className="p-4 text-sm">{emp.jobRole}</td>
+                  <td className="p-4 text-sm">{emp.jobType}</td>
+
+                  <td className="p-4 text-sm flex space-x-2">
+                    <Link to={`details/${emp._id}`}>
+                      <button className="text-gray-500">
+                        <span className="material-icons">View more</span>
+                      </button>
+                    </Link>
+
+                    <button className="text-purple-500">
+                      <span className="material-icons">edit</span>
+                    </button>
+                    <button className="text-red-500">
+                      <span className="material-icons">delete</span>
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="p-4 text-center text-sm">
+                  You don't have any employees registered yet.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-  {employee && employee.length > 0 ? (
-    employee.map((emp, index) => (
-      <tr key={index} className="border-b hover:bg-gray-50">
-        <td className="p-4 text-sm">{emp.uniqueNumber}</td>
-        <td className="p-4 text-sm flex items-center space-x-2">
-          <img
-            src={emp.picture || `https://i.pravatar.cc/30?img=${index}`}
-            alt="Employee"
-            className="w-8 h-8 rounded-full"
-          />
-          <span>
-            {emp.firstname} {emp.lastname}
-          </span>
-        </td>
-        <td className="p-4 text-sm">{emp.firstname}{emp.lastname}</td>
-        <td className="p-4 text-sm">{emp.jobRole}</td>
-        <td className="p-4 text-sm">{emp.jobType}</td>
+            )}
+          </tbody>
+        </table>
 
-        <td className="p-4 text-sm flex space-x-2">
-          <Link to={`details/${emp._id}`}>
-            <button className="text-gray-500">
-              <span className="material-icons">View more</span>
+        {/* Pagination */}
+        <div className="p-4 flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            Showing 1 to 10 out of 60 records
+          </div>
+          <div className="flex space-x-2">
+            <button className="px-3 py-1 border border-gray-300 rounded-md text-gray-500">
+              1
             </button>
-          </Link>
-
-          <button className="text-purple-500">
-            <span className="material-icons">edit</span>
-          </button>
-          <button className="text-red-500">
-            <span className="material-icons">delete</span>
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="p-4 text-center text-sm">
-        You don't have any employees registered yet.
-      </td>
-    </tr>
-  )}
-</tbody>
-
-          </table>
-
-          {/* Pagination */}
-          <div className="p-4 flex justify-between items-center">
-            <div className="text-sm text-gray-500">Showing 1 to 10 out of 60 records</div>
-            <div className="flex space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded-md text-gray-500">1</button>
-              <button className="px-3 py-1 border border-gray-300 rounded-md">2</button>
-              <button className="px-3 py-1 border border-gray-300 rounded-md">3</button>
-              <button className="px-3 py-1 border border-gray-300 rounded-md">4</button>
-            </div>
+            <button className="px-3 py-1 border border-gray-300 rounded-md">
+              2
+            </button>
+            <button className="px-3 py-1 border border-gray-300 rounded-md">
+              3
+            </button>
+            <button className="px-3 py-1 border border-gray-300 rounded-md">
+              4
+            </button>
           </div>
         </div>
-
+      </div>
     </>
- );
+  );
 };
 
 const Payroll = () => {
@@ -572,7 +657,197 @@ const Payroll = () => {
 };
 
 const Holiday = () => {
-  return <div>holiday</div>;
+  const [holiday, setHoliday] = useState({
+    title: "",
+    description: "",
+    date: "",
+  });
+  const [error, setError] = useState("");
+  const [myHolidays, setMyHolidays] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate()
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setHoliday({ ...holiday, [name]: value });
+  };
+
+  //add holiday
+  const handleAddHoliday = async (e) => {
+    e.preventDefault();
+    console.log("form submitted")
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_HRMS}/holidays`,
+        holiday,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': "application/json"
+          },
+        }
+      );
+      toast.success("successfully added an holiday");
+    } catch (error) {
+      console.log(error);
+      toast.error("an error occurred");
+    }
+  };
+
+  //fetch MY holidays
+
+  useEffect(() => {
+    const fetchMyHolidays = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_HRMS}/getholidays`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log(response.data);
+        toast.success("your holidays are here");
+        setMyHolidays(response.data);
+      
+      } catch (error) {
+        console.log(error);
+        toast.error("an error occurred");
+        setError(error.response?.data?.message);
+       
+      }
+    };
+    fetchMyHolidays();
+  }, []);
+
+  const handleModalOpen = () => {
+    setHoliday({
+      title: "",
+      description: "",
+      date: "",
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+
+  return (
+    <div>
+      Holidays
+      <div className="flex text-black justify-center gap-4 mb-6">
+        <button
+          className="bg-purple-500 text-white py-2 px-4 rounded"
+          onClick={() => handleModalOpen("doctor")}
+        >
+          Add an holiday
+        </button>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-bold mb-4">Add an Holiday</h2>
+              <form onSubmit={handleAddHoliday}>
+                <div className="mb-4">
+                  <label className="block mb-1">title of holiday</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={holiday.title}
+                    onChange={handleInputChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">holiday description</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={holiday.description}
+                    onChange={handleInputChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={holiday.date}
+                    onChange={handleInputChange}
+                    className="w-full border rounded px-3 py-2"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={handleModalClose}
+                    className="bg-gray-500 text-white py-2 px-4 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-purple-500 text-white py-2 px-4 rounded"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="mt-4 bg-white text-black shadow-md rounded-md">
+        <table className="table-auto w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b">
+              <th className="p-4 text-sm text-gray-600">Title</th>
+              <th className="p-4 text-sm text-gray-600">Description</th>
+              <th className="p-4 text-sm text-gray-600">Date</th>
+              <th className="p-4 text-sm text-gray-600">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+  {Array.isArray(myHolidays) && myHolidays.length > 0 ? (
+    myHolidays.map((holi, index) => (
+      <tr key={index} className="border-b hover:bg-gray-50">
+        <td className="p-4 text-sm">
+          {holi.title} 
+        </td>
+        <td className="p-4 text-sm">{holi.description}</td>
+        <td className="p-4 text-sm">
+          {new Date(holi.date).toLocaleDateString()}
+        </td>
+        <td>
+          <button className="text-gray-500">
+            <span className="text-red-500">Delete</span>
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="4" className="text-center p-4">
+        No holidays yet
+      </td>
+    </tr>
+  )}
+</tbody>
+
+        </table>
+      </div>
+    </div>
+  );
 };
 
 const Attendance = () => {
@@ -582,7 +857,7 @@ const Attendance = () => {
 const Departments = () => {
   const [employee, setEmployee] = useState([]);
   const [jobRoles, setJobRoles] = useState([]);
-  const [groupedByDepartment, setGroupedByDepartment] = useState({})
+  const [groupedByDepartment, setGroupedByDepartment] = useState({});
   const [departments, setDepartments] = useState([]);
   const [error, setError] = useState("");
 
@@ -616,14 +891,14 @@ const Departments = () => {
         setDepartments(unqiueDepartments);
 
         const grouped = response.data.reduce((acc, employee) => {
-            const{department} = employee
-            if(!acc[department]){
-                acc[department] = []
-            }
-            acc[department].push(employee);
-            return acc
-        }, {})
-        setGroupedByDepartment(grouped)
+          const { department } = employee;
+          if (!acc[department]) {
+            acc[department] = [];
+          }
+          acc[department].push(employee);
+          return acc;
+        }, {});
+        setGroupedByDepartment(grouped);
       } catch (error) {
         console.log(error);
         setError(error.response?.data?.message);
@@ -635,69 +910,65 @@ const Departments = () => {
 
   return (
     <>
-    <div className="text-black">
-    <h3>Departments ({departments.length})</h3>
-      <ul className="flex space-x-4 text-green-600">
-        {departments.map((department, index) => (
-          <li key={index}>{department}</li>
-        ))}
-      </ul>
-  
+      <div className="text-black">
+        <h3>Departments ({departments.length})</h3>
+        <ul className="flex space-x-4 text-green-600">
+          {departments.map((department, index) => (
+            <li key={index}>{department}</li>
+          ))}
+        </ul>
 
+        <div className="bg-gray-100 min-h-screen p-4 md:p-8">
+          <header className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">
+              All Departments
+            </h1>
+            <p className="text-gray-500">All Departments Information</p>
+          </header>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {Object.entries(groupedByDepartment).map(([dept, members]) => (
+              <div
+                key={dept}
+                className="bg-white rounded-xl shadow-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+              >
+                <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
+                  {dept} ({members.length} Members)
+                </h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800">
+                    {dept.name}
+                  </h2>
+                  <button className="text-blue-500 hover:underline">
+                    View All
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  {dept.members} Members
+                </p>
+                <ul>
+                  {Array.isArray(members) &&
+                    members?.map((emp) => (
+                      <li
+                        key={emp.id}
+                        className="flex items-center space-x-3 py-2 border-b last:border-b-0"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gray-300"></div>
 
-
-
-
-    <div className="bg-gray-100 min-h-screen p-4 md:p-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">All Departments</h1>
-        <p className="text-gray-500">All Departments Information</p>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Object.entries(groupedByDepartment).map(([dept, members]) => (
-          <div
-            key={dept}
-            className="bg-white rounded-xl shadow-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
-          >
-           <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
-            {dept} ({members.length} Members)
-          </h2>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">
-                {dept.name}
-              </h2>
-              <button className="text-blue-500 hover:underline">View All</button>
-            </div>
-            <p className="text-sm text-gray-500 mb-4">{dept.members} Members</p>
-            <ul>
-              {Array.isArray(members) && members?.map((emp) => (
-                <li
-                  key={emp.id}
-                  className="flex items-center space-x-3 py-2 border-b last:border-b-0"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-                  
-                  <div>
-                    <p className="text-gray-800 font-medium text-sm">
-                      {emp.firstname} {emp.lastname}
-                    </p>
-                    <p className="text-gray-500 text-xs">{emp.jobRole}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                        <div>
+                          <p className="text-gray-800 font-medium text-sm">
+                            {emp.firstname} {emp.lastname}
+                          </p>
+                          <p className="text-gray-500 text-xs">{emp.jobRole}</p>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  
-
-
-
-    </div>
-    
     </>
   );
 };
@@ -708,14 +979,13 @@ const Leave = () => {
 
 const Jobs = () => {
   const [employee, setEmployee] = useState([]);
-  const [jobType, setJobType] = useState([])
-  const [groupedByDepartment, setGroupedByDepartment] = useState({})
+  const [jobType, setJobType] = useState([]);
+  const [groupedByDepartment, setGroupedByDepartment] = useState({});
   const [departments, setDepartments] = useState([]);
   const [error, setError] = useState("");
 
-
-   //get my staff
-   useEffect(() => {
+  //get my staff
+  useEffect(() => {
     const handleGetMystaffs = async () => {
       setError("");
 
@@ -734,75 +1004,76 @@ const Jobs = () => {
         console.log(response.data);
         toast.success("successfully fetched");
 
-       
         const grouped = response.data.reduce((acc, employee) => {
-            const{jobType} = employee
-            if(!acc[jobType]){
-                acc[jobType] = []
-            }
-            acc[jobType].push(employee);
-            return acc
-        }, {})
-        setGroupedByDepartment(grouped)
+          const { jobType } = employee;
+          if (!acc[jobType]) {
+            acc[jobType] = [];
+          }
+          acc[jobType].push(employee);
+          return acc;
+        }, {});
+        setGroupedByDepartment(grouped);
       } catch (error) {
         console.log(error);
         setError(error.response?.data?.message);
-        toast.error(" couldnt get your staffs due to an error occured");
+        toast.error("couldnt get your staffs due to an error occured");
       }
     };
     handleGetMystaffs();
   }, []);
 
   return (
-  <div>
-  
-  <div className="bg-gray-100 min-h-screen p-4 md:p-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">All Job Types</h1>
-        <p className="text-gray-500">All Job Types Information</p>
-      </header>
+    <div>
+      <div className="bg-gray-100 min-h-screen p-4 md:p-8">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800">All Job Types</h1>
+          <p className="text-gray-500">All Job Types Information</p>
+        </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {Object.entries(groupedByDepartment).map(([dept, members]) => (
-          <div
-            key={dept}
-            className="bg-white rounded-xl shadow-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
-          >
-           <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
-            {dept} ({members.length} Members)
-          </h2>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">
-                {dept.name}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Object.entries(groupedByDepartment).map(([dept, members]) => (
+            <div
+              key={dept}
+              className="bg-white rounded-xl shadow-lg p-4 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
+            >
+              <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
+                {dept} ({members.length} Members)
               </h2>
-              <button className="text-blue-500 hover:underline">View All</button>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {dept.name}
+                </h2>
+                <button className="text-blue-500 hover:underline">
+                  View All
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">
+                {dept.members} Members
+              </p>
+              <ul>
+                {Array.isArray(members) &&
+                  members?.map((emp) => (
+                    <li
+                      key={emp.id}
+                      className="flex items-center space-x-3 py-2 border-b last:border-b-0"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+
+                      <div>
+                        <p className="text-gray-800 font-medium text-sm">
+                          {emp.firstname} {emp.lastname}
+                        </p>
+                        <p className="text-gray-500 text-xs">{emp.jobType}</p>
+                        <p className="text-gray-500 text-xs">{emp.jobRole}</p>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
             </div>
-            <p className="text-sm text-gray-500 mb-4">{dept.members} Members</p>
-            <ul>
-              {Array.isArray(members) && members?.map((emp) => (
-                <li
-                  key={emp.id}
-                  className="flex items-center space-x-3 py-2 border-b last:border-b-0"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-                  
-                  <div>
-                    <p className="text-gray-800 font-medium text-sm">
-                      {emp.firstname} {emp.lastname}
-                    </p>
-                    <p className="text-gray-500 text-xs">{emp.jobType}</p>
-                    <p className="text-gray-500 text-xs">{emp.jobRole}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-  
-
-  </div>
   );
 };
 const HRMSDashboard = () => {
@@ -854,7 +1125,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "dashboard"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      : "hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("dashboard")}
                 >
@@ -867,7 +1138,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "allemployees"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      : "hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("allemployees")}
                 >
@@ -880,7 +1151,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "alldepartments"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      :"hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("alldepartments")}
                 >
@@ -893,7 +1164,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "payroll"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      :"hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("payroll")}
                 >
@@ -906,7 +1177,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "attendance"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      : "hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("attendance")}
                 >
@@ -919,7 +1190,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "jobs"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      : "hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("jobs")}
                 >
@@ -932,7 +1203,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "leave"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      :"hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("leave")}
                 >
@@ -945,7 +1216,7 @@ const HRMSDashboard = () => {
                   className={`text-purple-600 font-medium ${
                     activePage === "holidays"
                       ? "bg-purple-300 p-1 rounded-lg"
-                      : "hover:bg-purple-700"
+                      : "hover:bg-purple-500 rounded-lg"
                   }`}
                   onClick={() => setActivePage("holidays")}
                 >

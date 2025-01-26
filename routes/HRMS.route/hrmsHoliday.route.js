@@ -7,13 +7,13 @@ const hrmsHolidayRouter = express.Router()
 
 
 hrmsHolidayRouter.post("/holidays", verifyToken, async(req, res) => {
-    const {title, description} = req.body
+    const {title, description, date} = req.body
 
     try {
         const holiday = await Holiday.findOne({adminId: req.user.id, title})
-        if(!holiday) return res.status(404).json({message: "holiday with this title already exist"})
+        if(holiday) return res.status(400).json({message: "holiday with this title already exist"})
 
-        const date = new Date().toLocaleDateString()
+        
 
         const holidays = new Holiday({
             title,
@@ -33,7 +33,7 @@ hrmsHolidayRouter.post("/holidays", verifyToken, async(req, res) => {
 
 hrmsHolidayRouter.get("/getholidays", verifyToken, async(req, res) => {
     try {
-        const holiday = await Holiday.findOne({adminId:req.user.id})
+        const holiday = await Holiday.find({adminId:req.user.id})
         if(!holiday)return res.status(404).json({message: "not found"})
         return res.status(200).json(holiday)
     } catch (error) {
