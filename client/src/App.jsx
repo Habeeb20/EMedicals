@@ -152,6 +152,7 @@ import MedicalDashboard from "./pages/medicalPharmacy/Dashboard"
 import HRMSLogin from "./pages/HRMS/HRMSLogin";
 import HRMSSignup from "./pages/HRMS/HRMSSignup";
 import HRMSDashboard from "./pages/HRMS/HRMSDashboard";
+import EmployeeDetails from "./pages/HRMS/EmployeeDetails";
 
 axios.defaults.withCredentials = true;
 
@@ -490,6 +491,7 @@ const App = () => {
         <Route path="/hrmslogin/" element={<HRMSLogin />} />
         <Route path="/hrmssignup" element={<HRMSSignup />} />
         <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
+        <Route path="/HRMSDashboard/hrms/details/:id" element={<EmployeeDetails />} />
       
 
         

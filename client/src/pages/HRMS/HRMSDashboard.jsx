@@ -630,7 +630,7 @@ const AllEmployees = () => {
                   <td className="p-4 text-sm">{emp.jobType}</td>
 
                   <td className="p-4 text-sm flex space-x-2">
-                    <Link to={`details/${emp._id}`}>
+                    <Link to={`hrms/details/${emp._id}`} state={{ email: emp.email }}>
                       <button className="text-gray-500">
                         <span className="material-icons">View more</span>
                       </button>

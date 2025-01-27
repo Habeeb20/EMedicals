@@ -66,6 +66,28 @@ hrmsemployeerouter.get('/getAstaff/:id', verifyToken, async (req, res) => {
 })
 
 
+hrmsemployeerouter.get("/user-details/:email", verifyToken, async(req, res) => {
+  const email = req.params.email
+
+  try {
+    const user = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    const payroll = await db.query('SELECT * FROM payroll WHERE user_email = ?', [email]);
+    const attendance = await db.query('SELECT * FROM attendance WHERE user_email = ?', [email]);
+    const department = await db.query('SELECT * FROM departments WHERE email = ?', [email]);
+
+    res.json({
+      user: user[0],
+      payroll,
+      attendance,
+      department,
+  });
+
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error fetching details', error });
+  }
+})
+
 hrmsemployeerouter.put('/updatestaffs/:id', verifyToken, async(req, res) => {
     try {
         const updatedEmployee = await Employee.findOneAndUpdate(
