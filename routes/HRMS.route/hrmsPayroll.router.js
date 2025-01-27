@@ -7,7 +7,7 @@ import { verifyToken } from "../../middleware/verifyToken.js";
 const payrollRouter = express.Router()
 
 payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
-    const { employeeId, month, year, salary, status } = req.body;
+    const { employeeId, month, year, salary, status,  } = req.body;
 
     try {
 
@@ -15,6 +15,9 @@ payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
       if (!employee) {
         return res.status(404).json({ message: "Employee not found or does not belong to this admin." });
       }
+
+      const date = new Date().toLocaleString();
+
   
  
       const newPayroll = new Payroll({
@@ -25,6 +28,7 @@ payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
         year,
         salary,
         status,
+        date
       });
   
       const savedPayroll = await newPayroll.save();

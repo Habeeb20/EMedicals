@@ -4,9 +4,10 @@ const payrollSchema = new mongoose.Schema({
     employeeName: { type: String, required: true },
     adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Hrmsauth", required: true }, 
     month: { type: String, required: true },
-    year: { type: Number, required: true },
-    salary: { type: Number, required: true },
+    year: { type: String, required: true },
+    salary: { type: String, required: true },
     status: { type: String, default: "Pending" }, 
+    Date: {type:String, default: Date.now(), required: true}
   },
   { timestamps: true });
 

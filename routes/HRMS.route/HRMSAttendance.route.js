@@ -5,12 +5,12 @@ import express from "express"
 const attendanceRouter = express.Router()
 
 attendanceRouter.post("/attendance", verifyToken, async (req, res) => {
-    const { employeeEmail } = req.body;
+    const { email } = req.body;
   
     try {
 
       const employee = await Employee.findOne({ 
-        email: employeeEmail, 
+        email: email, 
         adminId: req.user.id 
       });
   
@@ -38,14 +38,11 @@ attendanceRouter.post("/attendance", verifyToken, async (req, res) => {
   
 attendanceRouter.get("/getattendance", verifyToken, async(req, res) => {
     try {
-        const records = await Attendance.find({adminId:req.user.id}).populate('employeeId', "firstname lastname");
-        res.json(records);
-        if (!records.length) {
-            return res.status(404).json({ message: "No attendance records found for this employee under this admin." });
-          }
-
+        const records = await Attendance.find({adminId:req.user.id}).populate('employeeId', "firstname lastname jobType jobRole");
+        return res.status(200).json(records);
+     
       } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
       }
 })
 
