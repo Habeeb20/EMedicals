@@ -68,8 +68,7 @@ import SearchDrugs from "./pages/Pharmacy/SearchDrugs";
 import DrugDetails from "./pages/Pharmacy/DrugDetails";
 import ViewCart from "./pages/Pharmacy/ViewCart";
 import OrderDetails from "./pages/Pharmacy/OrderDetail";
-import DashboardHomePage from "./pages/HRMS/DashboardHomePage";
-import HomePage from "./pages/HRMS/HomePage";
+
 import LoginHospitalAdmin from "./pages/Hospital/Admin/LoginHospitalAdmin";
 import SignupHospitalAdmin from "./pages/Hospital/Admin/SignupHospitalAdmin";
 
@@ -153,6 +152,8 @@ import HRMSLogin from "./pages/HRMS/HRMSLogin";
 import HRMSSignup from "./pages/HRMS/HRMSSignup";
 import HRMSDashboard from "./pages/HRMS/HRMSDashboard";
 import EmployeeDetails from "./pages/HRMS/EmployeeDetails";
+import DeathRecordForHospital from "./pages/Hospital/Admin/DeathRecordForHospital";
+import MortuaryLogin from "./pages/mortuary/MortuaryLogin";
 
 axios.defaults.withCredentials = true;
 
@@ -202,6 +203,8 @@ const App = () => {
             </PrivateRoute>
           }
         />
+
+        <Route path="/mlogin" element={<MortuaryLogin />} />
         <Route
           path="/cemeterydashboard"
           element={
@@ -311,6 +314,7 @@ const App = () => {
         <Route path="/allpatientforadmin" element={<AllPatientForAdmin />} />
         <Route path="/dashboardAnalytics" element={<DashboardAnalytics />} />
         <Route path="/dashboardHospital" element={<DashboardHospital/>} />
+        <Route path="/deathrecordforhospital" element={<DeathRecordForHospital />} />
         <Route path="/appointment/:patientId/sendresult" element={<HospitalResult />} />
 
 

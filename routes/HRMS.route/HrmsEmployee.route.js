@@ -13,7 +13,7 @@ cloudinary.config({
   
 hrmsemployeerouter.post('/createmployee', verifyToken, async (req, res) => {
     const uniqueNumber = `RL-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-    const { firstname, lastname, phone, email, jobRole, qualification, designation, department, jobType, salary,  } = req.body;
+    const { firstname, lastname, phone, email, jobRole, qualification, designation, department, jobType, salary, AcctNo, Bank, AcctName, location, state, LGA, DOB, complaints, onTraining,  typeOfTraining } = req.body;
 
     try {
         const adminId = req.user.id;
@@ -31,6 +31,16 @@ hrmsemployeerouter.post('/createmployee', verifyToken, async (req, res) => {
             jobType,
             uniqueNumber,
             salary,
+            AcctNo,
+            Bank,
+            AcctName,
+            location,
+            state,
+            LGA,
+            DOB,
+            complaints,
+            onTraining,
+            typeOfTraining,
             adminId
          
           });

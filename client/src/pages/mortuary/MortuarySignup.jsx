@@ -366,7 +366,7 @@ const MortuarySignup = () => {
 
                 <div className="mt-6 text-center">
                     <p className="text-gray-600">
-                        Already have an account? <a href="/login" className="text-[#080C89] underline">Sign in</a>
+                        Already have an account? <a href="/mlogin" className="text-[#080C89] underline">Sign in</a>
                     </p>
                 </div>
               

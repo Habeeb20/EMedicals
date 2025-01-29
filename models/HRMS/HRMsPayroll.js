@@ -6,6 +6,10 @@ const payrollSchema = new mongoose.Schema({
     month: { type: String, required: true },
     year: { type: String, required: true },
     salary: { type: String, required: true },
+    tax:{type:String, required: true},
+    HMO:{type:String, required: true},
+    penalty:{type:String, required: true},
+    IOU:{type:String, required: true},
     status: { type: String, default: "Pending" }, 
     Date: {type:String, default: Date.now(), required: true}
   },

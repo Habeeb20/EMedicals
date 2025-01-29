@@ -13,6 +13,24 @@ const employeeSchema = new mongoose.Schema({
         uniqueNumber: { type: String, unique: true },
         salary: { type: String, required: true },
         picture: { type: String },
+        AcctNo:{type:String, required: true},
+        Bank:{type:String, required: true},
+        AcctName: {type:String, required: true},
+        location:{type:String, required: true},
+        state:{type:String, required: true},
+        LGA:{type: String, required: true},
+        DOB:{type:String, required: true},
+        complaints:{type:String, enum: ["suspended", "sacked", "dismissed", "serviceNoLongerRequired", "none"], default:"none", required: true },
+        reasons:{type:String, required: true},
+        onTraining: {type:String, required: true},
+        typeOfTraining:{type:String, required: true},
+        letters: [
+          {
+            title: String,
+            content: String,
+            pdfPath: String,
+          },
+        ],
         adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Hrmsauth", required: true }, // Reference to Admin
       },
       { timestamps: true })

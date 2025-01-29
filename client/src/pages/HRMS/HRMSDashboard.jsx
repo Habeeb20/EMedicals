@@ -49,6 +49,17 @@ const Dashboard = () => {
     department: "",
     jobType: "",
     salary: "",
+    AcctNo: "",
+    Bank: "",
+    AcctName: "",
+    location: "",
+    state: "",
+    LGA: "",
+    DOB: "",
+    complaints: "",
+    reasons: "",
+    onTraining: "",
+    typeOfTraining: "",
   });
 
   const handleModalOpen = () => {
@@ -63,6 +74,17 @@ const Dashboard = () => {
       department: "",
       jobType: "",
       salary: "",
+      AcctNo: "",
+      Bank: "",
+      AcctName: "",
+      location: "",
+      state: "",
+      LGA: "",
+      DOB: "",
+      complaints: "",
+      reasons: "",
+      onTraining: "",
+      typeOfTraining: "",
     });
     setIsModalOpen(true);
   };
@@ -213,12 +235,12 @@ const Dashboard = () => {
   };
 
   const calculateCounts = (field) => {
-    const counts = {}
+    const counts = {};
     employee.forEach((emp) => {
       counts[emp[field]] = (counts[emp[field]] || 0) + 1;
     });
-    return counts
-  }
+    return counts;
+  };
 
   const jobRoleCounts = calculateCounts("jobRole");
   const jobTypeCounts = calculateCounts("jobType");
@@ -438,6 +460,154 @@ const Dashboard = () => {
                     </div>
 
                     <div className="mb-4">
+                      <label className="block mb-1">Bank</label>
+                      <input
+                        type="text"
+                        name="Bank"
+                        value={employeeData.Bank}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1">Account Name</label>
+                      <input
+                        type="text"
+                        name="AcctName"
+                        value={employeeData.AcctName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">Account Number</label>
+                      <input
+                        type="text"
+                        name="AcctNo"
+                        value={employeeData.AcctNo}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1">Complaints</label>
+                      <select
+                        name="complaints"
+                        value={employeeData.complaints}
+                        onChange={handleInputChange}
+                        className="w-full border rounded px-3 py-2"
+                      >
+                        <option value="" disabled>
+                          Select a complaint
+                        </option>
+                        <option value="No complaint">No complaint</option>
+                        <option value="sacked">sacked</option>
+                        <option value="service no longer required">
+                          service no longer required
+                        </option>
+                        <option value="suspended">suspended</option>
+                        <option value="dismissed">dismissed</option>
+                      </select>
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">Reasons</label>
+                      <input
+                        type="text"
+                        name="reasons"
+                        value={employeeData.reasons}
+                        onChange={handleInputChange}
+                        placeholder="write none if there is none"
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">On any Training?</label>
+                      <select
+                        name="onTraining"
+                        value={employeeData.onTraining}
+                        onChange={handleInputChange}
+                        className="w-full border rounded px-3 py-2"
+                      >
+                        <option value="" disabled>
+                          Select an option
+                        </option>
+                        <option value="yes">yes</option>
+                        <option value="No">No</option>
+                      </select>
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1">
+                        what type of training if there is and if the employee is
+                        not on any training, write none
+                      </label>
+                      <input
+                        type="text"
+                        name="typeOfTraining"
+                        value={employeeData.typeOfTraining}
+                        onChange={handleInputChange}
+                        placeholder="write none if there is none"
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">Address</label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={employeeData.location}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">State of origin</label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={employeeData.state}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">
+                        Local government area{" "}
+                      </label>
+                      <input
+                        type="text"
+                        name="LGA"
+                        value={employeeData.LGA}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1">Date of Birth</label>
+                      <input
+                        type="text"
+                        name="DOB"
+                        value={employeeData.DOB}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full border rounded px-3 py-2"
+                      />
+                    </div>
+
+                    <div className="mb-4">
                       <label className="block mb-1">Job Type</label>
                       <select
                         name="jobType"
@@ -527,24 +697,29 @@ const Dashboard = () => {
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white shadow-lg rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-center mb-4">Job Roles</h2>
-          <Pie data={pieData(jobRoleCounts, "Job Roles")} />
-        </div>
+            <div className="bg-white shadow-lg rounded-lg p-4">
+              <h2 className="text-lg font-semibold text-center mb-4">
+                Job Roles
+              </h2>
+              <Pie data={pieData(jobRoleCounts, "Job Roles")} />
+            </div>
 
-        <div className="bg-white shadow-lg rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-center mb-4">Job Types</h2>
-          <Pie data={pieData(jobTypeCounts, "Job Types")} />
-        </div>
+            <div className="bg-white shadow-lg rounded-lg p-4">
+              <h2 className="text-lg font-semibold text-center mb-4">
+                Job Types
+              </h2>
+              <Pie data={pieData(jobTypeCounts, "Job Types")} />
+            </div>
 
-        {/* Departments Pie Chart */}
-        <div className="bg-white shadow-lg rounded-lg p-4">
-          <h2 className="text-lg font-semibold text-center mb-4">Departments</h2>
-          <Pie data={pieData(departmentCounts, "Departments")} />
-        </div>
-      </div>
+            {/* Departments Pie Chart */}
+            <div className="bg-white shadow-lg rounded-lg p-4">
+              <h2 className="text-lg font-semibold text-center mb-4">
+                Departments
+              </h2>
+              <Pie data={pieData(departmentCounts, "Departments")} />
+            </div>
+          </div>
         </section>
-     
       </main>
     </div>
   );
@@ -602,7 +777,8 @@ const AllEmployees = () => {
               <th className="p-4 text-sm text-gray-600">Employee Name</th>
               <th className="p-4 text-sm text-gray-600">Department</th>
               <th className="p-4 text-sm text-gray-600">Job Role</th>
-              <th className="p-4 text-sm text-gray-600">Action</th>
+              <th className="p-4 text-sm text-gray-600">Job Type</th>
+              <th className="p-4 text-sm text-gray-600">Salary</th>
             </tr>
           </thead>
           <tbody>
@@ -628,20 +804,24 @@ const AllEmployees = () => {
                   </td>
                   <td className="p-4 text-sm">{emp.jobRole}</td>
                   <td className="p-4 text-sm">{emp.jobType}</td>
+                  <td className="p-4 text-sm">{emp.salary}</td>
 
                   <td className="p-4 text-sm flex space-x-2">
-                    <Link to={`hrms/details/${emp._id}`} state={{ email: emp.email }}>
-                      <button className="text-gray-500">
+                    <Link
+                      to={`hrms/details/${emp._id}`}
+                      state={{ email: emp.email }}
+                    >
+                      <button className="text-blue-500">
                         <span className="material-icons">View more</span>
                       </button>
                     </Link>
 
-                    <button className="text-purple-500">
+                    {/* <button className="text-purple-500">
                       <span className="material-icons">edit</span>
                     </button>
                     <button className="text-red-500">
                       <span className="material-icons">delete</span>
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))
@@ -685,15 +865,53 @@ const Payroll = () => {
     employeeId: "",
     month: "",
     year: "",
-    salary: "",
+    tax: "",
+    HMO: "",
+    penalty: "",
+    IOU: "",
     status: "",
   });
   const [employees, setEmployees] = useState([]);
   const [message, setMessage] = useState("");
   const [myPayroll, setMyPayroll] = useState([]);
   const [error, setError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [payrollId, setPayrollId] = useState("");
+  const [payrollData, setPayrollData] = useState([]);
 
+  const [status, setStatus] = useState('');
+  const [tax, setTax] = useState('');
+  const [hmo, setHMO] = useState('');
+  const [iou, setIOU] = useState('');
+  const [penalty, setPenalty] = useState('');
+  const [month, setMonth] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editPayroll, setEditPayroll] = useState("");
+  const [editPayroll1, setEditPayroll1] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+const [showPopup, setShowPopup] = useState(false)
+  const [errors, setErrors] = useState({
+    tax: "",
+    HMO: "",
+    penalty: "",
+    IOU: "",
+  });
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    // Validate the field only on blur
+    if (!/^\d*\.?\d*$/.test(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "Please enter a valid number",
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "", // Clear the error if valid
+      }));
+    }
+  };
   //getEmployees
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -730,9 +948,18 @@ const Payroll = () => {
             },
           }
         );
-        setMyPayroll(response.data);
-        toast.success("Your payroll is here");
-        console.log(response.data);
+       
+        if (response.data.length > 0) {
+          const payrollIds = response.data.map(item => item._id); 
+          setPayrollId(payrollIds); 
+          console.log("Payroll IDs:", payrollIds); 
+          setMyPayroll(response.data);
+          console.log(response.data);
+        } else {
+          console.error("No data found:", response.data);
+        }
+        
+     
       } catch (error) {
         setError(error.response?.data?.message);
         console.log(error);
@@ -745,6 +972,59 @@ const Payroll = () => {
     const { name, value } = e.target;
     setPay((prev) => ({ ...prev, [name]: value }));
   };
+
+
+  //edit button 
+
+  const handleEditClick = (payroll) => {
+    setEditPayroll1(payroll); 
+    setStatus(payroll.status); 
+    setTax(payroll.tax); // Pre-fill tax field
+    setHMO(payroll.hmo); // Pre-fill HMO field
+    setIOU(payroll.iou); // Pre-fill IOU field
+    setPenalty(payroll.penalty); // Pre-fill penalty field
+    setMonth(payroll.month); 
+    setShowPopup(true); 
+  };
+
+
+  const handleChange2 = (e) => {
+    const { name, value } = e.target;
+    setEditPayroll((prev) => ({ ...prev, [name]: value }));
+  };
+  //editMypayroll
+  const handleEditPayroll = async(e) => {
+    e.preventDefault()
+    setError("")
+
+
+    try {
+      const token = localStorage.getItem("token")
+      const response = await axios.put(`${import.meta.env.VITE_API_HRMS}/updatepayroll/${editPayroll1._id}`, 
+        editPayroll, {
+          headers:{
+            Authorization: `Bearer ${token}`}
+        }
+      )
+      toast.success("successfully edited payroll")
+
+      setMyPayroll((prevData) =>
+        prevData.map((payroll) =>
+          payroll._id === editPayroll._id
+            ? { ...payroll, status: response.data.status, tax: response.data.tax, hmo: response.data.hmo, iou: response.data.iou, penalty: response.data.penalty, month: response.data.month }
+            : payroll
+        )
+      );
+      setShowPopup(false)
+    } catch (error) {
+      console.log(eror)
+      setError(error.response?.data?.message)
+    }
+  }
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -773,7 +1053,10 @@ const Payroll = () => {
       employeeId: "",
       month: "",
       year: "",
-      salary: "",
+      tax: "",
+      HMO: "",
+      IOU: "",
+      penalty: "",
       status: "",
     });
     setIsModalOpen(true);
@@ -783,13 +1066,35 @@ const Payroll = () => {
     setIsModalOpen(false);
   };
 
+  const handleShowPopupClose = () => {
+    setShowPopup(false)
+  }
+
+  //delete button
+  const handleDelete = async(payrollId)=> {
+    const token = localStorage.getItem("token")
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_API_HRMS}/deletepayroll/${payrollId}`, {
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      })
+      setMyPayroll(myPayroll.filter(payroll => payroll._id !== payrollId))
+      toast.success("successfully deleted")
+      console.log(response.data.message)
+    } catch (error) {
+      console.error('Error deleting payroll:', error);
+      toast.error("an error occured while trying to delete the data")
+    }
+  }
+
   return (
     <div>
       payroll
       <div className="flex text-black justify-center gap-4 mb-6">
         <button
           className="bg-purple-500 text-white py-2 px-4 rounded"
-          onClick={() => handleModalOpen("doctor")}
+          onClick={() => handleModalOpen()}
         >
           Add a payroll
         </button>
@@ -845,15 +1150,79 @@ const Payroll = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block mb-1">Salary</label>
+                  <label className="block mb-1">Tax</label>
                   <input
                     type="text"
-                    name="salary"
-                    value={pay.salary}
+                    name="tax"
+                    value={pay.tax}
                     onChange={handleChange}
-                    className="w-full border rounded px-3 py-2"
+                    onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.tax ? "border-red-500" : ""
+                    }`}
                     required
+                    placeholder="write 0 if there no tax"
                   />
+                  {errors.tax && (
+                    <p className="text-red-500 text-sm">{errors.tax}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">HMO</label>
+                  <input
+                    type="text"
+                    name="HMO"
+                    value={pay.HMO}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.HMO ? "border-red-500" : ""
+                    }`}
+                    required
+                    placeholder="write 0 if there no tax"
+                  />
+                  {errors.HMO && (
+                    <p className="text-red-500 text-sm">{errors.HMO}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">penalty</label>
+                  <input
+                    type="text"
+                    name="penalty"
+                    value={pay.penalty}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.penalty ? "border-red-500" : ""
+                    }`}
+                    required
+                    placeholder="write 0 if there no tax"
+                  />
+                  {errors.penalty && (
+                    <p className="text-red-500 text-sm">{errors.penalty}</p>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-1">IOU</label>
+                  <input
+                    type="text"
+                    name="IOU"
+                    value={pay.IOU}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.IOU ? "border-red-500" : ""
+                    }`}
+                    required
+                    placeholder="write 0 if there no tax"
+                  />
+                  {errors.IOU && (
+                    <p className="text-red-500 text-sm">{errors.IOU}</p>
+                  )}
                 </div>
 
                 <div className="mb-4">
@@ -894,13 +1263,17 @@ const Payroll = () => {
           <thead>
             {error && <p className="text-red-500">{error}</p>}
             <tr className="border-b">
-              <th className="p-4 text-sm text-gray-600">Name</th>
-              <th className="p-4 text-sm text-gray-600">Salary</th>
-              <th className="p-4 text-sm text-gray-600">Date</th>
-              <th className="p-4 text-sm text-gray-600">Month</th>
-              <th className="p-4 text-sm text-gray-600">Year</th>
+              <th className="p-2 text-sm text-gray-600">Name</th>
+              <th className="p-2 text-sm text-gray-600">Salary</th>
+              <th className="p-2 text-sm text-gray-600">Tax</th>
+              <th className="p-2 text-sm text-gray-600">HMO</th>
+              <th className="p-2 text-sm text-gray-600">Date</th>
+              <th className="p-2 text-sm text-gray-600">Month</th>
+              <th className="p-2 text-sm text-gray-600">Year</th>
 
               <th className="p-4 text-sm text-gray-600">Status</th>
+
+                 <th className="p-4 text-sm text-gray-600">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -920,13 +1293,15 @@ const Payroll = () => {
                     </span>
                   </td>
                   {/* <td className="p-4 text-sm">{emp.employeeId?.firstname} {emp.employeeId?.lastname}</td> */}
-                  <td className="p-4 text-sm">{emp.salary}</td>
-                  <td className="p-4 text-sm">
+                  <td className="p-2 text-sm">{emp.employeeId?.salary}</td>
+                  <td className="p-2 text-sm">{emp.tax}</td>
+                  <td className="p-2 text-sm">{emp.HMO}</td>
+                  <td className="p-2 text-sm">
                     {new Date(emp.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="p-4 text-sm">{emp.month}</td>
-                  <td className="p-4 text-sm">{emp.year}</td>
-                  <td className="p-4 text-sm">
+                  <td className="p-2 text-sm">{emp.month}</td>
+                  <td className="p-2 text-sm">{emp.year}</td>
+                  <td className="p-2 text-sm">
                     <button className="text-gray-500">
                       {emp.status === "Unpaid" ? (
                         <span className="text-red-500">Unpaid</span>
@@ -935,6 +1310,172 @@ const Payroll = () => {
                       )}
                     </button>
                   </td>
+                  <td className="p-2 text-sm">
+                  <button onClick={() => handleEditClick(emp)}>Edit</button>
+                  {/* <button onClick={() => setShowPopup(true)}>
+                  edit
+                  </button> */}
+                  </td>
+
+                  <td className="p-2 text-sm text-red-600">
+                <button onClick={() => handleDelete(emp._id)}>Delete</button>
+              </td>
+                    {showPopup && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+                  <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                    edit pay roll for {emp.employeeId?.firstname} {emp.employeeId.lastname}
+                  </h2>
+                  <form onSubmit={handleEditPayroll} className="space-y-6">
+                    {Object.keys(editPayroll).map(
+                      (key) => key !== "profilePicture"
+                    )}
+
+                    {/* New input fields */}
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Tax
+                      </label>
+                      <input
+                        type="text"
+                        name="tax"
+                        value={editPayroll.tax}
+                        onChange={handleChange2}
+                        onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.tax ? "border-red-500" : ""
+                    }`}
+                      />
+                        {errors.tax && (
+                    <p className="text-red-500 text-sm">{errors.tax}</p>
+                  )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                    HMO
+                      </label>
+                      <input
+                        type="text"
+                        name="HMO"
+                        value={editPayroll.HMO}
+                        onChange={handleChange2}
+                         onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.HMO ? "border-red-500" : ""
+                    }`}
+                      />
+                         {errors.HMO && (
+                    <p className="text-red-500 text-sm">{errors.HMO}</p>
+                  )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                   IOU
+                      </label>
+                      <input
+                        type="text"
+                        name="IOU"
+                        value={editPayroll.IOU}
+                        onChange={handleChange2}
+                        onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.IOU ? "border-red-500" : ""
+                    }`}
+                      />
+                         {errors.IOU && (
+                    <p className="text-red-500 text-sm">{errors.IOU}</p>
+                  )}
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                   penalty
+                      </label>
+                      <input
+                        type="text"
+                        name="penalty"
+                        value={editPayroll.penalty}
+                        onChange={handleChange2}
+                         onBlur={handleBlur}
+                    className={`w-full border rounded px-3 py-2 ${
+                      errors.penalty ? "border-red-500" : ""
+                    }`}
+                      />
+                        {errors.penalty && (
+                    <p className="text-red-500 text-sm">{errors.penalty}</p>
+                  )}
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     month
+                      </label>
+                      <input
+                        type="month"
+                        name="month"
+                        value={editPayroll.month}
+                        onChange={handleChange2}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                  
+
+               
+
+           
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        status
+                      </label>
+                      <select
+                     
+                        name="status"
+                        value={editPayroll.status}
+                        onChange={handleChange2}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                         <option value="">Select status</option>
+                         <option value="paid">paid</option>
+                         <option value="Unpaid">Unpaid</option>
+                      
+                      </select>
+                    </div>
+                  
+                     
+                   
+
+              
+
+
+
+      
+
+             
+                
+
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={handleShowPopupClose}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+                      >
+                        edit payroll
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
                 </tr>
               ))
             ) : (
@@ -1154,6 +1695,7 @@ const Attendance = () => {
     const { name, value } = e.target;
     setAttendance({ ...attendance, [name]: value });
   };
+
   const handleModalOpen = () => {
     setAttendance({
       email: "",
@@ -1316,15 +1858,12 @@ const Attendance = () => {
                       alt="Employee"
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>
-                      {emp.employeeName} 
-                    </span>
+                    <span>{emp.employeeName}</span>
                   </td>
                   {/* <td className="p-4 text-sm">{emp.employeeId?.firstname} {emp.employeeId?.lastname}</td> */}
                   <td className="p-4 text-sm">{emp.employeeId?.jobRole}</td>
                   <td className="p-4 text-sm">{emp.employeeId?.jobType}</td>
                   <td className="p-4 text-sm text-blue-800">{emp.time}</td>
-                
 
                   <td className="p-4 text-sm">
                     <button className="text-gray-500">

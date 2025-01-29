@@ -74,6 +74,7 @@ import HRMSauthRouter from "./routes/HRMS.route/HRMSadmin.route.js";
 import hrmsemployeerouter from "./routes/HRMS.route/HrmsEmployee.route.js";
 import attendanceRouter from "./routes/HRMS.route/HRMSAttendance.route.js";
 import payrollRouter from "./routes/HRMS.route/hrmsPayroll.router.js";
+import deathRecordRouter from "./routes/hospital/deathRecord.route.js";
 
 dotenv.config();
 
@@ -161,6 +162,7 @@ app.use("/api/hospital", userRoute )
 app.use("/api/hospital", hospitalrouter )
 app.use("/api/hospital", HReportrouter)
 app.use("/api/hospital", hospitalresultRouter)
+app.use("/api/hospital", deathRecordRouter)
 app.use("/api/quickaction", cdoctorRoute)
 
 

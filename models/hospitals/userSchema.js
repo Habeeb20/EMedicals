@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
   resetPasswordExpiresAt: Date,
   verificationToken: String,
   verificationTokenExpiresAt: Date,
+  deceasedRecords: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Deceased' }],
 
 
  adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'HUser' },

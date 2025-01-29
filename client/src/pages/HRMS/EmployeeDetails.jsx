@@ -28,16 +28,45 @@ import {
   
 const Details = () => {
     const {id} = useParams()
+    const [userId, setUserId] = useState([])
     const navigate= useNavigate()
+    const [showPopup, setShowPopup] = useState(false)
     const { email } = location.state || {}; 
     const [staff, setStaff] = useState(null)
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState("Profile");
- 
+  const [editData, setEditData] = useState({})
     const [details, setDetails] = useState(null);
-    
- 
+    const [successMessage, setSuccessMessage] = useState("")
+    const [myPayroll, setMyPayroll] = useState([]);
+    const [editPayroll, setEditPayroll] = useState("");
+    const [editShowPopup, setEditShowPopup] = useState(false)
+    const [errors, setErrors] = useState({
+      tax: "",
+      HMO: "",
+      penalty: "",
+      IOU: "",
+    });
+
+      const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    // Validate the field only on blur
+    if (!/^\d*\.?\d*$/.test(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "Please enter a valid number",
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "", // Clear the error if valid
+      }));
+    }
+  };
+  
+
     useEffect(() => {
      
         const fetchDetails = async() => {
@@ -61,6 +90,8 @@ const Details = () => {
     }, [email]);
 
 
+  
+
 
     useEffect(() => {
         const fetchMyDetails = async() => {
@@ -76,6 +107,8 @@ const Details = () => {
                     }
                 })
                 setStaff(response.data)
+                setUserId(response.data._id)
+                console.log(response.data._id)
                 toast.success("successfully fetched profile")
                 console.log(response.data)
             } catch (error) {
@@ -87,6 +120,89 @@ const Details = () => {
         fetchMyDetails()
       
     }, [id])
+
+
+    const handleChange = (e) => {
+      const {name,value} = e.target;
+      setEditData({...editData, [name] : value})
+    }
+
+
+      //edit profile
+      const handleSubmit = async(e) => {
+        e.preventDefault()
+        setError("")
+        setSuccessMessage("")
+  
+        try {
+          const token = localStorage.getItem("token")
+          const response= await axios.put(`${import.meta.env.VITE_API_HRMS}/updatestaffs/${id}`,editData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            })
+           toast.success("successfully edited")
+           setMessage("successfully edited")
+           setShowPopup(false);
+        } catch (error) {
+          console.log(error)
+          setError(error.response?.data?.message)
+          toast.error("an error occurred")
+        }
+      }
+
+      //handling editing of picture
+  const handleFileChange = async (e, field) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload",
+        formData,
+        {
+          params: {
+            upload_preset: "essential",
+          },
+        }
+      );
+      setEditData((prevData) => ({
+        ...prevData,
+        [field]: response.data.secure_url,
+      }));
+    } catch (err) {
+      console.error("Error uploading file to Cloudinary", err);
+      toast.error("an error occurred during uploading to the cloudinary")
+    }
+  };
+  
+
+const handleShowPopupClose = () => {
+  setShowPopup(false)
+}
+
+const handleShowPopupOpen = () => {
+  setEditData({
+      AcctNo : "",
+      phone:"",
+      email:"",
+      Bank:"",
+      location: "",
+      DOB:"",
+      compliants:"",
+      salary:"",
+      AcctName:"",
+      jobType:"",
+      designation: "",
+      department:"",
+      reasons:"",
+      jobRole:"",
+      onTraining:"",
+      typeOfTraining:"",
+  })
+  setShowPopup(true)
+}
 
     if(error){
         return(
@@ -117,6 +233,10 @@ const renderTabContent = () => {
             
        
             <div className="bg-white shadow text-black rounded-lg p-6">
+               {error && <div className="text-red-500 mt-5">{error}</div>}
+            {successMessage && (
+              <div className="text-green-500 mt-5">{successMessage}</div>
+            )}
           <div className="flex gap-4 items-center mb-4">
             <img
               src={staff.picture || "https://i.pravatar.cc/150?img=3"}
@@ -128,55 +248,397 @@ const renderTabContent = () => {
               <p className="text-gray-500">{staff.jobRole}</p>
               <p className="text-gray-500">{staff.email}</p>
             </div>
-            <button className="ml-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+            
+            <button 
+            onClick={() => setShowPopup(true)}
+            className="ml-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
               Edit Profile
             </button>
+            {showPopup && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl max-h-[90vh] overflow-y-auto">
+                  <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+                    Update Your Profile
+                  </h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {Object.keys(editData).map(
+                      (key) => key !== "profilePicture"
+                    )}
+
+                    {/* New input fields */}
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     Bank Name
+                      </label>
+                      <input
+                        type="text"
+                        name="Bank"
+                        value={editData.Bank}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     Acct Number
+                      </label>
+                      <input
+                        type="text"
+                        name="AcctNo"
+                        value={editData.AcctNo}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     Acct Name
+                      </label>
+                      <input
+                        type="text"
+                        name="AcctName"
+                        value={editData.AcctName}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Date of Birth
+                      </label>
+                      <input
+                        type="date"
+                        name="DOB"
+                        value={editData.DOB}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     salary
+                      </label>
+                      <input
+                        type="text"
+                        name="salary"
+                        value={editData.salary}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                   Job Type
+                      </label>
+                      <input
+                        type="text"
+                        name="jobType"
+                        value={editData.jobType}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Job Role
+                      </label>
+                      <input
+                        type="text"
+                        name="jobRole"
+                        value={editData.jobRole}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Department
+                      </label>
+                      <input
+                        type="text"
+                        name="department"
+                        value={editData.department}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                     Designation
+                      </label>
+                      <input
+                        type="text"
+                        name="designation"
+                        value={editData.designation}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        Complaints
+                      </label>
+                      <select
+                     
+                        name="complaints"
+                        value={editData.complaints}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                         <option value="">Select Complaints</option>
+                         <option value="suspended">suspended</option>
+                         <option value="dismissed">dismissed</option>
+                         <option value="sacked">sacked</option>
+                         <option value="service no longer required">service no longer required</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                       reason for the complaints
+                      </label>
+                      <input
+                        type="text"
+                        name="reason"
+                        value={editData.reason}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        On any training
+                      </label>
+                      <select
+                     
+                        name="onTraining"
+                        value={editData.onTraining}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      >
+                         <option value="">Select an option</option>
+                         <option value="yes">yes</option>
+                         <option value="No">No</option>
+                         
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        what type of training and if he/she is not on any training, write "none"
+                      </label>
+                      <input
+                      type="text"
+                        name="typeOfTraining"
+                        value={editData.typeOfTraining}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                       
+                  
+                    </div>
+
+
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={editData.email}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        phone number
+                      </label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={editData.phone}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+      
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={editData.location}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+             
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        State
+                      </label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={editData.state}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        LGA
+                      </label>
+                      <input
+                        type="text"
+                        name="LGA"
+                        value={editData.LGA}
+                        onChange={handleChange}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      />
+                    </div>
+{/* 
+                    <div className="flex flex-col">
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        profile Picture
+                      </label>
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileChange(e, "picture1")}
+                        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-100 file:text-gray-700"
+                      />
+                    </div> */}
+
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={handleShowPopupClose}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="w-full py-3 px-4 bg-green-600 text-white rounded-lg hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-300"
+                      >
+                        Update Profile
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
           </div>
             <h3 className="text-lg font-bold mb-4">Personal Information</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               <div>
                 <p className="text-black">First Name</p>
-                <p>{staff.firstname}</p>
+                <p className="text-blue-700">{staff.firstname}</p>
               </div>
               <div>
                 <p className="text-black">Last Name</p>
-                <p>{staff.lastname}</p>
+                <p className="text-blue-700">{staff.lastname}</p>
               </div>
               <div>
                 <p className="text-black">Mobile Number</p>
-                <p>{staff.phone}</p>
+                <p className="text-blue-700">{staff.phone}</p>
               </div>
               <div>
                 <p className="text-black">Email Address</p>
-                <p>{staff.email}</p>
+                <p className="text-blue-700">{staff.email}</p>
               </div>
               <div>
                 <p className="text-black">Job Role</p>
-                <p>{staff.jobRole}</p>
+                <p className="text-blue-700">{staff.jobRole}</p>
               </div>
               <div>
                 <p className="text-black">Department</p>
-                <p>{staff.department}</p>
+                <p className="text-blue-700">{staff.department}</p>
               </div>
               <div>
                 <p className="text-black">Job Type</p>
-                <p>{staff.jobType}</p>
+                <p className="text-blue-700">{staff.jobType}</p>
               </div>
               <div>
                 <p className="text-black">Salary</p>
-                <p>{staff.salary}</p>
+                <p className="text-blue-700">{staff.salary}</p>
               </div>
               <div>
                 <p className="text-black">Address</p>
-                <p>{staff.location}</p>
+                <p className="text-blue-700">{staff.location}</p>
               </div>
               <div>
                 <p className="text-black">LGA</p>
-                <p>{staff.LGA}</p>
+                <p className="text-blue-700">{staff.LGA}</p>
               </div>
               <div>
                 <p className="text-black">State</p>
-                <p>{staff.state}</p>
+                <p className="text-blue-700">{staff.state}</p>
+              </div>
+
+              <div>
+                <p className="text-black">Bank </p>
+                <p className="text-blue-700">{staff.Bank}</p>
+              </div>
+
+              
+              <div>
+                <p className="text-black">Acct Name </p>
+                <p className="text-blue-700">{staff.AcctName}</p>
+              </div>
+
+              <div>
+                <p className="text-black">Acct No </p>
+                <p className="text-blue-700">{staff.AcctNo}</p>
+              </div>
+
+              <div>
+  <p className="text-black">Complaints</p>
+  {staff.complaints === "suspended" ? (
+    <p className="text-yellow-500">{staff.complaints}</p>
+  ) : staff.complaints === "none" ? (
+    <p className="text-green-500">{staff.complaints}</p>
+  ) : (
+    <p className="text-red-500">{staff.complaints}</p>
+  )}
+</div>
+
+<div>
+                <p className="text-black">Reason </p>
+                <p className="text-blue-700">{staff.reasons || "Negligence"}</p>
+              </div>
+              <div>
+                <p className="text-black">Date of Birth </p>
+                <p className="text-blue-700">{staff.DOB}</p>
+              </div>
+
+              <div>
+                <p className="text-black">On training </p>
+                <p className="text-blue-700">{staff.onTraining || "None"}</p>
+              </div>
+
+              <div>
+                <p className="text-black">what type of training </p>
+                <p className="text-blue-700">{staff.typeOfTraining || "Nnoe"}</p>
               </div>
             </div>
           </div>
@@ -1889,16 +2351,20 @@ const EmployeeDetails = () => {
                   </button>
                 </li>
                 <li>
-                  <button
+                <Link to="/hrmsdashboard">
+                <button
                     className={`text-purple-600 font-medium ${
                       activePage === "dashboard"
                         ? "bg-purple-300 p-1 rounded-lg"
                         : "hover:bg-purple-500 rounded-lg"
                     }`}
-                    onClick={() => setActivePage("dashboard")}
+                    // onClick={() => setActivePage("dashboard")}
                   >
-                    Dashboard
+                    Go back to Dashboard
                   </button>
+
+                </Link>
+               
                 </li>
   
                 <li>
@@ -1910,7 +2376,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("allemployees")}
                   >
-                    All Employees
+                    {/* All Employees */}
                   </button>
                 </li>
   
@@ -1923,7 +2389,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("alldepartments")}
                   >
-                    All Departments
+                    {/* All Departments */}
                   </button>
                 </li>
   
@@ -1936,7 +2402,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("payroll")}
                   >
-                    Payroll
+                    {/* Payroll */}
                   </button>
                 </li>
   
@@ -1949,7 +2415,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("attendance")}
                   >
-                    Attendance
+                    {/* Attendance */}
                   </button>
                 </li>
   
@@ -1962,7 +2428,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("jobs")}
                   >
-                    Jobs
+                    {/* Jobs */}
                   </button>
                 </li>
   
@@ -1975,7 +2441,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("leave")}
                   >
-                    Leave
+                    {/* Leave */}
                   </button>
                 </li>
   
@@ -1988,7 +2454,7 @@ const EmployeeDetails = () => {
                     }`}
                     onClick={() => setActivePage("holidays")}
                   >
-                    Holidays
+                    {/* Holidays */}
                   </button>
                 </li>
               </ul>

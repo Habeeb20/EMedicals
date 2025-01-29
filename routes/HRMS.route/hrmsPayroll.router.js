@@ -7,7 +7,7 @@ import { verifyToken } from "../../middleware/verifyToken.js";
 const payrollRouter = express.Router()
 
 payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
-    const { employeeId, month, year, salary, status,  } = req.body;
+    const { employeeId, month, year, status, tax,  HMO, penalty, IOU  } = req.body;
 
     try {
 
@@ -23,10 +23,14 @@ payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
       const newPayroll = new Payroll({
         employeeId,
         employeeName: `${employee.firstname} ${employee.lastname}`,
+        salary:`${employee.salary}`,
         adminId: req.user.id, 
         month,
         year,
-        salary,
+        tax,
+        HMO,
+        penalty,
+        IOU,
         status,
         date
       });
@@ -40,7 +44,7 @@ payrollRouter.post("/makepayroll", verifyToken, async(req, res) => {
 
 payrollRouter.get("/getpayrolls", verifyToken, async(req, res) => {
     try {
-        const records = await Payroll.find({adminId: req.user.id}).populate('employeeId', "firstname lastname");
+        const records = await Payroll.find({adminId: req.user.id}).populate('employeeId', "firstname lastname salary" );
         res.json(records);
       } catch (error) {
         res.status(500).json({ message: error.message });

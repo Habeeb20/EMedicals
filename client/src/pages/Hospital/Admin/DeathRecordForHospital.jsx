@@ -15,9 +15,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
 ChartJS.register(BarElement, CategoryScale, LinearScale, ArcElement, Tooltip, Legend);
 
-const DashboardHospital = () => {
+const DeathRecordForHospital = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
@@ -75,7 +76,7 @@ const DashboardHospital = () => {
     setDeathData({
       fullName:"",
       causeOfDeath:"",
-      dateOfCause:""
+      dateOfDeath:""
     })
     setShowFormDeath(true)
   }
@@ -395,6 +396,27 @@ const handleSubmitForDeathRecord = async() => {
     toast.error("an error occurred ")
   }
 }
+
+
+//get death record
+
+useEffect(() => {
+    const fetchMyDeathRecord = async () => {
+        try {
+            const token = localStorage.getItem("token")
+            const response = await axios.get(`${import.meta.env.VITE_API_HO}/getdeceased`, {
+                headers:{Authorization: `Bearer ${token}`}
+            })
+            setMyDeathRecord(response.data)
+            toast.success("successfully fetched")
+        } catch (error) {
+            console.log(error)
+            toast.error('an error occrred')
+        }
+    }
+
+    fetchMyDeathRecord()
+}, [])
   
 
   return (
@@ -449,13 +471,6 @@ const handleSubmitForDeathRecord = async() => {
           >
             <MdBarChart size={20} />
             <span>Analytics</span>
-          </a>
-          <a
-            href="/deathrecordforhospital"
-            className="flex items-center space-x-2 hover:bg-blue-700 px-2 py-2 rounded-lg transition duration-200"
-          >
-            <MdBarChart size={20} />
-            <span>Death record</span>
           </a>
           <a
             href="#"
@@ -815,25 +830,114 @@ const handleSubmitForDeathRecord = async() => {
               </div>
             </div>
           </div>
-          <div className="p-6 bg-gray-100 min-h-screen flex flex-col md:flex-row md:justify-center md:gap-8 items-center">
-  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
-    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
-      User Distribution
-    </h2>
-    {totalUsers > 0 ? (
-      <Pie data={data} options={options} />
-    ) : (
-      <p className="text-center text-gray-500">Loading chart data...</p>
-    )}
-  </div>
 
-  <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 md:p-8">
-    <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
-      Sickness Distribution
-    </h2>
-    <Pie data={data1} options={options1} />
+
+          <section>
+          <button
+              className="bg-green-500 text-white py-2 px-4 rounded"
+              onClick={() => setShowFormDeath(true)}
+            >
+              add a death record
+            </button>
+
+            {showFormForDeath && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
+                  <h2 className="text-xl font-bold mb-4">
+                    Add a death record
+                  </h2>
+                  <form onSubmit={handleSubmitForDeathRecord}>
+                    <div className="mb-4">
+                      <label className="block mb-1">full Name</label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={deathData.fullName}
+                        onChange={handleInputChangeForDeath}
+                        className="w-full border rounded px-3 py-2"
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block mb-1">Cause of death</label>
+                      <input
+                        type="text"
+                        name="causeOfDeath"
+                        value={deathData.causeOfDeath}
+                        onChange={handleInputChangeForDeath}
+                        className="w-full border rounded px-3 py-2"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1">dateOfDeath</label>
+                      <input
+                        type="date"
+                        name="dateOfDeath"
+                        value={deathData.dateOfDeath}
+                        onChange={handleInputChangeForDeath}
+                        className="w-full border rounded px-3 py-2"
+                        required
+                      />
+                    </div>
+
+
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={handleShowFormClose}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-blue-500 text-white py-2 px-4 rounded"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                  </div>
+                  </div>
+            )}
+  <h2 className="text-xl text-center font-semibold mb-4 text-green-600">Your Death Record</h2>
+  <div className="bg-white shadow rounded-lg p-4">
+  <ul className="list-disc pl-6 space-y-2">
+  {/* Add a heading section */}
+  <li className="font-bold">
+    <div className="grid grid-cols-6 gap-4">
+         <span>Full Name</span>
+      <span>cause of death</span>
+      <span>date of death</span>
+   
+      
+    </div>
+  </li>
+
+  {/* Map through the nurses data */}
+  {MyDeathRecord &&
+    MyDeathRecord.map((patient) => (
+      <li key={patient._id} className="grid grid-cols-6 gap-4 items-center">
+     
+        <span>{patient.fullName}</span>
+        <span className="text-gray-500">{patient.causeOfDeath}</span>
+        <span className="text-gray-500">{new Date(patient.dateOfDeath).toLocaleDateString()}</span>
+        <span className="text-gray-500">{patient.hospitalId?.name}</span>
+        {/* <button
+          onClick={() => setShowPopup(true)}
+          className="mt-5 py-3 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+        >
+          Edit Profile
+        </button> */}
+      </li>
+    ))}
+</ul>
   </div>
-</div>
+</section>
+
+ 
 
 
       
@@ -843,7 +947,7 @@ const handleSubmitForDeathRecord = async() => {
   );
 };
 
-export default DashboardHospital;
+export default DeathRecordForHospital;
 
 
 
