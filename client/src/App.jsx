@@ -154,6 +154,8 @@ import HRMSDashboard from "./pages/HRMS/HRMSDashboard";
 import EmployeeDetails from "./pages/HRMS/EmployeeDetails";
 import DeathRecordForHospital from "./pages/Hospital/Admin/DeathRecordForHospital";
 import MortuaryLogin from "./pages/mortuary/MortuaryLogin";
+import GenerateLetter from "./pages/HRMS/GenerateLetter";
+import MortuaryDashboard from "./pages/mortuary/admin/MortuaryDashboard";
 
 axios.defaults.withCredentials = true;
 
@@ -205,6 +207,7 @@ const App = () => {
         />
 
         <Route path="/mlogin" element={<MortuaryLogin />} />
+        <Route path="/mortuarydashboard" element={<MortuaryDashboard />} />
         <Route
           path="/cemeterydashboard"
           element={
@@ -495,6 +498,7 @@ const App = () => {
         <Route path="/hrmslogin/" element={<HRMSLogin />} />
         <Route path="/hrmssignup" element={<HRMSSignup />} />
         <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
+        <Route path="/hrmslettergenerate" element={<GenerateLetter />} />
         <Route path="/HRMSDashboard/hrms/details/:id" element={<EmployeeDetails />} />
       
 

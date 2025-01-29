@@ -240,7 +240,7 @@ const MortuarySignup = () => {
             });
             console.log(response.data);
             if (response.data) {
-                navigate('/mverify-email')
+                navigate('/mlogin')
                 toast.success("successfully registered")
             }
 
@@ -258,7 +258,7 @@ const MortuarySignup = () => {
         <div className="min-h-screen flex flex-col justify-center items-center bg-[#FFF9E8] mt-6">
             <div className="w-full max-w-md bg-white p-8 rounded shadow-md">
                 {error && <p className="text-red-500">{error}</p>}
-                <h1 className="text-xl font-bold">Signup</h1>
+                <h1 className="text-xl font-bold">Signup as a mortician</h1>
 
                 <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md max-w-lg w-full space-y-4">
 

@@ -61,7 +61,8 @@ const DeathRecordForHospital = () => {
   const [deathData, setDeathData] = useState({
     fullName:"",
     causeOfDeath:"",
-    dateOfCause:""
+    dateOfCause:"",
+    gender:""
   })
 
   const [MyDeathRecord, setMyDeathRecord] = useState([])
@@ -76,7 +77,8 @@ const DeathRecordForHospital = () => {
     setDeathData({
       fullName:"",
       causeOfDeath:"",
-      dateOfDeath:""
+      dateOfDeath:"",
+      gender:""
     })
     setShowFormDeath(true)
   }
@@ -870,6 +872,23 @@ useEffect(() => {
                         required
                       />
                     </div>
+
+                    
+                    <div className="mb-4">
+                      <label className="block mb-1">gender</label>
+                      <select
+                      
+                        name="gender"
+                        value={deathData.gender}
+                        onChange={handleInputChangeForDeath}
+                        className="w-full border rounded px-3 py-2"
+                        required
+                      >
+                        <option value="">select a gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
                     <div className="mb-4">
                       <label className="block mb-1">dateOfDeath</label>
                       <input
@@ -910,6 +929,7 @@ useEffect(() => {
     <div className="grid grid-cols-6 gap-4">
          <span>Full Name</span>
       <span>cause of death</span>
+      <span>gender</span>
       <span>date of death</span>
    
       
@@ -923,8 +943,9 @@ useEffect(() => {
      
         <span>{patient.fullName}</span>
         <span className="text-gray-500">{patient.causeOfDeath}</span>
+        <span className="text-gray-500">{patient.gender}</span>
         <span className="text-gray-500">{new Date(patient.dateOfDeath).toLocaleDateString()}</span>
-        <span className="text-gray-500">{patient.hospitalId?.name}</span>
+    
         {/* <button
           onClick={() => setShowPopup(true)}
           className="mt-5 py-3 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300"

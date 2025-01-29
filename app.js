@@ -75,6 +75,8 @@ import hrmsemployeerouter from "./routes/HRMS.route/HrmsEmployee.route.js";
 import attendanceRouter from "./routes/HRMS.route/HRMSAttendance.route.js";
 import payrollRouter from "./routes/HRMS.route/hrmsPayroll.router.js";
 import deathRecordRouter from "./routes/hospital/deathRecord.route.js";
+import hrmsLetterRouter from "./routes/HRMS.route/HRMSLetter.route.js";
+import mortuaryDeathRouter from "./routes/Mortuary/mortuaryDeath.route.js";
 
 dotenv.config();
 
@@ -139,6 +141,7 @@ app.use("/api/doctorchat/users", userchatrouter);
 app.use("/api/mortuary", mortuaryrouter);
 app.use("/api/mortuary", mortuaryCommentRouter);
 app.use("/api/mortuary", messageRouter);
+app.use("/api/mortuary", mortuaryDeathRouter)
 
 //cemetery
 app.use("/api/cemetery", cemeteryRouter);
@@ -205,7 +208,7 @@ app.use("/api/hrms", HRMSauthRouter)
 app.use("/api/hrms", hrmsemployeerouter)
 app.use("/api/hrms", attendanceRouter)
 app.use("/api/hrms", payrollRouter)
-
+app.use("/api/hrms", hrmsLetterRouter)
 app.use(errorHandler);
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

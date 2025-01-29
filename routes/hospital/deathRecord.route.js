@@ -7,7 +7,7 @@ const deathRecordRouter = express.Router()
 
 deathRecordRouter.post("/addDeceased", verifyToken, async(req, res) => {
  
-    const {fullName, causeOfDeath, dateOfDeath} = req.body;
+    const {fullName, causeOfDeath, dateOfDeath, gender} = req.body;
     try {
         const hospital = await Hospital.find({hospitalId: req.user.id})
         if(!hospital){
@@ -19,6 +19,7 @@ deathRecordRouter.post("/addDeceased", verifyToken, async(req, res) => {
             fullName,
             causeOfDeath,
             dateOfDeath,
+            gender,
             hospitalId: req.user.id
         })
         await deceased.save()
@@ -47,7 +48,7 @@ deathRecordRouter.get("/getdeceased", verifyToken, async(req, res) => {
 
 deathRecordRouter.get("/getdeathrecord", async(req, res) => {
     try {
-        const deathRecord = await Deceased.find({})
+        const deathRecord = await Deceased.find({}).populate("hospitalId", "name")
         if(!deathRecord) return res.status(404).json({message: "death record not found"})
 
         return res.status(200).json(deathRecord)

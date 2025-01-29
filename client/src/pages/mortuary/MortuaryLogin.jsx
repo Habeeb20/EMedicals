@@ -67,7 +67,7 @@ const MortuaryLogin = () => {
         </div>
 
         <div className="bg-white shadow-md rounded px-8 pt-1 pb-10 mt-1">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">Login as a mortician</h2>
           {error && <p className="text-red-500">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">

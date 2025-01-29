@@ -123,4 +123,10 @@ hrmsemployeerouter.delete('/deletestaffs/:id', verifyToken, async(req, res) => {
       }
 })
 
+hrmsemployeerouter.get("/:id/letters", async (req, res) => {
+  const employee = await Employee.findById(req.params.id);
+  res.json(employee.letters);
+});
+
+
 export default hrmsemployeerouter

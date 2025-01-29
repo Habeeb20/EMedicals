@@ -158,9 +158,12 @@ ired
 
     try {
         const user = await mortuary.findOne({email});
-        if(!user || !(await bcryptjs.compare(password, user.password))){
-            return res.status(400).json({success: false, message: "incorrect crredentials"})
-        }
+        if(!user) return res.status(404).json({message: "email not found"})
+        const passwordMatch = await bcryptjs.compare(password, user.password)
+        if(!passwordMatch) return res.status(404).json({message: "password does not match"})
+        // if(!user || !(await bcryptjs.compare(password, user.password))){
+        //     return res.status(400).json({success: false, message: "incorrect crredentials"})
+        // }
 
         // generateTokenAndSetCookie(res, user._id);
 

@@ -640,6 +640,10 @@ const renderTabContent = () => {
                 <p className="text-black">what type of training </p>
                 <p className="text-blue-700">{staff.typeOfTraining || "Nnoe"}</p>
               </div>
+
+              <button onClick={() => window.open(`${import.meta.env.VITE_API_HRMS}/${staff.letters[0]?.pdfPath}`)}>
+            Download Letter
+          </button>
             </div>
           </div>
         );
