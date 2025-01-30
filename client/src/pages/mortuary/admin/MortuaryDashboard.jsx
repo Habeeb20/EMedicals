@@ -112,6 +112,7 @@ const MyDashboard = () => {
   const [myRecord, setMyRecord] = useState([]);
   const navigate = useNavigate();
   const [previousLength, setPreviousLength] = useState(0);
+  const [mortuaryDeath, setMortuaryDeath] = useState([])
  
 
 
@@ -309,7 +310,17 @@ const calculateCounts = (field) => {
         borderWidth: 1,
       },
     ],
-  });
+    option:{
+      plugins:{
+        title:{
+          text:title,
+          color:"white"
+        }
+      },
+
+    },
+  }
+);
 
 
   const percentage2 = calculatePercentageChange(previousLength, deathRecord.length)
@@ -346,20 +357,116 @@ const calculateCounts = (field) => {
 
 const percentage = calculatePercentageChange(previousLength, myRecord.length);
 
+
+
+//fetch mortuary death data 
+
+useEffect(() => {
+  const fetchMyRecord = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_m}/getdeath`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setMortuaryDeath(response.data);
+      console.log(response.data);
+      toast.success("your death records is here");
+
+      
+const backgroundColors = [
+  "#4F46E5", // Purple
+  "#F59E0B", // Amber
+  "#10B981", // Green
+  "#EF4444", // Red
+  "#3B82F6", // Blue
+  "#8B5CF6", // Violet
+];
+
+setChartData({
+  labels:gender,
+  datasets:[
+    {
+      label: "cause of death",
+      data:causeOfDeath,
+      backgroundColor: gender?.map(
+          (_, idx) => backgroundColors[idx % backgroundColors.length] // Cycle through colors
+        ),
+        borderWidth: 1,
+    }
+  ]
+})
+    } catch (error) {
+      console.log(error);
+      toast.error("an error occurred");
+      setError(error.response?.data?.message);
+    }
+  };
+  fetchMyRecord();
+}, []);
+
+const calculateCounts1 = (field) => {
+  const counts = {};
+  mortuaryDeath.forEach((death) => {
+      counts[death[field]] = (counts[death[field]] || 0) + 1;
+  })
+  return counts
+}
+
+const genderCounts1 = calculateCounts1("gender");
+const causeOfDeathCounts1 = calculateCounts1("causeOfDeath")
+
+
+
+const pieData1 = (counts, title) => ({
+  labels: Object.keys(counts),
+  datasets: [
+    {
+      label: title,
+      data: Object.values(counts),
+      backgroundColor: [
+        "#FF6384", // Red
+        "#36A2EB", // Blue
+        "#FFCE56", // Yellow
+        "#4CAF50", // Green
+        "#FF9F40", // Orange
+        "#9966FF", // Purple
+      ],
+      borderWidth: 1,
+    },
+  ],
+  option:{
+    plugins:{
+      title:{
+        text:title,
+        color:"white"
+      }
+    },
+
+  },
+}
+);
+
+
+
+
   return (
     <>
       <div className="mr-44">
         <h1>
           Dashboard for{" "}
           <span className="font-bold text-green-600 text-2xl mb-15">
-            {data.name}
+            {data.name} 
           </span>
+             mortuary
         </h1>
 
         <div className="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-6  text-white">
           <div className="bg-[#1c0f0a] p-6 rounded-xl relative border border-[#ff7b3e] shadow-lg w-full min-h-[150px]">
             <h3 className="text-sm text-gray-400">
-              Death recorded in hospital
+              Death recorded in hospitals
             </h3>
             <p className="text-3xl font-bold">{deathRecord.length}</p>
             <p className="text-sm text-red-400">
@@ -382,16 +489,16 @@ const percentage = calculatePercentageChange(previousLength, myRecord.length);
 
           {/* Accrued Yield Card */}
           <div className="bg-[#1a1a14] p-6 rounded-xl relative border border-[#ffbe32] shadow-lg w-full min-h-[150px]">
-            <h3 className="text-sm text-gray-400">Accrued Yield</h3>
-            <p className="text-3xl font-bold">$20,892</p>
+            <h3 className="text-sm text-gray-400">percentage Rate</h3>
+            <p className="text-3xl font-bold">20%</p>
             <p className="text-sm text-green-400">
-              +$1340 <span className="text-xs">+1.2%</span>
+               <span className="text-xs">20%</span>
             </p>
             <div className="absolute top-4 right-4 text-[#ffbe32]">⬤</div>
           </div>
         </div>
         
-        {/*charts*/}
+        {/*charts for hospital data*/}
 
       
 
@@ -403,20 +510,31 @@ const percentage = calculatePercentageChange(previousLength, myRecord.length);
               <Pie data={pieData(genderCounts, "Gender Count")} />
             </div>
 
-            <div className=" shadow-lg rounded-lg p-4">
-              <h2 className="text-lg font-semibold text-center mb-4">
+            <div className=" shadow-lg  text-white rounded-lg p-4">
+              <h2 className="text-lg text-white font-semibold text-center mb-4">
                 Cause of death
               </h2>
-              <Pie data={pieData(causeOfDeath, "Cause of Death")} />
+              <Pie data={pieData(causeOfDeathCounts, "Cause of Death")} />
             </div>
 
-            {/* Departments Pie Chart */}
-            {/* <div className="bg-white shadow-lg rounded-lg p-4">
+
+                {/*charts for mortuary data*/}
+
+
+
+            <div className="shadow-lg rounded-lg p-4">
               <h2 className="text-lg font-semibold text-center mb-4">
-                Departments
+                gender in your mortuary
               </h2>
-              <Pie data={pieData(departmentCounts, "Departments")} />
-            </div> */}
+              <Pie data={pieData1(genderCounts1, "gender")} />
+            </div>
+
+            <div className="shadow-lg rounded-lg p-4">
+              <h2 className="text-lg font-semibold text-center mb-4">
+                cause of death in your mortuary
+              </h2>
+              <Pie data={pieData1(causeOfDeathCounts1, "cause of Death")} />
+            </div>
           </div>
 
       </div>

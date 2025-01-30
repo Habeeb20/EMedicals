@@ -56,6 +56,7 @@ medicalPhamarcysalerouter.post("/", medicalPhamarcyProtect, async(req, res) => {
         }
 
         if (product.quantity < quantity) {
+            
             return res.status(400).json({ message: `Insufficient stock for product: ${product.name}` });
         }
 
@@ -94,10 +95,11 @@ medicalPhamarcysalerouter.post("/", medicalPhamarcyProtect, async(req, res) => {
 
 
 
-medicalPhamarcysalerouter.get("/", medicalPhamarcyProtect, async(req, res) => {
+medicalPhamarcysalerouter.get("/getMedicalsales", medicalPhamarcyProtect, async(req, res) => {
     try {
-        const sales = await Sale.find({ seller: req.seller.id }).populate('product');
+        const sales = await Sale.find({ seller: req.seller.id }).populate('items');
         res.json(sales);
+        console.log(sales)
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

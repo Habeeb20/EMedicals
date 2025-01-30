@@ -6,36 +6,45 @@ import { getSellerIdFromToken } from './getSellerIdFromToken';
 import 'chart.js/auto'; 
 import axios from 'axios';
 import Navbar from '../../components/Navbar';
+import { Chart, registerables } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
+Chart.register(...registerables);
+
 
 const Dashboard = () => {
-
+  const [chartData, setChartData] = useState(null);
     const [userData, setUserData] = useState([])
     const [user, setUser] = useState([])
     const [userId, setUserId] = useState([])
+    const [name, setName] = useState([])
+    const [quantity, setQuantity] = useState([])
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+    const [product, setProduct] = useState([])
+    const [uniqueProductCount, setUniqueProductCount] = useState(0)
     const [failTransaction, setFailTransaction] = useState('')
-  const barChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Inventory Growth',
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      },
-    ],
-  };
+    const [totalQuantity, setTotalQuantity] = useState([])
+    const [sales, setSales] = useState([])
 
-  const pieChartData = {
-    labels: ['Type A', 'Type B', 'Type C'],
-    datasets: [
-      {
-        data: [300, 50, 100],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-      },
-    ],
-  };
-
+    //mydata
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -94,8 +103,124 @@ const Dashboard = () => {
   fetchFailedTransaction()
 
  }, [])
-  //side bar
+  //fetch My Product
 
+  useEffect(() => {
+    const fetchMyProduct = async() => {
+      const token = localStorage.getItem('token')
+        try {
+          
+      const response = await axios.get(`${import.meta.env.VITE_API_MP2}/myproducts`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      toast.success("successfully fetched")
+     
+      //get the unique product count
+     const productNames = response.data.products.map((prod) => prod.name)
+     const uniqueNames = new Set(productNames);
+     setUniqueProductCount(uniqueNames.size)
+     setProduct(response.data.products)
+      console.log(response.data.products)
+
+      //get total quantity
+      const totalQuantity = response.data.products.reduce(
+        (sum, prod) => sum + Number(prod.quantity || 0), 0
+      )
+      setTotalQuantity(totalQuantity)
+     const backgroundColors = [
+      "#4F46E5", // Purple
+      "#F59E0B", // Amber
+      "#10B981", // Green
+      "#EF4444", // Red
+      "#3B82F6", // Blue
+      "#8B5CF6", // Violet
+    ];
+    setChartData({
+      labels: name,
+      datasets:[
+        {
+          label: "quantity of product",
+          data:quantity,
+          backgroundColor: name?.map(
+              (_, idx) => backgroundColors[idx % backgroundColors.length] // Cycle through colors
+            ),
+            borderWidth: 1,
+        }
+      ]
+    })
+
+     } catch (error) {
+          console.log(error)
+          setError(error.response?.data?.message)
+          toast.error("error occurred")
+        }
+    }
+    fetchMyProduct()
+  }, [])
+
+  const calculateCounts = (field) => {
+    const counts = {}
+    product.forEach((prod) => {
+        counts[prod[field]] = (counts[prod[field]] || 0) + 1
+    })
+    return counts
+  }
+
+const nameCount = calculateCounts("name")
+const quantityCount = calculateCounts("quantity")
+
+const pieData = (counts, title) => ({
+  labels: Object.keys(counts),
+  datasets: [
+    {
+      label: title,
+      data: Object.values(counts),
+      backgroundColor: [
+        "#FF6384", // Red
+        "#36A2EB", // Blue
+        "#FFCE56", // Yellow
+        "#4CAF50", // Green
+        "#FF9F40", // Orange
+        "#9966FF", // Purple
+      ],
+      borderWidth: 1,
+    },
+  ],
+  
+ 
+}
+);
+
+
+useEffect(() => {
+  const fetchMyData = async () => {
+
+
+    try {
+      const token = localStorage.getItem("token")
+      const response = await axios.get(`${import.meta.env.VITE_API_MP3}/getmedicalsales`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setSales(response.data)
+      console.log(response.data)
+      toast.success("your sold goods is here")
+
+      setChartData(
+        
+      )
+    } catch (error) {
+      console.log(error)
+      toast.error("an error occurred here ")
+      setError(error.response?.data?.message)
+    }
+
+  }
+  fetchMyData()
+}, [])
 
   return (
     <div className="p-5">
@@ -108,40 +233,54 @@ const Dashboard = () => {
           <div
             className="bg-green-300 p-5 rounded shadow text-center text-xl font-bold text-gray-700"
           >
-          Successful transaction
+        Number of Stocks
+        <h4>{product.length}</h4>
           </div>
           <div
             className="bg-red-300 p-5 rounded shadow text-center text-xl font-bold text-gray-700"
           >
-            failed transaction
-            <h4>{failTransaction}</h4>
+            sales made
+            <h4>{sales.length}</h4>
          
           </div>
           <div
             className="bg-yellow-300 p-5 rounded shadow text-center text-xl font-bold text-gray-700"
           >
-            Pending transaction
+            Unique products
+           <h4> {uniqueProductCount}</h4>
           </div>
           <div
             className="bg-blue-300 p-5 rounded shadow text-center text-xl font-bold text-gray-700"
           >
-            Item in Stock
+            quantity of Goods in stock
+            <h4>{totalQuantity}</h4>
           </div>
     
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-5 rounded shadow">
-          <h2 className="text-xl font-semibold mb-3">Inventory Growth</h2>
-          <Bar data={barChartData} />
-        </div>
-        <div className="bg-white p-5 rounded shadow">
-          <h2 className="text-xl font-semibold mb-3">Inventory Type Distribution</h2>
-          <Pie data={pieChartData} />
-        </div>
+    
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className=" shadow-lg rounded-lg p-4">
+              <h2 className="text-lg text-black font-semibold text-center mb-4">
+                Name of products
+              </h2>
+              {Object.keys(nameCount || {}).length > 0 ? (
+  <Pie data={pieData(nameCount, "name of product")} />
+) : (
+  <p className="text-center text-gray-500">No data available</p>
+)}
+            </div>
+
+            <div className=" shadow-lg   rounded-lg p-4">
+              <h2 className="text-lg text-black font-semibold text-center mb-4">
+                Quantity of products 
+              </h2>
+              <Pie data={pieData(quantityCount, "quantity of product")} />
+            </div>
+            </div>
       </div>
-    </div>
+  
   );
 };
 
@@ -299,10 +438,6 @@ const AddProduct = () =>{
 }
 
 
-
-
-
-
 const SellProduct = () => {
   const [buyerName, setBuyerName] = useState("");
   const [products, setProducts] = useState([{ productId: "", quantity: 1 }]);
@@ -377,7 +512,7 @@ const SellProduct = () => {
   return(
     <>
     <h2 className='text-black text-center text-2xl'>Sell Products</h2>
-
+    {error && <p className="text-red-500">{error}</p>}
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 p-6 bg-white text-black shadow-md rounded-lg">
 
     <div style={{ marginBottom: "10px" }}>
@@ -479,7 +614,7 @@ const SellProduct = () => {
           <p>Total Amount: {sellProduct.totalAmount}</p>
           <p>Buyer: {sellProduct.buyerName}</p>
           <ul>
-            {response.items.map((item, index) => (
+            {sellProduct.items.map((item, index) => (
               <li key={index}>
                 Product: {item.product}, Quantity: {item.quantity}, Total: {item.total}
               </li>
@@ -506,6 +641,8 @@ const ViewProduct = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+
+  //get my product
   useEffect(() => {
     const fetchMyProduct = async() => {
       const token = localStorage.getItem('token')
@@ -539,18 +676,20 @@ const ViewProduct = () => {
             <th className="border px-4 py-2">Cost Price</th>
             <th className="border px-4 py-2">Description</th>
             <th className="border px-4 py-2">Selling Price</th>
-
+            <th className="border px-4 py-2">Date</th>
           </tr>
         </thead>
         <tbody>
           {Array.isArray(product) &&
             product.map((products, index) => (
             <tr key={index} >
+          
               <td className='border px-4 py'>{products.name} </td>
               <td className='border px-4 py'>{products.quantity} </td>
               <td className='border px-4 py'>{products.costPrice} </td>
               <td className='border px-4 py'>{products.description} </td>
               <td className='border px-4 py'>{products.sellingPrice} </td>
+              <td className='border px-4 py'>{new Date(products.date).toLocaleDateString()} </td>
             </tr>
           ))}
         </tbody>
@@ -562,9 +701,105 @@ const ViewProduct = () => {
 };
 
 
-const SoldProducts = () => <div className='p-5'> sold Products
+const SoldProducts = () => {
+    const [sales, setSales] = useState([])
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [product, setProduct] = useState([])
+    //get all sales being made
+    useEffect(() => {
+      const fetchMyData = async () => {
+  
+
+        try {
+          const token = localStorage.getItem("token")
+          const response = await axios.get(`${import.meta.env.VITE_API_MP3}/getmedicalsales`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          })
+          setSales(response.data)
+          console.log(response.data)
+          toast.success("your sold goods is here")
+        } catch (error) {
+          console.log(error)
+          toast.error("an error occurred here ")
+          setError(error.response?.data?.message)
+        }
+
+      }
+      fetchMyData()
+    }, [])
+
+
+    //get all products
+    useEffect(() => {
+      const fetchMyProduct = async() => {
+        const token = localStorage.getItem('token')
+          try {
+            
+        const response = await axios.get(`${import.meta.env.VITE_API_MP2}/myproducts`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        toast.success("successfully fetched")
+        setProduct(response.data.products)
+       
+        console.log(response.data)
+          } catch (error) {
+            console.log(error)
+            setError(error.response?.data?.message)
+            toast.error("error occurred")
+          }
+      }
+      fetchMyProduct()
+    }, [])
+
+
+    const getProductName = (productId) => {
+      const products = product.find((p) => p._id === productId);
+      return products ? products.name : "Unknown Product";
+    };
+  return (
+    <div className='p-5'> 
+        <table className='text-black'>
+      {error && <p className='text-red-400'>{error}</p>}
+        <thead>
+          <tr>
+            <th className="border px-4 py-2">Name of product sold</th>
+            <th className="border px-4 py-2">Buyers Name</th>
+            <th className="border px-4 py-2">Amount</th>
+            <th className="border px-4 py-2">quantity</th>
+            
+            <th className="border px-4 py-2">Total</th>
+            <th className="border px-4 py-2">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+  {Array.isArray(sales) &&
+    sales.map((sale, index) => (
+      sale.items.map((item, idx) => ( 
+        <tr key={`${index}-${idx}`}>
+          <td className='border px-4 py'>{getProductName(item.product)}</td> 
+          <td className='border px-4 py'>{sale.buyerName}</td>
+          <td className='border px-4 py'>{item.sellingPrice}</td>
+          <td className='border px-4 py'>{item.quantity}</td>
+          <td className='border px-4 py'>{item.total}</td>
+          <td className='border px-4 py'>{new Date(sale.date).toLocaleDateString()}</td>
+        </tr>
+      ))
+    ))
+  }
+</tbody>
+
+      </table>
+
 
 </div>
+  )
+
+}
 const SidebarLayout = () => {
   const [activePage, setActivePage] = useState('dashboard');
   const [isSidebarOpen, setSidebarOpen] = useState(false);

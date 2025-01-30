@@ -9,7 +9,9 @@ const productSchema = new mongoose.Schema({
     costPrice: { type: String, required: true },
     sellingPrice: { type: String, required: true },
     description: { type: String, required: true },
-    quantity: { type: String, required: true }
+    quantity: { type: String, required: true },
+    date:{type: Date, default:Date.now()}
+    
 });
 
 export default mongoose.model('MedicalProduct', productSchema); 

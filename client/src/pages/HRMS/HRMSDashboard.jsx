@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import { Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pie } from "react-chartjs-2";
 import {
@@ -1267,10 +1268,13 @@ const [showPopup, setShowPopup] = useState(false)
               <th className="p-2 text-sm text-gray-600">Salary</th>
               <th className="p-2 text-sm text-gray-600">Tax</th>
               <th className="p-2 text-sm text-gray-600">HMO</th>
+             
+              <th className="p-2 text-sm text-gray-600">IOU</th>
+              <th className="p-2 text-sm text-gray-600">Penalty</th>
               <th className="p-2 text-sm text-gray-600">Date</th>
               <th className="p-2 text-sm text-gray-600">Month</th>
-              <th className="p-2 text-sm text-gray-600">Year</th>
-
+              {/* <th className="p-2 text-sm text-gray-600">Year</th> */}
+              <th className="p-2 text-sm text-blue-700">Net Salary</th>
               <th className="p-4 text-sm text-gray-600">Status</th>
 
                  <th className="p-4 text-sm text-gray-600">Action</th>
@@ -1296,11 +1300,35 @@ const [showPopup, setShowPopup] = useState(false)
                   <td className="p-2 text-sm">{emp.employeeId?.salary}</td>
                   <td className="p-2 text-sm">{emp.tax}</td>
                   <td className="p-2 text-sm">{emp.HMO}</td>
+                  <td className="p-2 text-sm">{emp.IOU}</td>
+                  <td className="p-2 text-sm">{emp.penalty}</td>
                   <td className="p-2 text-sm">
                     {new Date(emp.createdAt).toLocaleDateString()}
                   </td>
                   <td className="p-2 text-sm">{emp.month}</td>
-                  <td className="p-2 text-sm">{emp.year}</td>
+                  {/* <td className="p-2 text-sm">{emp.year}</td> */}
+                  <td className="p-2 text-sm text-blue-700">
+  {(() => {
+ 
+    const salary = Number(emp.employeeId?.salary.replace(/,/g, "").trim()) || 0;
+    const tax = Number(emp.tax) || 0;
+    const HMO = Number(emp.HMO) || 0;
+    const penalty = Number(emp.penalty) || 0;
+    const IOU = Number(emp.IOU) || 0;
+
+
+
+    // Perform calculation
+    const netSalary = salary - tax - HMO - penalty - IOU;
+
+
+
+    return netSalary;
+  })()}
+</td>
+
+
+
                   <td className="p-2 text-sm">
                     <button className="text-gray-500">
                       {emp.status === "Unpaid" ? (
@@ -1780,6 +1808,34 @@ const Attendance = () => {
     };
     fetchMyAttendance();
   }, []);
+
+
+  ///count my attendance
+  const attendanceCount = useMemo(() => {
+    const countMap = new Map()
+
+    myAttendance.forEach((emp) => {
+      if(!emp.employeeName || !emp.date) return;
+
+      const uniqueKey = `${emp.employeeName}-${new Date(emp.date).toDateString()}`;
+
+
+      if (!countMap.has(uniqueKey)) {
+        countMap.set(uniqueKey, emp.employeeName);
+      }
+
+    })
+
+    const finalCount = {};
+    for (let name of countMap.values()) {
+      finalCount[name] = (finalCount[name] || 0) + 1;
+    }
+
+    return finalCount;
+  }, [myAttendance]);
+
+
+
   return (
     <div>
       attendance
@@ -1842,8 +1898,9 @@ const Attendance = () => {
               <th className="p-4 text-sm text-gray-600">Job Role</th>
               <th className="p-4 text-sm text-gray-600">Job Type</th>
               <th className="p-4 text-sm text-gray-600">Check-In Time</th>
-
+              <th className="p-4 text-sm text-gray-600">Date</th>
               <th className="p-4 text-sm text-gray-600">Payroll</th>
+              <th className="p-4 text-left">Days Present</th>
             </tr>
           </thead>
           <tbody>
@@ -1864,6 +1921,8 @@ const Attendance = () => {
                   <td className="p-4 text-sm">{emp.employeeId?.jobRole}</td>
                   <td className="p-4 text-sm">{emp.employeeId?.jobType}</td>
                   <td className="p-4 text-sm text-blue-800">{emp.time}</td>
+                  <td className="p-4 text-sm text-blue-800">{new Date(emp.date).toLocaleDateString()}</td>
+
 
                   <td className="p-4 text-sm">
                     <button className="text-gray-500">
@@ -1874,6 +1933,9 @@ const Attendance = () => {
                       )}
                     </button>
                   </td>
+                  <td className="p-4 text-sm font-bold">
+                {attendanceCount[emp.employeeName] || 0}
+              </td>
                 </tr>
               ))
             ) : (
