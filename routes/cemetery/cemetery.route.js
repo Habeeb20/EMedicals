@@ -43,4 +43,7 @@ cemeteryRouter.get('/cgetall', getCemeteries);
 cemeteryRouter.put('/cupdate/:id', protect, updateCemetery);
 cemeteryRouter.delete('/cdelete/:id', protect, deleteCemetery);
 
+
+
+
 export default cemeteryRouter

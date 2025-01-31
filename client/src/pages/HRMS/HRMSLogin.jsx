@@ -49,7 +49,7 @@ const HRMSLogin = () => {
       <Navbar />
       <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="bg-gray-100 w-64 p-4 hidden md:block opacity-70">
+      <aside className="bg-gray-100 w-64 p-4 hidden md:block opacity-50">
         <div className="text-purple-600 font-bold text-2xl mb-6">HRMS</div>
         <nav>
           <ul className="space-y-4">
@@ -70,7 +70,7 @@ const HRMSLogin = () => {
       {/* Main Content */}
       <main className="flex-1 bg-white p-6">
         {/* Header */}
-        <header className="flex justify-between items-center mb-6 opacity-90">
+        <header className="flex justify-between items-center mb-6 opacity-50">
           <div>
             <h1 className="text-xl font-bold">Hello Robert 👋</h1>
             <p className="text-gray-500">Good Morning</p>
@@ -85,7 +85,7 @@ const HRMSLogin = () => {
         </header>
 
         {/* Stats Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 opacity-90">
+        <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 opacity-40">
           {[
             { title: "Total Employees", count: 560, update: "July 14, 2023" },
             { title: "Total Applicants", count: 1050, update: "July 14, 2023" },

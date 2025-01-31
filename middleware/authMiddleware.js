@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Admin from '../models/cemetary/Admin.js';
-import User from '../models/newPharmacy/userModel.js';
+
 import { createError } from '../utils/error.js';
 import Wellness from '../models/wellness.js';
 import asyncHandler from "express-async-handler"

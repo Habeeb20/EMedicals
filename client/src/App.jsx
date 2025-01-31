@@ -113,24 +113,24 @@ import HospitalLandingPage from "./pages/Hospital/HospitalLandingPage";
 
 
 //newPharmacy
-import Home from "./pages/Home/Home"
-import NPLogin from "./pages/auth/Login"
-import NPRegister from  "./pages/auth/Register"
-import Forgot from "./pages/auth/Forgot";
-import Reset from "./pages/auth/Reset";
-import NPDashboard from "./pages/dashboard/Dashboard";
-import Sidebar from "./components/sidebar/Sidebar";
-import Layout from "./components/layout/Layout";
-import { useDispatch } from "react-redux";
-import { getLoginStatus } from "./services/authService";
-import { SET_LOGIN } from "./redux/features/auth/authSlice";
-import AddProduct from "./pages/addProduct/AddProduct";
-import ProductDetail from "./components/product/productDetail/ProductDetail";
-import EditProduct from "./pages/editProduct/EditProduct";
-import Profile from "./pages/profile/Profile";
-import EditProfile from "./pages/profile/EditProfile";
+// import Home from "./pages/Home/Home"
+// import NPLogin from "./pages/auth/Login"
+// import NPRegister from  "./pages/auth/Register"
+// import Forgot from "./pages/auth/Forgot";
+// import Reset from "./pages/auth/Reset";
+// import NPDashboard from "./pages/dashboard/Dashboard";
+// import Sidebar from "./components/sidebar/Sidebar";
+// import Layout from "./components/layout/Layout";
+// import { useDispatch } from "react-redux";
+// import { getLoginStatus } from "./services/authService";
+// import { SET_LOGIN } from "./redux/features/auth/authSlice";
+// import AddProduct from "./pages/addProduct/AddProduct";
+// import ProductDetail from "./components/product/productDetail/ProductDetail";
+// import EditProduct from "./pages/editProduct/EditProduct";
+// import Profile from "./pages/profile/Profile";
+// import EditProfile from "./pages/profile/EditProfile";
 
-import Contact from "./pages/contact/Contact";
+// import Contact from "./pages/contact/Contact";
 import DashboardHospital from "./pages/Hospital/Admin/DashboardHospital";
 import AllDoctorsForAdmin from "./pages/Hospital/Admin/AllDoctorsForAdmin";
 import AllNursesForAdmin from "./pages/Hospital/Admin/AllNursesForAdmin";
@@ -156,22 +156,25 @@ import DeathRecordForHospital from "./pages/Hospital/Admin/DeathRecordForHospita
 import MortuaryLogin from "./pages/mortuary/MortuaryLogin";
 import GenerateLetter from "./pages/HRMS/GenerateLetter";
 import MortuaryDashboard from "./pages/mortuary/admin/MortuaryDashboard";
+import AdminDashbord from "./pages/SuperAdmin/AdminDashbord";
+import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
+import SuperAdminSignup from "./pages/SuperAdmin/superAdminSignup";
 
 axios.defaults.withCredentials = true;
 
 
 const App = () => {
-  const dispatch = useDispatch();
+
   const { authUser } = useAuthContext();
   console.log(authUser);
 
-  useEffect(() => {
-    async function loginStatus() {
-      const status = await getLoginStatus();
-      dispatch(SET_LOGIN(status));
-    }
-    loginStatus();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   async function loginStatus() {
+  //     const status = await getLoginStatus();
+  //     dispatch(SET_LOGIN(status));
+  //   }
+  //   loginStatus();
+  // }, [dispatch]);
 
 
   return (
@@ -399,12 +402,12 @@ const App = () => {
 
 
           //newPharmacy
-          <Route path="/newpharmcy" element={<Home />} />
+          {/* <Route path="/newpharmcy" element={<Home />} />
           <Route path="/login" element={<NPLogin />} />
           <Route path="/register" element={<NPRegister />} />
           <Route path="/forgot" element={<Forgot />} />
-          <Route path="/resetpassword/:resetToken" element={<Reset />} />
-
+          <Route path="/resetpassword/:resetToken" element={<Reset />} /> */}
+{/* 
 
           <Route
           path="/dashboard"
@@ -415,9 +418,9 @@ const App = () => {
               </Layout>
             </Sidebar>
           }
-        />
+        /> */}
 
-<Route
+{/* <Route
           path="/add-product"
           element={
             <Sidebar>
@@ -426,10 +429,10 @@ const App = () => {
               </Layout>
             </Sidebar>
           }
-        />
+        /> */}
 
 
-<Route
+{/* <Route
           path="/product-detail/:id"
           element={
             <Sidebar>
@@ -440,8 +443,8 @@ const App = () => {
           }
         />
 
-<Route
-          path="/edit-product/:id"
+<Route */}
+          {/* path="/edit-product/:id"
           element={
             <Sidebar>
               <Layout>
@@ -449,10 +452,10 @@ const App = () => {
               </Layout>
             </Sidebar>
           }
-        />
+        /> */}
 
 
-<Route
+{/* <Route
           path="/profile"
           element={
             <Sidebar>
@@ -461,10 +464,10 @@ const App = () => {
               </Layout>
             </Sidebar>
           }
-        />
+        /> */}
 
 
-<Route
+{/* <Route
           path="/edit-profile"
           element={
             <Sidebar>
@@ -474,8 +477,8 @@ const App = () => {
             </Sidebar>
           }
         />
-
-
+ */}
+{/* 
 <Route
           path="/contact-us"
           element={
@@ -485,7 +488,7 @@ const App = () => {
               </Layout>
             </Sidebar>
           }
-        />
+        /> */}
 
 
 
@@ -500,6 +503,14 @@ const App = () => {
         <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
         <Route path="/hrmslettergenerate" element={<GenerateLetter />} />
         <Route path="/HRMSDashboard/hrms/details/:id" element={<EmployeeDetails />} />
+
+
+
+
+        ///Admin
+        <Route path="/superadmindashboard" element={<AdminDashbord />} />
+        <Route path="/superadminlogin" element={<SuperAdminLogin />} />
+        <Route path="/superadminsignup" element={<SuperAdminSignup />} />
       
 
         
