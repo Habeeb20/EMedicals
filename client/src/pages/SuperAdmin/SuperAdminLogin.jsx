@@ -172,14 +172,14 @@ const SuperAdminLogin = () => {
 
      
           {/* Social Login */}
-          <div className="mt-4 text-center">
+          {/* <div className="mt-4 text-center">
             <p className="text-gray-500">Or login with</p>
             <div className="flex justify-center gap-5 mt-2">
               <FaFacebook className="text-blue-600 text-2xl cursor-pointer hover:scale-110 transition" />
               <FaGoogle className="text-red-500 text-2xl cursor-pointer hover:scale-110 transition" />
               <FaApple className="text-black text-2xl cursor-pointer hover:scale-110 transition" />
             </div>
-          </div>
+          </div> */}
 
           {/* Signup Link */}
           <div className="mt-4 text-center text-gray-500">

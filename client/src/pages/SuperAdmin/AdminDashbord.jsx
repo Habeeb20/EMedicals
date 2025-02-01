@@ -657,11 +657,139 @@ return (
 }
 
 const Doctor = () => {
+    const [doctor, setDoctor] = useState([])
+    
 
+    useEffect(() => {
+        const fetchAllData= async() => {
+            try {
+                const token = localStorage.getItem("token")
+                const response = await axios.get(`${import.meta.env.VITE_API_SA}/alldoctor`, {
+                    headers: {Authorization: `Bearer ${token}`}
+                })
+                setDoctor(response.data)
+            } catch (error) {
+                console.log(error)
+                setError(error.response?.data?.message)
+            }
+        }
+        fetchAllData()
+    },[])
+
+    return (
+        <>
+            <div className="mt-6 bg-white shadow-md rounded-md overflow-hidden">
+    <h3 className="text-center text-2xl">Doctor</h3>
+      <table className="w-full border border-gray-300">
+        <thead>
+          <tr className="bg-gray-700 text-white">
+          <th className="p-3 text-sm">picture</th>
+            <th className="p-3 text-sm">Full Name</th>
+            <th className="p-3 text-sm">Email</th>
+            <th className="p-3 text-sm">phone no</th>
+            <th className="p-3 text-sm">state</th>
+            <th className="p-3 text-sm">Specialization</th>
+            <th className="p-3 text-sm">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {doctor&& doctor.length > 0 ? (
+            doctor.map((name, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50 even:bg-gray-100">
+              <td>
+              <img 
+    src={name.profilePicture || ""} 
+    className="w-10 h-10 rounded-full object-cover"
+/>
+
+              </td>
+                <td className="p-3 text-sm">{name.fullname}</td>
+                <td className="p-3 text-sm">{name.email}</td>
+                <td className="p-3 text-sm">{name.phoneNumber}</td>
+                <td className="p-3 text-sm">{name.state}</td>
+                <td className="p-3 text-sm">{name.specialization}</td>
+                <td className="p-3 text-sm">{new Date(name.createdAt).toLocaleString()}</td>
+              
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="p-4 text-center text-gray-500">No data available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+        </>
+    )
 }
 
 const Pharmacy = () => {
+    const [pharmacy, setPharmacy] = useState([])
+    
 
+    useEffect(() => {
+        const fetchAllData= async() => {
+            try {
+                const token = localStorage.getItem("token")
+                const response = await axios.get(`${import.meta.env.VITE_API_SA}/allpharmacy`, {
+                    headers: {Authorization: `Bearer ${token}`}
+                })
+                setPharmacy(response.data)
+            } catch (error) {
+                console.log(error)
+                setError(error.response?.data?.message)
+            }
+        }
+        fetchAllData()
+    },[])
+
+    return (
+        <>
+            
+    <div className="mt-6 bg-white shadow-md rounded-md overflow-hidden">
+    <h3 className="text-center text-2xl">All Pharmacy</h3>
+      <table className="w-full border border-gray-300">
+        <thead>
+          <tr className="bg-gray-700 text-white">
+            <th className="p-3 text-sm">Full Name</th>
+            <th className="p-3 text-sm">Email</th>
+            <th className="p-3 text-sm">Doctor name</th>
+            <th className="p-3 text-sm">sickness</th>
+            <th className="p-3 text-sm">appointmentDate</th>
+          </tr>
+        </thead>
+        <tbody>
+          { pharmacy && pharmacy.length > 0 ? (
+             pharmacy.map((name, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50 even:bg-gray-100">
+                <td className="p-3 text-sm">{name.patientId?.fullname}</td>
+                <td className="p-3 text-sm">{name.patientId?.email}</td>
+                <td className="p-3 text-sm">{name.doctorId?.fullname || name.doctorId?.email}</td>
+                <td className="p-3 text-sm">{name.sickness}</td>
+                <td className="p-3 text-sm">{new Date(name.appointmentDate).toLocaleString()}</td>
+                {/* <td className="p-3 text-sm text-red-600">
+                  <button
+                    onClick={() => handleDelete(name._id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                  >
+                    Delete
+                  </button>
+                </td> */}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="p-4 text-center text-gray-500">No data available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+        </>
+    )
 }
 
 const Appointment = () => {
@@ -808,6 +936,8 @@ const Appointment = () => {
         </>
     )
 }
+
+
 export default function AdminDashboard() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("Dashboard");
@@ -827,7 +957,7 @@ export default function AdminDashboard() {
             <FiMenu size={24} />
           </button>
       <h1 className="text-2xl font-bold mb-6">{activeSection}</h1>
-          {activeSection === "Your Death Record" && <Doctor />}
+          {activeSection === "Doctors" && <Doctor />}
           {activeSection === "Dashboard" && <Content />}
           {activeSection === "Appointments" && <Appointment />}
           {activeSection === "Hospitals" && <Hospital />}
