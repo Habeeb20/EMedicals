@@ -87,26 +87,26 @@ const peerServer = ExpressPeerServer(server, {
   allow_discovery: true,
 });
 
-app.use(
-  cors({
-    origin:["http://localhost:5173", "http://localhost:5174"],   
-    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin:["http://localhost:5173", "http://localhost:5174"],   
+//     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
 
 
-// CORS setup: Enable CORS for the specific origin and with credentials
-// const corsOptions = {
-//   origin: "https://med.eschoolconnect.ng", // Specific origin
-//   credentials: true,  // Allow cookies and authentication headers
-//   methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific methods
-//   allowedHeaders: ["Content-Type", "Authorization"],  // Allow specific headers
-// };
 
-// // Apply CORS middleware
-// app.use(cors(corsOptions));
+const corsOptions = {
+  origin: "https://med.eschoolconnect.ng", // Specific origin
+  credentials: true,  // Allow cookies and authentication headers
+  methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific methods
+  allowedHeaders: ["Content-Type", "Authorization"],  // Allow specific headers
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.json());
