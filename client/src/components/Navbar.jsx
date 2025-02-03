@@ -118,11 +118,12 @@ const Navbar = () => {
   const [selectedNotification, setSelectedNotification] = useState("Hospitals");
 
   const menuItems = [
-    { name: "Hospitals", icon: <FaHospitalAlt />, link: "/hospitals" },
-    { name: "Pharmacy", icon: <FaCapsules />, link: "/pharmacy" },
-    { name: "Laboratory", icon: <FaMicroscope />, link: "/laboratory" },
+    { name: "Hospitals", icon: <FaHospitalAlt />, link: "/loginhospitaladmin" },
+    { name: "Pharmacy", icon: <FaCapsules />, link: "/medicalpharmacylogin" },
+    { name: "Laboratory", icon: <FaMicroscope />, link: "/lablogin" },
     { name: "Telemedicine", icon: <FaSyringe />, link: "/SignupModalTelemedicine" },
     { name: "Pro Life", icon: <FaHeartbeat />, link: "/pro-life" },
+    { name: "HRMS", icon: <FaHeartbeat />, link: "/hrmslogin" },
   ];
 
   const handleMenuItemClick = (itemName) => {
