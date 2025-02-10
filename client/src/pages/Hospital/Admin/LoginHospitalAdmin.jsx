@@ -4,7 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const LoginHospitalAdmin = () => {
   const navigate = useNavigate();
@@ -123,6 +123,10 @@ const LoginHospitalAdmin = () => {
                 )}
               </motion.button>
             </div>
+            <Link to="/hforgotpassword">
+            <h4>forgot password</h4>
+            </Link>
+         
             <p className="mt-4 text-center text-gray-500 text-sm">
               Don't have an account?{' '}
               <a href="/signuphospitaladmin" className="text-blue-500 font-semibold">

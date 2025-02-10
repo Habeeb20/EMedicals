@@ -6,37 +6,37 @@ const features = [
     title: "Secure Platform",
     description: "Secure online platform for scheduling tests and uploading results, ensuring data protection and confidentiality.",
     icon: "\u2606", 
-    link: "/secure-platform",
+ 
   },
   {
     title: "Convenient Sampling",
     description: "Flexible sampling options, including home sample pickups and walk-in appointments, for patient convenience and comfort.",
     icon: "\u2615", 
-    link: "/convenient-sampling",
+ 
   },
   {
     title: "Extended Access",
     description: "Expands your reach and connects with a broader patient base and healthcare providers across the region.",
     icon: "\u2695", 
-    link: "/extended-access",
+
   },
   {
     title: "Streamlined Ordering",
     description: "Effortlessly manage medication orders and tracking in one place.",
     icon: "\u267B", // Replace with appropriate icon
-    link: "/streamlined-ordering",
+ 
   },
   {
     title: "Efficient Fulfillment",
     description: "Seamlessly fulfill prescriptions, whether through delivery or pharmacy pickup options.",
     icon: "\u270D", // Replace with appropriate icon
-    link: "/efficient-fulfillment",
+
   },
   {
     title: "Collaborative Care",
     description: "Enhance coordination with healthcare providers for better patient outcomes.",
     icon: "\u2713", // Replace with appropriate icon
-    link: "/collaborative-care",
+
   },
 ];
 

@@ -22,14 +22,13 @@ const generateUniqueNumber = () => {
   };
 
   
-const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+  const transporter = nodemailer.createTransport(({
+    service:'gmail',
     auth: {
-      user:"babatundeademola112@gmail.com",
-      pass:"pknseuxqxzkoqdjg"
-    },
-  });
-  
+        user:"essentialng23@gmail.com",
+        pass:"awpqyxoujmcgoemh"
+      },
+}));
   // Helper function to send OTP
   const sendOTPEmail = async (email, otp) => {
     const mailOptions = {
@@ -91,7 +90,7 @@ const transporter = nodemailer.createTransport({
         });
         await user.save()
 
-        await sendOTPEmail(user.email, verificationToken);
+    
 
         generateTokenAndSetCookie(res, user._id)
         res.status(201).json({
@@ -426,9 +425,9 @@ export const forgotPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user:"babatundeademola112@gmail.com",
-        pass:"pknseuxqxzkoqdjg"
-      },
+        user:"essentialng23@gmail.com",
+      pass:"clepxviuvbxqbedp"
+    },
     });
 
     const mailOptions = {

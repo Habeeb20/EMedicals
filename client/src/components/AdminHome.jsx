@@ -61,7 +61,7 @@ const Modal2 = ({isOpenModal, onCloseModal}) => {
             Login as cemetary Admin
           </Link>
           <Link
-            to="/mortuarysignup"
+            to="/mlogin"
             onClick={onCloseModal}
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center"
           >
@@ -143,7 +143,7 @@ const AdminHome = () => {
         </Link>
          
           
-        <Link to='/pharmacistlogin'>
+        <Link to='/medicalpharmacylogin'>
         <div className="bg-purple-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaPrescriptionBottle className="text-4xl text-purple-500" />
             <div>
@@ -154,7 +154,7 @@ const AdminHome = () => {
 
         </Link>
 
-          <Link to='/labregister'>
+          <Link to='/lablogin'>
           <div className="bg-teal-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
             <FaVials className="text-4xl text-teal-500" />
             <div>

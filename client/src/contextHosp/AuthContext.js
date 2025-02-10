@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   const login = async (email, password) => {
-    const res = await axios.post("http://localhost:8000/api/hospital/login", { email, password });
+    const res = await axios.post(`${import.meta.env.VITE_API}/api/hospital/login`, { email, password });
     setUser(res.data.user);
     setToken(res.data.token);
     localStorage.setItem("token", res.data.token);

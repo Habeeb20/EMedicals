@@ -27,7 +27,7 @@ const SelectedCare = () => {
         if (selectedOption === "Doctor") {
           const [responseA, responseB] = await Promise.all([
             fetch(`${import.meta.env.VITE_API_D}/doctorgetall`),
-            fetch(`${import.meta.env.VITE_API_HO}/alldoctorshospital`),
+            fetch(`${import.meta.env.VITE_API_HO}/doctorgetall`),
           ]);
 
           if (!responseA.ok || !responseB.ok) {
@@ -43,7 +43,7 @@ const SelectedCare = () => {
           setData(combinedData);
         } else if (selectedOption === "Nurse") {
           const response = await fetch(
-            `${import.meta.env.VITE_API_HO}/allnurseshospital`
+            `${import.meta.env.VITE_API_HO}/nursegetall`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch data for nurses");

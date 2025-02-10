@@ -188,6 +188,77 @@ export const getDoctorDetails = async (req, res) => {
 
 
 
+export const forgotPassword = async (req, res) => {
+	const { email } = req.body;
+	try {
+		const user = await Doctor.findOne({ email });
+
+		if (!user) {
+			return res.status(400).json({ success: false, message: "User not found" });
+		}
+
+	  // Generate a reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetPasswordToken = jwt.sign({ resetToken }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Send an email with the reset link
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetPasswordToken}`;
+
+    // Setup Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user:"essentialng23@gmail.com",
+      pass:"clepxviuvbxqbedp"
+    },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'Password Reset',
+      text: `You requested a password reset. Click the link below to reset your password: \n\n ${resetLink}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+		res.status(200).json({ success: true, message: "Password reset link sent to your email" });
+	} catch (error) {
+		console.log("Error in forgotPassword ", error);
+		res.status(400).json({ success: false, message: error.message });
+	}
+};
+
+
+
+export const resetPassword = async (req, res) => {
+	
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+try {
+  // Verify the reset token
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const { resetToken } = decoded;
+
+  // Find the user by the token
+  const user = await Doctor.findOne({ resetToken });
+  if (!user) {
+    return res.status(404).json({ message: 'Invalid token' });
+  }
+
+  // Hash the new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+
+  await user.save();
+
+  res.status(200).json({ message: 'Password reset successfully' });
+} catch (err) {
+  res.status(500).json({ message: 'Server error' });
+}
+};
+
 
 
 

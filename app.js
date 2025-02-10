@@ -76,6 +76,15 @@ import deathRecordRouter from "./routes/hospital/deathRecord.route.js";
 import hrmsLetterRouter from "./routes/HRMS.route/HRMSLetter.route.js";
 import mortuaryDeathRouter from "./routes/Mortuary/mortuaryDeath.route.js";
 import superAdminRouter from "./routes/superAdmin/superAdmin.route.js";
+import hospitalpayment from "./routes/hospital/PaymentHospital.js";
+import PharmacyPayment from "./models/medicalPhamarcy/PharmacyPayment.js";
+import pharmcacypayment from "./routes/MedicalPhamarcy.routes/phpayment.route.js";
+import labPaymentrouter from "./routes/lab/labpayment.route.js";
+import doctorpaymentrouter from "./routes/Doctors/doctorPayment.route.js";
+import mortuaryPaymentrouter from "./routes/Mortuary/mortuaryPayment.js";
+import userPaymentrouter from "./routes/User/userPayment.js";
+import telePaymentrouter from "./routes/Telemedicine/telePaymentRoute.js";
+import hrmspayment from "./routes/HRMS.route/HRMSPayment.route.js";
 
 dotenv.config();
 
@@ -99,7 +108,7 @@ const peerServer = ExpressPeerServer(server, {
 
 
 const corsOptions = {
-  origin: "https://med.eschoolconnect.ng", // Specific origin
+  origin: "https://emedicals.ng/", // Specific origin
   credentials: true,  // Allow cookies and authentication headers
   methods: ["GET", "POST", "PUT", "DELETE"],  // Allow specific methods
   allowedHeaders: ["Content-Type", "Authorization"],  // Allow specific headers
@@ -120,6 +129,7 @@ app.use(morgan("dev"));
 
 //user
 app.use("/api/users", router);
+app.use("/api/user", userPaymentrouter)
 
 //doctor
 
@@ -129,11 +139,13 @@ app.use("/api/appointment", appointmentrouter);
 app.use("/api/patients", patientDonateRoute);
 app.use("/api/patients", patientMedicalRoute);
 app.use("/api/patients", medicalTestRoute);
+app.use("/api/doctors", doctorpaymentrouter)
 
 //doctorchat
 app.use("/api/doctorchat/auth", authchatrouter);
 app.use("/api/doctorchat/messages", messagechatrouter);
 app.use("/api/doctorchat/users", userchatrouter);
+
 
 //mortuary
 
@@ -141,6 +153,7 @@ app.use("/api/mortuary", mortuaryrouter);
 app.use("/api/mortuary", mortuaryCommentRouter);
 app.use("/api/mortuary", messageRouter);
 app.use("/api/mortuary", mortuaryDeathRouter)
+app.use("/api/mortuary", mortuaryPaymentrouter)
 
 //cemetery
 app.use("/api/cemetery", cemeteryRouter);
@@ -166,6 +179,7 @@ app.use("/api/hospital", HReportrouter)
 app.use("/api/hospital", hospitalresultRouter)
 app.use("/api/hospital", deathRecordRouter)
 app.use("/api/quickaction", cdoctorRoute)
+app.use("/api/hospital", hospitalpayment)
 
 
 
@@ -180,6 +194,7 @@ app.use("/api/undertaker", undertakerCommentRouter)
 //teleuser
 app.use("/api/teleuser", teleRouter)
 app.use("/api/teleuser", teleDoctorRouter)
+app.use("/api/teleuser", telePaymentrouter)
 
 
 
@@ -187,6 +202,7 @@ app.use("/api/teleuser", teleDoctorRouter)
 app.use("/api/lab", labTestRoute )
 app.use("/api/lab", labUserRouter)
 app.use("/api/lab", labcommentRouter)
+app.use("/api/lab", labPaymentrouter)
 
 
 
@@ -196,6 +212,7 @@ app.use("/api/lab", labcommentRouter)
 app.use("/api/medical/auth", medicalPhamarcysellerrouter)
 app.use("/api/medical/products", medicalPhamarcyproductrouter)
 app.use("/api/medical/sales", medicalPhamarcysalerouter)
+app.use("/api/medical/payment", pharmcacypayment)
 
 
 app.use("/api/hrms", hrmsHolidayRouter)
@@ -204,6 +221,7 @@ app.use("/api/hrms", hrmsemployeerouter)
 app.use("/api/hrms", attendanceRouter)
 app.use("/api/hrms", payrollRouter)
 app.use("/api/hrms", hrmsLetterRouter)
+app.use("/api/hrms", hrmspayment)
 app.use("/api/superadmin", superAdminRouter)
 
 

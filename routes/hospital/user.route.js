@@ -19,21 +19,23 @@ cloudinary.config({
 const transporter = nodemailer.createTransport(({
   service:'gmail',
   auth: {
-        pass:"pknseuxqxzkoqdjg",
-        user:"babatundeademola112@gmail.com"
+      user:"essentialng23@gmail.com",
+      pass:"clepxviuvbxqbedp"
+
     },
 }));
 
 
 
 const sendOTPEmail = async(email, otp) => {
-  const mailOptions = {
-      from:process.env.EMAIL_USER,
-      to:email,
-      subject: 'Verify your email',
-      text: `Your verification code is: ${otp}`,
+const mailOptions = {
+    from:process.env.EMAIL_USER,
+    to:email,
+    subject: 'Verify your email',
+    text: `Your verification code is: ${otp}`,
 
-  };
+};
+
   
 await transporter.sendMail(mailOptions);
 }
@@ -332,6 +334,129 @@ router.delete("/users/:id", protect2,  restrictTo("Admin"), async (req, res) => 
     res.status(400).json({ error: error.message });
   }
 });
+
+
+//get all nurses
+router.get("/nursegetall", async (req, res) => {
+  try {
+    const allNurses = await User.find({ role: "nurse" }).populate("adminId", "name email");
+    
+    if (!allNurses || allNurses.length === 0) {
+      return res.status(404).json({ message: "No nurses found" });
+    }
+
+    return res.status(200).json(allNurses);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+//get all doctors
+router.get("/doctorgetall", async (req, res) => {
+  try {
+    const allNurses = await User.find({ role: "doctor" }).populate("adminId", "name email");
+    
+    if (!allNurses || allNurses.length === 0) {
+      return res.status(404).json({ message: "No doctor found" });
+    }
+
+    return res.status(200).json(allNurses);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+
+router.get("/hospitalgetall", async (req, res) => {
+  try {
+    const allNurses = await User.find({ role: "admin" });
+    
+    if (!allNurses || allNurses.length === 0) {
+      return res.status(404).json({ message: "No hospital found" });
+    }
+
+    return res.status(200).json(allNurses);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+router.post("/forgot-password", async(req, res) => {
+  const { email } = req.body;
+  try {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    console.log("user not found")
+    return res.status(400).json({ success: false, message: "User not found" });
+  }
+
+  // Generate a reset token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetPasswordToken = jwt.sign({ resetToken }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  const resetLink = `https://ereligion.ng/reset-password/${resetPasswordToken}`;
+
+  // Setup Nodemailer
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+   user:"essentialng23@gmail.com",
+      pass:"clepxviuvbxqbedp"
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: 'Password Reset',
+    text: `You requested a password reset. Click the link below to reset your password: \n\n ${resetLink}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.status(200).json({ success: true, message: "Password reset link sent to your email" });
+} catch (error) {
+  console.log("Error in forgotPassword ", error);
+  res.status(400).json({ success: false, message: error.message });
+}
+})
+
+
+
+router.post("/reset-password/:token", async(req, res)=> {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+      // Verify the reset token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const { resetToken } = decoded;
+  
+      // Find the user by the token
+      const user = await User.findOne({ resetToken });
+      if (!user) {
+        return res.status(404).json({ message: 'Invalid token' });
+      }
+  
+      // Hash the new password
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+  
+      await user.save();
+  
+      res.status(200).json({ message: 'Password reset successfully' });
+    } catch (err) {
+      res.status(500).json({ message: 'Server error' });
+    }
+})
 
 
 

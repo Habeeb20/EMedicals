@@ -28,34 +28,6 @@ const SignupHospitalAdmin = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // const handleFileChange = (e) => {
-  //   setFormData({ ...formData, profilePicture: e.target.files[0] });
-  // };
-
-  // const handleFileChange = (e) => {
-  //   setImageFile(e.target.files[0]); 
-  // };
-
-
-  // const uploadImageToCloudinary = async (file) => {
-  //   console.log("heloo!!!!")
-  //   const cloudinaryUrl = "https://api.cloudinary.com/v1_1/dc0poqt9l/image/upload";
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-  //   formData.append("upload_preset",  "essential" );
-
-  //   try {
-  //     const response = await axios.post(cloudinaryUrl, formData, {
-  //       headers:{
-  //         'Content-Type':"multipart/form-data"
-  //       }
-  //     });
-  //     return response.data.secure_url; 
-  //   } catch (error) {
-  //     console.error("Cloudinary Upload Error:", error);
-  //     throw new Error("Image upload failed");
-  //   }
-  // };
 
 
   const handleSubmit = async (e) => {
@@ -63,18 +35,8 @@ const SignupHospitalAdmin = () => {
     setIsLoading(true);
 
     try {
-      // Upload the profile picture to Cloudinary
-      // let profilePictureUrl = null;
-      // if (imageFile) {
-      //   profilePictureUrl = await uploadImageToCloudinary(imageFile);
-      //   console.log("this is image file",)
-      // }
-
-      // Prepare payload
-      // const payload = {
-      //   ...formData,
-      //   profilePicture: profilePictureUrl,
-      // };
+     
+    
       const form = new FormData();
       Object.keys(formData).forEach((key) => {
         form.append(key, formData[key]);
@@ -88,9 +50,9 @@ const SignupHospitalAdmin = () => {
       );
 
       if (response.data) {
-     
+        localStorage.setItem("user", JSON.stringify( formData.email )); 
         toast.success("Successfully registered");
-        navigate("/loginhospitaladmin");
+        navigate("/hmakepayment");
       }
     } catch (err) {
       const errorMessage =

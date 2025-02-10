@@ -6,7 +6,7 @@ const QuickActions = () => {
   const [viewAll, setViewAll] = useState(false);
 
   const actions = [
-    { id: 1, name: "Call an ambulance", icon: <FaAmbulance />, link: "/ambulance", bgColor: "bg-red-100" },
+    { id: 1, name: "Call an ambulance", icon: <FaAmbulance />, link: "/callambulance", bgColor: "bg-red-100" },
     { id: 2, name: "Fundbridge", icon: <FaDonate />, link: "/fundraisingpopup", bgColor: "bg-purple-100" },
     { id: 3, name: "Get home care", icon: <FaHome />, link: "/gethomecare", bgColor: "bg-blue-100" },
     { id: 4, name: "Consult a doctor", icon: <FaPhoneAlt />, link: "/consultadoctorlist", bgColor: "bg-green-100" },

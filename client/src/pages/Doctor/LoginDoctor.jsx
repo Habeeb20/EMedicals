@@ -68,6 +68,11 @@ const LoginDoctor = () => {
 </div>
 
         <button className="w-full bg-blue-500 text-white p-2" type="submit">Login</button>
+        <p> 
+        <Link to="/dforgotpassword">
+        forgot password?
+        </Link>
+        </p>
         <p>Dnt have an account? 
         <Link to="/doctorsignup">
         signup

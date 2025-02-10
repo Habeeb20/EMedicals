@@ -4,6 +4,7 @@ import { AiFillStar } from 'react-icons/ai';
 import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import drug from "../../assets/EMedicals/drug.png";
 
 const FindDrugs = () => {
   const [pharmacies, setPharmacies] = useState([]);
@@ -18,7 +19,7 @@ const FindDrugs = () => {
       try {
         let response;
         if (currentCategory === 'Pharmacy') {
-          response = await axios.get(`${import.meta.env.VITE_API_PH}/getdrug`);
+          response = await axios.get(`${import.meta.env.VITE_API_MP2}/allproducts`);
         } else if (currentCategory === 'Doctors') {
           response = await axios.get(`${import.meta.env.VITE_API_D}/doctorgetall`);
         } else if (currentCategory === 'Nurses') {
@@ -138,7 +139,7 @@ const FindDrugs = () => {
                 className="flex items-start p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
               >
                 <img
-                  src={pharmacy.profilePicture}
+                  src={pharmacy.profilePicture || drug}
                   alt={pharmacy.name}
                   className="w-20 h-20 rounded-md object-cover"
                 />

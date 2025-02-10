@@ -165,4 +165,38 @@ medicalPhamarcyproductrouter.delete("/products/:id", async(req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 })
+
+
+///get a drug
+medicalPhamarcyproductrouter.get("/aproduct/:id", async (req, res) => {
+    const { id } = req.params; 
+    
+    try {
+        const product = await Product.findById(id).populate("sellerId", "name email location state LGA");
+        
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        return res.status(200).json(product);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred" });
+    }
+});
+
+
+
+
+medicalPhamarcyproductrouter.get("/allproducts", async(req, res) => {
+        try {
+            const products = await Product.find({}).populate("sellerId", "name email phone state")
+            if(!products) return res.status(400).json({message: "not found"})
+        
+            return  res.status(200).json(products)
+        } catch (error) {
+            console.log(error)   
+            return res.status(500).json({message: "an error occurred"})
+        }
+})
 export default medicalPhamarcyproductrouter

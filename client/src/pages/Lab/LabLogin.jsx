@@ -120,6 +120,12 @@ const LabLogin = () => {
               </motion.button>
             </div>
             <p className="mt-4 text-center text-gray-500 text-sm">
+          
+              <a href="/lforgotpassword" className="text-blue-500 font-semibold">
+              forgotpassword?{' '}
+              </a>
+            </p>
+            <p className="mt-4 text-center text-gray-500 text-sm">
               Don't have an account?{' '}
               <a href="/labregister" className="text-blue-500 font-semibold">
                 Sign Up.

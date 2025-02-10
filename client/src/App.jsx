@@ -159,6 +159,48 @@ import MortuaryDashboard from "./pages/mortuary/admin/MortuaryDashboard";
 import AdminDashbord from "./pages/SuperAdmin/AdminDashbord";
 import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
 import SuperAdminSignup from "./pages/SuperAdmin/superAdminSignup";
+import ForgotPassword from "./pages/Hospital/ForgotPassword";
+import ResetPassword from "./pages/Hospital/ResetPassword";
+import PforgotPassword from "./pages/Hospital/patients/PforgotPassword";
+import PresetPassword from "./pages/Hospital/patients/PresetPassword";
+import HMakePayment from "./pages/Hospital/Admin/HMakePayment";
+import HVerifyPayment from "./pages/Hospital/Admin/HVerifyPayment";
+import HPaymentFailure from "./pages/Hospital/Admin/HPaymentFailure";
+import PhForgotPassword from "./pages/medicalPharmacy/PhForgotpassword";
+import PhResetPassword from "./pages/medicalPharmacy/PhResetpassword";
+import PhMakepayment from "./pages/medicalPharmacy/PhMakepayment";
+import PhVerifyPayment from "./pages/medicalPharmacy/PhVerifyPayment";
+import PhPaymentfailed from "./pages/medicalPharmacy/PhPaymentfailed";
+import FilterLabsByTest from "./pages/Lab/FilterLabsByTest";
+import LForgotPassword from "./pages/Lab/LForgotPassword";
+import LresetPassword from "./pages/Lab/LresetPassword";
+import LMakePayment from "./pages/Lab/LMakePayment";
+import LVerifyPayment from "./pages/Lab/LVerifyPayment";
+import LPaymentFailure from "./pages/Lab/LPaymentFailed";
+import DMakePayment from "./pages/Doctor/DMakePayment";
+import DVerifyPayment from "./pages/Doctor/DVerifyPayment";
+import DPaymentFailure from "./pages/Doctor/DPaymentFailed";
+import DForgotPassword from "./pages/Doctor/DForgotPassword";
+import DResetPassword from "./pages/Doctor/DResetPassword";
+import MmakePayment from "./pages/mortuary/MmakePayment";
+import MVerifyPayment from "./pages/mortuary/MVerifyPayment";
+import MPaymentFailure from "./pages/mortuary/MPayment-failed";
+import MForgotPassword from "./pages/mortuary/MForgotPassword";
+import MResetPassword from "./pages/mortuary/MResetPassword";
+import CallAmbulance from "./pages/quickAction/CallAmbulance";
+import UVerifyPayment from "./pages/User/UVerifyPayment";
+import UMakePayment from "./pages/User/UMakePayment";
+import UPaymentFailure from "./pages/User/UPayement-failed";
+import TeleForgotPassword from "./pages/Telemedicine/TeleForgotPassword";
+import TeleResetPassword from "./pages/Telemedicine/TeleResetPassword";
+import TeleMakePayment from "./pages/Telemedicine/TeleMakepayment";
+import TeleVerifyPayment from "./pages/Telemedicine/TeleVerifypayment";
+import TelePaymentFailure from "./pages/Telemedicine/TelePayment-failed";
+import HRMSResetPassword from "./pages/HRMS/HRMSResetPassword";
+import HRMSForgotPassword from "./pages/HRMS/HRMSForgotpassword";
+import HRMSPaymentFailure from "./pages/HRMS/HRMSPaymentfailed";
+import HRMSVerifyPayment from "./pages/HRMS/HRMSVerifyPayment";
+import HRMSMakePayment from "./pages/HRMS/HRMSMakepayment";
 
 axios.defaults.withCredentials = true;
 
@@ -167,14 +209,6 @@ const App = () => {
 
   const { authUser } = useAuthContext();
   console.log(authUser);
-
-  // useEffect(() => {
-  //   async function loginStatus() {
-  //     const status = await getLoginStatus();
-  //     dispatch(SET_LOGIN(status));
-  //   }
-  //   loginStatus();
-  // }, [dispatch]);
 
 
   return (
@@ -191,6 +225,12 @@ const App = () => {
         <Route path="/userforgotpassword" element={<UserForgotPassword />} />
         <Route path="/userresetpassword" element={<UserResetPassword />} />
         <Route path="/userlandingprofile" element={<UserLandingProfile />} />
+
+        //make payment for user
+        <Route path="/umakepayment" element={<UMakePayment />} />
+        <Route path="/uverifypayment" element={<UVerifyPayment />} />
+        <Route path="/upayment-failed" element={<UPaymentFailure />} />
+
         //protected Routes
         <Route
           path="/cemeterypage"
@@ -259,6 +299,19 @@ const App = () => {
         <Route path="/doctors" element={<Doctors />} />
         <Route path="/doctordashboard" element={<DoctorDashboard />} />
         <Route path="/doctordetails/:id" element={<DoctorDetails />} />
+
+        //password reset
+        <Route path="/dforgotpassword" element={<DForgotPassword />} />
+          <Route path="/dresetpassword/:token" element={<DResetPassword />} />
+      
+
+
+        //make payment for doctor
+        <Route path="/dmakepayment" element={<DMakePayment />} />
+        <Route path="/dverifypayment" element={<DVerifyPayment />} />
+        <Route path="/dpayment-failed" element={<DPaymentFailure />} />
+
+
         //chat
         <Route
           path="/chatwindow"
@@ -297,6 +350,16 @@ const App = () => {
         //mortuary
         <Route path="/mortuarysignup" element={<MortuarySignup />} />
 
+          //password reset
+          <Route path="/mforgotpassword" element={<MForgotPassword />} />
+          <Route path="/mresetpassword/:token" element={<MResetPassword />} />
+
+        //mortuary payment
+        <Route path="/mmakepayment" element={<MmakePayment />} />
+        <Route path="/mverifypayment" element={<MVerifyPayment />} />
+        <Route path="/mpayment-failed" element={<MPaymentFailure />} />
+
+
 
 
 
@@ -323,6 +386,8 @@ const App = () => {
         <Route path="/deathrecordforhospital" element={<DeathRecordForHospital />} />
         <Route path="/appointment/:patientId/sendresult" element={<HospitalResult />} />
 
+        
+
 
         <Route path="/logindoctordashboardhospital" element={<LoginDoctorHospital />} />
         <Route path="/loginpatienthospital" element={<LoginPatientHospital />} />
@@ -332,6 +397,22 @@ const App = () => {
         <Route path="/loginpatienthospital" element={<LoginPatientHospital />} />
         <Route path="/patientdashboardhospital" element={<PatientDashboardHospital />} />
         <Route path="/popmodal" element={<PopModal />} />
+
+
+
+        //password reset
+        <Route path="/hforgotpassword" element={<ForgotPassword />} />
+        <Route path="/hreset-password/:token" element={<ResetPassword />} />
+
+        //password reset for patient
+        <Route path="/pforgotpassword" element={<PforgotPassword />} />
+        <Route path="/presetpassword/:token" element={<PresetPassword />} />
+
+
+        //payment for Hospital
+        <Route path="/hmakepayment" element={<HMakePayment />} />
+        <Route path="/hverifypayment" element={<HVerifyPayment />} />
+        <Route path="/hpayment-failed" element={<HPaymentFailure />}/>
 
 
 
@@ -368,13 +449,24 @@ const App = () => {
           <Route path="/finddrugs" element={<FindDrugs />} />
           <Route path="/fundraisingpopup" element={<FundRaisingPopup />} />
           <Route path="/raisefund" element={<RaiseFund />} />
+          <Route path="/callambulance" element={<CallAmbulance />} />
 
           //SignupModalTelemedicine
 
           <Route path="/SignupModalTelemedicine" element={<SignupModalTelemedicine />} />
           <Route path="/teledashboard" element={<TeleDashboard />} />
           <Route path="/logintelemedicine" element={<LoginTeleMedicine />} />
+          <Route path="/telelogin" element={<LoginTeleMedicine />} />
           <Route path="/telehospitals" element={<TeleHospital />} />
+          //password reset
+          <Route path="/teleforgotpassword" element={<TeleForgotPassword />} />
+          <Route path="/teleresetpassword/:token" element={<TeleResetPassword />} />
+
+        //mortuary payment
+        <Route path="/telemakepayment" element={<TeleMakePayment />} />
+        <Route path="/televerifypayment" element={<TeleVerifyPayment />} />
+        <Route path="/telepayment-failed" element={<TelePaymentFailure />} />
+
 
 
           //aboutus
@@ -391,10 +483,21 @@ const App = () => {
           <Route path="/userlabdashboard" element={<UserLabDashboard />} />
           <Route path="/lab/labbookappointment/:labId" element={<FormLabAppointment />} />
           <Route path="/lab/labbookappointmentforpatient/:labId" element={<PatientLabFormAppointment />} />
+          <Route path="/labsbytest" element={<FilterLabsByTest />} />
 
           {/* <Route path="/lab" element={<LabAppointment />} /> */}
 
           <Route path="/lab2" element={<LabPatientDetails />} />
+          
+          //payment for lab
+          <Route path="/lmakepayment" element={<LMakePayment />} />
+          <Route path="/lverifypayment" element={<LVerifyPayment />} />
+          <Route path="/lpayment-failed" element={<LPaymentFailure />} />
+
+          //password Reset
+
+          <Route path="/lforgotpassword" element={<LForgotPassword />} />
+          <Route path="/lresetpassword/:token" element={<LresetPassword />} />
       
 
 
@@ -496,6 +599,15 @@ const App = () => {
           <Route path="/medicalpharmacylogin" element={<MedicalphamarcyLogin />} />
           <Route path="/medicalpharmacysignup" element={<MedicalphamarcySignup />} />
           <Route path="/medicaldashboard" element={<MedicalDashboard />} />
+          <Route path="/phforgotpassword" element={<PhForgotPassword />} />
+          <Route path="/phresetpassword" element={<PhResetPassword />} />
+
+
+          //payment for Medical pharmacy
+        <Route path="/phmakepayment" element={<PhMakepayment />} />
+        <Route path="/phverifypayment" element={<PhVerifyPayment />} />
+        <Route path="/phpayment-failed" element={<PhPaymentfailed />}/>
+
 
         ///HRMS
         <Route path="/hrmslogin/" element={<HRMSLogin />} />
@@ -503,6 +615,18 @@ const App = () => {
         <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
         <Route path="/hrmslettergenerate" element={<GenerateLetter />} />
         <Route path="/HRMSDashboard/hrms/details/:id" element={<EmployeeDetails />} />
+
+        //payment for hrms
+          <Route path="/hrmsmakepayment" element={<HRMSMakePayment />} />
+          <Route path="/hrmsverifypayment" element={<HRMSVerifyPayment />} />
+          <Route path="/hrmspayment-failed" element={<HRMSPaymentFailure />} />
+
+          //password Reset
+
+          <Route path="/hrmsforgotpassword" element={<HRMSForgotPassword />} />
+          <Route path="/hrmsresetpassword/:token" element={<HRMSResetPassword />} />
+      
+
 
 
 

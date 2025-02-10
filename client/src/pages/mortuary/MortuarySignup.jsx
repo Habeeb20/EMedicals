@@ -240,15 +240,15 @@ const MortuarySignup = () => {
             });
             console.log(response.data);
             if (response.data) {
-                navigate('/mlogin')
+                navigate('/mmakepayment')
                 toast.success("successfully registered")
             }
 
         } catch (err) {
             setError(err.response?.data?.message || 'an error occured')
             console.log(err)
-            toast.error(err)
-            console.error(error);
+            toast.error("an error occured")
+      
         } finally {
             setIsLoading(false);
         }

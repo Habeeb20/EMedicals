@@ -33,7 +33,7 @@ const togglePasswordVisibility = () => {
       });
 
       if (response.data) {
-        navigate('/hrmslogin');
+        navigate('/hrmsmakepayment');
         toast.success('Successfully registered');
       }
     } catch (err) {

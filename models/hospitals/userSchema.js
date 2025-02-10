@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['admin', 'doctor', 'nurse', 'patient'], required: true },
   phone:{type:String},
+  
   profilePicture: { type: String,  },
   createdAt: { type: Date, default: Date.now },
   registrationDate: { type: Date, default: Date.now },

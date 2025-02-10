@@ -72,17 +72,17 @@ export default function UserLandingProfile() {
       <div className="flex flex-col md:flex-row h-screen bg-gray-100">
         
         {/* Sidebar */}
-        <aside className="hidden md:block w-1/4 bg-white min-h-screen shadow-lg p-6 fixed top-0 left-0"
+        <aside className="hidden md:block w-1/6 bg-white min-h-screen shadow-lg p-6 fixed top-0 left-0"
          style={{ height: "100vh" }}>
           <ul className="space-y-6">
             <li className="text-blue-600 font-bold text-lg">
-              <a href="/hospital">Hospitals</a>
+              <a href="/loginpatienthospital">Hospitals</a>
             </li>
             <li className="text-blue-600 font-bold text-lg">
-              <a href="/pharmacy">Pharmacy</a>
+              <a href="/searchdrugs">Pharmacy</a>
             </li>
             <li className="text-blue-600 font-bold text-lg">
-              <a href="/laboratory">Laboratory</a>
+              <a href="/userlabdashboard">Laboratory</a>
             </li>
             {/* <li className="text-blue-600 font-bold text-lg">
               <a href="/getpatientlabappointment">Laboratory history</a>
@@ -94,7 +94,7 @@ export default function UserLandingProfile() {
         </aside>
 
  
-        <main className="flex-1 p-6 md:ml-[25%]">
+        <main className="flex-1 p-6 md:ml-[15%]">
        
           <div 
             className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 p-6 rounded-lg" 

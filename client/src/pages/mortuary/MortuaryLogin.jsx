@@ -171,7 +171,7 @@ const MortuaryLogin = () => {
             </div>
             <p className="mt-4 text-center text-gray-500 text-sm">
               <a
-                href="/userforgotpassword"
+                href="/mforgotpassword"
                 className="text-blue-500 font-semibold"
               >
                 forgot password
@@ -180,7 +180,7 @@ const MortuaryLogin = () => {
 
             <p className="mt-4 text-center text-gray-500 text-sm">
               Dont have an account?{" "}
-              <a href="/mortuarylogin" className="text-blue-500 font-semibold">
+              <a href="/mortuarysignup" className="text-blue-500 font-semibold">
                 sign up.
               </a>
             </p>

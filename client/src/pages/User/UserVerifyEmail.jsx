@@ -21,7 +21,7 @@ const UserVerifyEmail = () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API}/verify-email`, { code: otpCode });
       if (response.data.success) {
-        navigate('/userlogin');
+        navigate('/umakepayment');
       }
     } catch (err) {
       setError(err.response.data.message);

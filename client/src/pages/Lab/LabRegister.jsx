@@ -42,7 +42,7 @@ const handleSubmit = async (e) => {
         });
 
         if(response.data) {
-            navigate('/lablogin');
+            navigate('/lmakepayment');
             toast.success("successfully registered")
         } 
     } catch (error) {

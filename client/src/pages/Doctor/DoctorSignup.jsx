@@ -116,7 +116,7 @@ const DoctorRegister = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       toast.success('Doctor registered successfully!');
-      navigate("/doctorlogin")
+      navigate("/dmakepayment")
     } catch (error) {
       console.error(error);
       toast.error('Failed to register doctor');

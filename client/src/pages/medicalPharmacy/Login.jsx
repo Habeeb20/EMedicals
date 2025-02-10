@@ -156,6 +156,12 @@ const Login = () => {
               </motion.button>
             </div>
             <p className="mt-4 text-center text-gray-500 text-sm">
+           
+              <a href="/phforgotpassword" className="text-purple-500 font-semibold">
+              forgot Password?{" "}
+              </a>
+            </p>
+            <p className="mt-4 text-center text-gray-500 text-sm">
               {/* <a
                 href="/userforgotpassword"
                 className="text-blue-500 font-semibold"

@@ -170,6 +170,12 @@ const HRMSLogin = () => {
               </motion.button>
             </div>
             <p className="mt-4 text-center text-gray-500 text-sm">
+           
+              <a href="/hrmsforgotpassword" className="text-purple-500 font-semibold">
+              forgot password?{" "}
+              </a>
+            </p>
+            <p className="mt-4 text-center text-gray-500 text-sm">
               Dont have an account?{" "}
               <a href="/hrmssignup" className="text-purple-500 font-semibold">
                 sign up.

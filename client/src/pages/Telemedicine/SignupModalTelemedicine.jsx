@@ -51,7 +51,7 @@ const SignupModalTelemedicine = () => {
 
       if (response?.status === 200) {
         toast.success("Registration successful");
-        navigate("/logintelemedicine");
+        navigate("/telemakepayment");
       } else {
         toast.error("Something went wrong!");
       }
@@ -97,7 +97,7 @@ const SignupModalTelemedicine = () => {
                 {[
                   "Individual or Business",
                   "Healthcare Provider",
-                  "Insurer / HMO",
+              
                   "Healthcare Professional",
                 
                 ].map((option, index) => (

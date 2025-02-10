@@ -33,7 +33,8 @@ const Signup = () => {
           });
 
           if (response.data) {
-            navigate('/medicalpharmacylogin');
+            localStorage.setItem("user", JSON.stringify(formData.email))
+            navigate('/phmakepayment');
             toast.success('Successfully registered');
           }
         } catch (err) {
