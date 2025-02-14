@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import m from "../../assets/EMedicals/pat.jpeg"
+import m from "../../assets/EMedicals/thepic-removebg-preview.png"
 export default function LPage2() {
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center px-4 lg:px-20 py-10 lg:py-20 space-y-10 lg:space-y-0 lg:space-x-10">

@@ -2,7 +2,8 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
-import m from "../assets/EMedicals/dd.jpeg"
+import m from "../assets/EMedicals/picture1.jpg"
+import { FaHospital, FaPrescriptionBottle, FaVials, FaBookDead, FaUserMd } from 'react-icons/fa'; 
 import m1 from "../assets/EMedicals/dddd.jpeg"
 import m2 from "../assets/EMedicals/doc.jpeg"
 import { Link } from 'react-router-dom';
@@ -44,7 +45,7 @@ const LandingHome = () => {
           transition={{ duration: 1.2 }}
           className="w-full md:w-1/2"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+          <h1 className="text-2xl md:text-6xl font-bold mb-4 leading-tight">
             Building Africa’s <span className="underline decoration-green-400">Digital Health Future</span>
           </h1>
           <p
@@ -54,6 +55,70 @@ const LandingHome = () => {
           >
             EMedicals optimises healthcare delivery, ensuring quality care is accessible and affordable for everyone. Experience the future of healthcare today.
           </p>
+          <div className="block md:hidden grid grid-cols-1 text-black gap-6">
+
+  
+  <Link to='/signin'>
+    <div className="bg-blue-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaHospital className="text-4xl text-blue-500" />
+      <div>
+        <h3 className="text-xl font-bold">Hospitals</h3>
+        <p className="text-gray-500">Find healthcare centers</p>
+      </div>
+    </div>
+  </Link>
+
+  <Link to='/signin'>
+    <div className="bg-purple-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaPrescriptionBottle className="text-4xl text-purple-500" />
+      <div>
+        <h3 className="text-xl font-bold">Pharmacy</h3>
+        <p className="text-gray-500">Find nearby pharmacies</p>
+      </div>
+    </div>
+  </Link>
+
+  <Link to='/signin'>
+    <div className="bg-teal-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaVials className="text-4xl text-teal-500" />
+      <div>
+        <h3 className="text-xl font-bold">Laboratory</h3>
+        <p className="text-gray-500">Find test centers</p>
+      </div>
+    </div>
+  </Link>
+
+  <Link to='/signin'>
+    <div className="bg-gray-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaBookDead className="text-4xl text-gray-500" />
+      <div>
+        <h3 className="text-xl font-bold">Death Services</h3>
+        <p className="text-gray-500">Funeral services</p>
+      </div>
+    </div>
+  </Link>
+
+  <Link to='/signin'>
+    <div className="bg-pink-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaUserMd className="text-4xl text-pink-500" />
+      <div>
+        <h3 className="text-xl text-black font-bold">Doctors</h3>
+        <p className="text-black">Find specialized doctors</p>
+      </div>
+    </div>
+  </Link>
+
+  <Link to='/signin'>
+    <div className="bg-orange-100 p-6 rounded-xl shadow-lg flex items-center space-x-4">
+      <FaVials className="text-4xl text-teal-500" />
+      <div>
+        <h3 className="text-xl font-bold">Lab Technicians</h3>
+        <p className="text-gray-500">Find test centers</p>
+      </div>
+    </div>
+  </Link>
+
+</div>
 
           <div className="flex space-x-4 mt-6">
 
@@ -69,21 +134,21 @@ const LandingHome = () => {
         </motion.div>
 
         {/* Images Section */}
-        <div className="relative w-full md:w-1/2 mt-10 md:mt-0">
-          <motion.img
+        <div className="relative w-full md:w-1/2 mt-4 md:mt-0">
+          <img
             src={m}
             alt="Doctor"
-            className="absolute w-1/2 top-0 right-0 rounded-lg shadow-md"
+            className="right-0 rounded-lg shadow-md"
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 3 }}
           />
-          <motion.img
+          {/* <motion.img
             src={m1}
             alt="Consultation"
             className="absolute w-2/5 bottom-0 left-0 rounded-lg shadow-md"
             animate={{ y: [0, -10, 0] }}
             transition={{ repeat: Infinity, duration: 3 }}
-          />
+          /> */}
         </div>
       </section>
       <LPage />
