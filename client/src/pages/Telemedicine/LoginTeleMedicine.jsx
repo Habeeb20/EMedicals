@@ -117,7 +117,7 @@ const LoginTeleMedicine = () => {
         <p className="mt-4 text-center text-gray-500 text-sm">
             
               <a href="/teleforgotpassword" className="text-blue-500 font-semibold">
-              forgotpassword?{" "}
+              forgot password?{" "}
               </a>
             </p>
         <p className="mt-4 text-center text-gray-500 text-sm">

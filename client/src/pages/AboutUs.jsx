@@ -23,8 +23,8 @@ const AboutUs = () => {
        
       </nav>
       <AboutSection1 />
-      <AboutSection2 />
-      <AboutSection3 />
+      {/* <AboutSection2 />
+      <AboutSection3 /> */}
     </div>
   )
 }

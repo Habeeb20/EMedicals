@@ -201,6 +201,7 @@ import HRMSForgotPassword from "./pages/HRMS/HRMSForgotpassword";
 import HRMSPaymentFailure from "./pages/HRMS/HRMSPaymentfailed";
 import HRMSVerifyPayment from "./pages/HRMS/HRMSVerifyPayment";
 import HRMSMakePayment from "./pages/HRMS/HRMSMakepayment";
+import AboutPage from "./components/aboutus/AboutPage";
 
 axios.defaults.withCredentials = true;
 
@@ -218,6 +219,7 @@ const App = () => {
       <Route path="/" element={<LandingHome />} />
         <Route path="/signin" element={<Choose />} />
         <Route path="/adminhome" element={<AdminHome />} />
+        <Route path="/aboutpage" element={<AboutPage />} />
       
         <Route path="/usersignup" element={<UserSignup />} />
         <Route path="/userlogin" element={<UserLogin />} />
@@ -404,12 +406,11 @@ const App = () => {
         <Route path="/hforgotpassword" element={<ForgotPassword />} />
         <Route path="/hreset-password/:token" element={<ResetPassword />} />
 
-        //password reset for patient
+
         <Route path="/pforgotpassword" element={<PforgotPassword />} />
         <Route path="/presetpassword/:token" element={<PresetPassword />} />
 
 
-        //payment for Hospital
         <Route path="/hmakepayment" element={<HMakePayment />} />
         <Route path="/hverifypayment" element={<HVerifyPayment />} />
         <Route path="/hpayment-failed" element={<HPaymentFailure />}/>
@@ -473,7 +474,7 @@ const App = () => {
           <Route path="/aboutus" element={<AboutUs />} />
 
 
-          //lab
+          ///lab
           <Route path="/labregister" element={<LabRegister />} />
           <Route path="/lablogin" element={<LabLogin />} />
           <Route path="/alllabs" element={<LabsForDoctors />} />

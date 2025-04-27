@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useState,useEffect } from 'react'
 import Navbar from '../../../components/Navbar'
 import { Link,useNavigate } from 'react-router-dom'
-import { use } from 'bcrypt/promises'
+
 
 const GetAppointmentsPatients = () => {
   const navigate = useNavigate()

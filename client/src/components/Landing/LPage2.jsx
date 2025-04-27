@@ -37,12 +37,7 @@ export default function LPage2() {
           <p className="mt-2 text-gray-600">
             Digitise enrollee benefits, lower Medical Loss Ratio (MLR) and streamline claims processing with Heala’s comprehensive ERP solution.
           </p>
-          <a
-           
-            className="mt-4 inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full hover:bg-blue-200 transition"
-          >
-             →
-          </a>
+      
         </div>
 
         {/* Section 2 */}
@@ -56,12 +51,7 @@ export default function LPage2() {
           <p className="mt-2 text-gray-600">
             Optimise operational efficiency, expand patient access and leverage data-driven insights with our comprehensive hospital management solution.
           </p>
-          <a
-           
-            className="mt-4 inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full hover:bg-blue-200 transition"
-          >
-           →
-          </a>
+       
         </div>
 
         {/* Section 3 */}
@@ -75,12 +65,7 @@ export default function LPage2() {
           <p className="mt-2 text-gray-600">
             Access innovative tools and resources to enhance patient care and streamline your workflow with our advanced solutions.
           </p>
-          <a
-           
-            className="mt-4 inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full hover:bg-blue-200 transition"
-          >
-          →
-          </a>
+        
         </div>
       </motion.div>
     </div>

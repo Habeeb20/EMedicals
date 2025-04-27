@@ -5,7 +5,9 @@ import cloudinary from "cloudinary"
 import { User } from "../../models/user.models.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import dotenv from "dotenv"
 
+dotenv.config()
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -14,13 +16,15 @@ cloudinary.config({
 })
 
 
-const transporter = nodemailer.createTransport(({
-    service:'gmail',
+const transporter = nodemailer.createTransport({
+  service:'gmail',
     auth: {
-        user:"essentialng23@gmail.com",
-        pass:"awpqyxoujmcgoemh"
+     user:"pknseuxqxzkoqdjg",
+        pass:"babatundeademola112@gmail.com"
       },
-}));
+ 
+})
+
 
 
 
@@ -78,12 +82,18 @@ export const signup = async (req, res) => {
     })
 
     await user.save();
+    try {
+      // await sendOTPEmail(user.email, verificationToken);
+      res.status(201).json({
+          message: 'User registered successfully. Please check your email to verify your account',
+          user: { ...user._doc, password: undefined },
+        });
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({message: "an error occurred while saving"})
+    }
 
-    await sendOTPEmail(user.email, verificationToken);
-    res.status(201).json({
-        message: 'User registered successfully. Please check your email to verify your account',
-        user: { ...user._doc, password: undefined },
-      });
+  
 
     } catch (error) {
         console.error(error);

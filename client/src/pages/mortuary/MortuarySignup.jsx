@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { FaFacebookF, FaTwitter, FaGoogle } from 'react-icons/fa';
-
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 const MortuarySignup = () => {
     const [formData, setFormData] = useState({

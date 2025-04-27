@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 const UserLogin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -106,43 +107,13 @@ const UserLogin = () => {
                   placeholder="123piano"
                 />
 
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
-                >
-                  {showPassword ? (
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13.875 18.825a10.05 10.05 0 005.996-5.945m-7.982 3.854A4.978 4.978 0 0112 15.002v-3m0-3.973c-.7 0-1.378.118-2.01.33m0 0A9.982 9.982 0 003 12.032m0 0l.01.003M12 3.002c-2.337 0-4.505.893-6.01 2.345m0 0L12 12l.003.002"
-                      ></path>
-                    </svg>
-                  ) : (
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13.875 18.825A10.05 10.05 0 0019.875 12m-7.875 3m4.883-3a9.98 9.98 0 003-7.952m-7.998 7.952m-4.883 3A9.98 9.98 0 013.002 12"
-                      ></path>
-                    </svg>
-                  )}
-                </button>
+                      <button
+                                 type="button"
+                                 onClick={() => setShowPassword(!showPassword)}
+                                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                               >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                               </button>
               </div>
             </div>
 

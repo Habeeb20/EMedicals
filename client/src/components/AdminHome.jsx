@@ -95,16 +95,22 @@ const AdminHome = () => {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
             <img 
-              src="https://via.placeholder.com/80" 
+             src={im}
               alt="User" 
               className="w-16 h-16 rounded-full border-2 border-blue-500" 
             />
             <div>
+            <Link to="/signin">
+          <button className='rounded-md bg-blue-500 text-white p-2'>
+            Back
+          </button>
+          </Link>
               <h1 className="text-xl font-bold">Welcome!</h1>
               <p className="text-gray-500">How is it going today?</p>
             </div>
           </div>
           {/* Doctor Image */}
+      
           <img 
             src={im}
             alt="Doctor" 
@@ -117,11 +123,11 @@ const AdminHome = () => {
           <input
             type="text"
             readOnly
-            placeholder="Hospital, Doctor..."
+        
             className="w-full p-4 pl-12 rounded-full shadow-md focus:outline-none border border-gray-300"
           />
           <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-            🔍
+            
           </span>
         </div>
 

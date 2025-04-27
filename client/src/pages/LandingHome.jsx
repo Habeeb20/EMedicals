@@ -12,6 +12,8 @@ import LPage2 from '../components/Landing/LPage2';
 import LPage3 from '../components/Landing/LPage3';
 import LandingImageCarousel from '../components/Landing/LandingImageCarousel';
 import LandingQuickActions from '../components/Landing/LandingQuickAction';
+import Footer from '../components/Footer';
+
 
 const LandingHome = () => {
   const { ref: headingRef, inView: headingInView } = useInView({ triggerOnce: true });
@@ -157,6 +159,7 @@ const LandingHome = () => {
       <LPage2 />
      
       <LPage3 />
+      <Footer />
 
     
     </div>
