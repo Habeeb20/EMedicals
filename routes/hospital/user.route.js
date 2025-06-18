@@ -19,8 +19,8 @@ cloudinary.config({
 const transporter = nodemailer.createTransport(({
   service:'gmail',
   auth: {
-      user:"essentialng23@gmail.com",
-      pass:"clepxviuvbxqbedp"
+      user:"essentialdevelopers22@gmail.com",
+      pass:"intodqtkudnvpubn"
 
     },
 }));

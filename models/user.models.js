@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   password: { type: String, required: true,     minLength: [8, "Password must contain at least 8 characters"], },
-  profilePicture: { type: String },
+
   isVerified: {type: Boolean,default: false},
   role: { type: String, enum: ['user', 'religious_leader', 'admin'], default: 'user' },
   status: { type: String, enum: ['active', 'blocked', 'pending'], default: 'pending' },

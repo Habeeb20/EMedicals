@@ -6,6 +6,8 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Navbar from '../../components/Navbar';
+import NavbarOthers from '../../components/NavbarOthers';
 const UserSignup = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +15,7 @@ const UserSignup = () => {
     email: '',
     password: '',
     phone: '',
-    profilePicture: null,
+    
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -26,11 +28,6 @@ const UserSignup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e) => {
-
-      setFormData({ ...formData, profilePicture: e.target.files[0] });
- 
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,9 +38,7 @@ const UserSignup = () => {
         form.append(key, formData[key]);
       });
   
-      const response = await axios.post(`${import.meta.env.VITE_API}/signup`, form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await axios.post(`${import.meta.env.VITE_API}/signup`, form);
    
   
       if (response.data) {
@@ -74,6 +69,8 @@ const UserSignup = () => {
   };
 
   return (
+    <>
+    <NavbarOthers />
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
       <div className="w-full max-w-xs mx-auto">
         <div className="flex justify-center mb-0">
@@ -135,17 +132,7 @@ const UserSignup = () => {
              {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
-              <label htmlFor="profilePicture" className="block text-gray-700 text-sm font-bold mb-2">
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                name="profilePicture"
-                onChange={handleFileChange}
-                required
-                disabled={isLoading}
-                className="block w-full text-sm text-gray-500"
-              />
+             
             </div>
 
             <div className="flex items-center justify-center">
@@ -177,6 +164,8 @@ const UserSignup = () => {
      
       </div>
     </div>
+    </>
+   
   );
 };
 

@@ -72,11 +72,11 @@ export const signup = async (req, res) => {
     const verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
    
-    const result = await cloudinary.v2.uploader.upload(req.file.path);
-    const profilePicture = result.secure_url;
+    // const result = await cloudinary.v2.uploader.upload(req.file.path);
+    // const profilePicture = result.secure_url;
 
     const user = new User({
-        email, phone, password: hashedPassword, profilePicture, uniqueNumber,
+        email, phone, password: hashedPassword, uniqueNumber,
         verificationToken,
         verificationTokenExpiresAt,
     })

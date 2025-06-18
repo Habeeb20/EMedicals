@@ -6,6 +6,8 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
+import Navbar from "../../components/Navbar";
+import NavbarOthers from "../../components/NavbarOthers";
 const UserLogin = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -59,7 +61,9 @@ const UserLogin = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+    <>
+    <NavbarOthers />
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
       <div className="w-full max-w-xs mx-auto ">
         <div className="flex justify-center mb-0">
           <img src={im} alt="logo" className="rounded-full" />
@@ -157,6 +161,8 @@ const UserLogin = () => {
         </div>
       </div>
     </div>
+    </>
+  
   );
 };
 

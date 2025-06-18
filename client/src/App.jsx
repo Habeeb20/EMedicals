@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import LandingHome from "./pages/LandingHome";
 import Navbar from "./components/Navbar";
@@ -196,12 +197,13 @@ import TeleResetPassword from "./pages/Telemedicine/TeleResetPassword";
 import TeleMakePayment from "./pages/Telemedicine/TeleMakepayment";
 import TeleVerifyPayment from "./pages/Telemedicine/TeleVerifypayment";
 import TelePaymentFailure from "./pages/Telemedicine/TelePayment-failed";
-import HRMSResetPassword from "./pages/HRMS/HRMSResetPassword";
-import HRMSForgotPassword from "./pages/HRMS/HRMSForgotpassword";
-import HRMSPaymentFailure from "./pages/HRMS/HRMSPaymentfailed";
-import HRMSVerifyPayment from "./pages/HRMS/HRMSVerifyPayment";
-import HRMSMakePayment from "./pages/HRMS/HRMSMakepayment";
+// import HRMSResetPassword from "./pages/HRMS/HRMSResetPassword";
+// import HRMSForgotPassword from "./pages/HRMS/HRMSForgotpassword";
+// import HRMSPaymentFailure from "./pages/HRMS/HRMSPaymentfailed";
+// import HRMSVerifyPayment from "./pages/HRMS/HRMSVerifyPayment";
+// import HRMSMakePayment from "./pages/HRMS/HRMSMakepayment";
 import AboutPage from "./components/aboutus/AboutPage";
+import NavbarOthers from "./components/NavbarOthers";
 
 axios.defaults.withCredentials = true;
 
@@ -212,9 +214,35 @@ const App = () => {
   console.log(authUser);
 
 
+
+
+
+  // const noNavbar = [
+  //   "/",
+  //   "/aboutpage",
+  //   "/aboutus",
+  
+  // ];
+
+  // const navbarRoutes = [
+  
+  //   "/login",
+ 
+  
+  // ];
+  
+  // const NavbarSelector = () => {
+  //   const location = useLocation();
+  //   if (noNavbar.includes(location.pathname)) return null;
+  //   if (navbarRoutes.includes(location.pathname)) return <NavbarOthers />;
+  //   return <NavbarOthers />;
+  // };
+  
+
+
   return (
     <Router>
-      {/* <Navbar /> */}
+      {/* <NavbarSelector /> */}
       <Routes>
       <Route path="/" element={<LandingHome />} />
         <Route path="/signin" element={<Choose />} />
@@ -610,24 +638,22 @@ const App = () => {
         <Route path="/phpayment-failed" element={<PhPaymentfailed />}/>
 
 
-        ///HRMS
+{/*    
         <Route path="/hrmslogin/" element={<HRMSLogin />} />
         <Route path="/hrmssignup" element={<HRMSSignup />} />
         <Route path="/hrmsdashboard" element={<HRMSDashboard />} />
         <Route path="/hrmslettergenerate" element={<GenerateLetter />} />
         <Route path="/HRMSDashboard/hrms/details/:id" element={<EmployeeDetails />} />
 
-        //payment for hrms
           <Route path="/hrmsmakepayment" element={<HRMSMakePayment />} />
           <Route path="/hrmsverifypayment" element={<HRMSVerifyPayment />} />
           <Route path="/hrmspayment-failed" element={<HRMSPaymentFailure />} />
 
-          //password Reset
 
           <Route path="/hrmsforgotpassword" element={<HRMSForgotPassword />} />
           <Route path="/hrmsresetpassword/:token" element={<HRMSResetPassword />} />
       
-
+ */}
 
 
 
@@ -652,3 +678,96 @@ const App = () => {
 };
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

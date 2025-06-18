@@ -13,6 +13,7 @@ import ImageCarousel from './ImageCarousel';
 import WellnessAdvert from './WellnessAdvert';
 import AllHospital from '../Hospital/AllHospital';
 import GetPatientLabAppointment from '../Lab/GetPatientLabAppointment';
+import NavbarOthers from '../../components/NavbarOthers';
 
 export default function UserLandingProfile() {
   const [user, setUser] = useState(null);
@@ -68,7 +69,7 @@ export default function UserLandingProfile() {
 
   return (
     <div>
-      <Navbar />
+      <NavbarOthers />
       <div className="flex flex-col md:flex-row h-screen bg-gray-100">
         
         {/* Sidebar */}
@@ -108,7 +109,7 @@ export default function UserLandingProfile() {
             <div className="flex items-center space-x-4">
               {user?.profilePicture && (
                 <img 
-                  src={user.profilePicture} 
+                  src={user.profilePicture || im3} 
                   alt="User" 
                   className="w-24 h-24 rounded-full border-4 border-blue-500 object-cover md:w-32 md:h-32" 
                 />

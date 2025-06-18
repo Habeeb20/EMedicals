@@ -2,10 +2,13 @@ import { useState } from "react";
 import im from "../assets/EMedicals/floatingLogo.png"
 
 import { Link } from "react-router-dom";
+import NavbarOthers from "./NavbarOthers";
 const Choose = () => {
  
 
   return (
+    <>
+    <NavbarOthers />
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
       <div className="w-full max-w-xs mx-auto ">
         <div className="flex justify-center mb-0">
@@ -53,6 +56,8 @@ const Choose = () => {
         </div>
       </div>
     </div>
+    </>
+   
   );
 };
 

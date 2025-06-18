@@ -2,6 +2,7 @@ import React,  {useState} from 'react'
 import { FaHospital, FaPrescriptionBottle, FaVials, FaBookDead, FaUserMd } from 'react-icons/fa'; 
 import { Link } from 'react-router-dom';
 import im from "../assets/EMedicals/young-woman-doctor-white-coat-with-stethoscope-pointing-with-index-finger-side-with-serious-face-standing-orange-wall-removebg-preview 1.png"
+import NavbarOthers from './NavbarOthers';
 
 const Modal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -90,6 +91,7 @@ const AdminHome = () => {
   const [isModalOpen2, setIsModalOpen2] = useState(false);
   return (
     <div>
+      <NavbarOthers />
       <main className="flex-1 p-6 text-black">
         {/* Profile Section */}
         <div className="flex justify-between items-center mb-8">
